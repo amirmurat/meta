@@ -323,6 +323,85 @@ function renderMorph(token){
  links.append(anchor("Quranic Arabic Corpus","https://corpus.quran.com/wordmorphology.jsp?location="+encodeURIComponent("("+surah+":"+ayah+":"+token.position+")")));
  links.append(anchor("Lane's Lexicon","https://laneslexicon.github.io/lexicon/"));
  root.append(links);
+ // Per-learner lexical research is distinct from the sourced corpus gloss.
+ const panel=document.createElement("div");panel.className="segment";
+ const heading=document.createElement("h3");
+ heading.textContent=t("My word research (private)","Моё исследование слова (личное)");
+ panel.append(heading);
+ const hint=document.createElement("p");hint.className="help";
+ hint.textContent=t("Record alternative meanings and cite the original dictionary or tafsir. Your notes are not certified dictionary translations.","Запиши другие возможные значения и ссылку на словарь или тафсир. Это личные заметки, а не проверенный словарный перевод.");
+ panel.append(hint);
+ const field=(name,label,multiline=false)=>{
+  const caption=document.createElement("label");caption.textContent=label;
+  const element=document.createElement(multiline?"textarea":"input");
+  element.id="lex-"+name;element.maxLength=name==="senses"?6000:name==="meaning"?1200:name==="url"?1500:300;
+  caption.htmlFor=element.id;panel.append(caption,element);return element;
+ };
+ const meaning=field("meaning",t("Russian meaning in this context","Русское значение в контексте"));
+ const senses=field("senses",t("Alternative dictionary meanings / reasoning","Другие значения, аргументы"),true);
+ const sourceTitle=field("source",t("Source title / author","Название источника / автор"));
+ const sourceUrl=field("url",t("Link to source (https://)","Ссылка на источник (https://)"));
+ const typeLabel=document.createElement("label");
+ typeLabel.textContent=t("Type of evidence","Тип источника");panel.append(typeLabel);
+ const typeSelect=document.createElement("select");typeSelect.id="lex-kind";
+ for(const [key,enText,ruText] of [
+  ["user_note","Personal hypothesis","Личная гипотеза"],
+  ["verse_translation","Translation of the whole verse","Перевод целого аята"],
+  ["dictionary","Dictionary entry","Словарная статья"],
+  ["tafsir","Classical tafsir","Классический тафсир"]]){
+  const op=document.createElement("option");op.value=key;op.textContent=t(enText,ruText);typeSelect.append(op);
+ }
+ panel.append(typeSelect);
+ const buttons=document.createElement("div");buttons.className="row";buttons.style.marginTop="12px";
+ const saveBtn=document.createElement("button");saveBtn.type="button";
+ saveBtn.textContent=t("Save word research","Сохранить исследование слова");
+ const clearBtn=document.createElement("button");clearBtn.type="button";
+ clearBtn.textContent=t("Delete my word note","Удалить мою запись");
+ buttons.append(saveBtn,clearBtn);panel.append(buttons);
+ const result=document.createElement("p");result.className="view-status";result.setAttribute("role","status");panel.append(result);
+ root.append(panel);
+ const capture={surah,ayah,lessonId,position:token.position};
+ const matches=()=>lessonId===capture.lessonId&&surah===capture.surah&&ayah===capture.ayah&&activeToken?.position===capture.position;
+ async function loadWordResearch(){
+  const {data,error}=await supabase.from("quran_word_research")
+   .select("meaning_ru,alternative_senses,source_title,source_url,source_kind")
+   .eq("user_id",user.id).eq("lesson_id",capture.lessonId)
+   .eq("token_position",capture.position).maybeSingle();
+  if(!matches())return;
+  if(error){result.textContent=error.message;return}
+  meaning.value=data?.meaning_ru||"";senses.value=data?.alternative_senses||"";
+  sourceTitle.value=data?.source_title||"";sourceUrl.value=data?.source_url||"";
+  typeSelect.value=data?.source_kind||"user_note";
+ }
+ void loadWordResearch();
+ saveBtn.onclick=async()=>{
+  if(!matches())return;
+  if(sourceUrl.value.trim()&&!/^https:\/\//i.test(sourceUrl.value.trim())){
+   result.textContent=t("Use an https:// source link.","Укажи ссылку https://.");return;
+  }
+  if(!meaning.value.trim()&&!senses.value.trim()){
+   result.textContent=t("Enter a meaning or research note.","Запиши значение или наблюдение.");return;
+  }
+  saveBtn.disabled=true;
+  const {error}=await supabase.from("quran_word_research").upsert({
+   user_id:user.id,lesson_id:capture.lessonId,token_position:capture.position,
+   meaning_ru:meaning.value,alternative_senses:senses.value,
+   source_title:sourceTitle.value,source_url:sourceUrl.value.trim(),
+   source_kind:typeSelect.value,updated_at:new Date().toISOString()
+  },{onConflict:"user_id,lesson_id,token_position"});
+  saveBtn.disabled=false;
+  result.textContent=error?error.message:t("Saved to your account.","Сохранено в аккаунте.");
+ };
+ clearBtn.onclick=async()=>{
+  if(!matches()||!confirm(t("Delete your word research note?","Удалить исследование слова?")))return;
+  clearBtn.disabled=true;
+  const {error}=await supabase.from("quran_word_research").delete()
+   .eq("user_id",user.id).eq("lesson_id",capture.lessonId).eq("token_position",capture.position);
+  clearBtn.disabled=false;
+  if(error){result.textContent=error.message;return}
+  meaning.value="";senses.value="";sourceTitle.value="";sourceUrl.value="";typeSelect.value="user_note";
+  result.textContent=t("Note deleted.","Заметка удалена.");
+ };
  const caption=document.createElement("p");caption.className="source";
  caption.textContent=t(
   "Morphology is sourced from Leeds QAC via QuranBench. The gloss is an English learning aid, not a definitive interpretation.",
