@@ -51,6 +51,7 @@ a{color:inherit}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 let user;
 function report(text,error=false){$("message").textContent=text;$("message").className=error?"message error":"message"}
@@ -75,7 +76,7 @@ async function init(){
    container.append(p);
  }else{
    const [courses,lessons,progress]=await Promise.all([
-     supabase.from("courses").select("slug,title,total_units"),
+     supabase.from("courses").select("slug,title,title_en,total_units"),
      supabase.from("lessons").select("id,course_slug"),
      supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
    ]);
@@ -94,9 +95,9 @@ async function init(){
      if(course.slug==="flutter"||course.slug==="ielts"){
        const link=document.createElement("a");
        link.href=course.slug==="flutter"?"./flutter.html":"./ielts.html";
-       link.textContent=course.title;
+       link.textContent=language()==="en"?(course.title_en||course.title):course.title;
        p.append(link,document.createTextNode(" — "+value));
-     }else p.textContent=course.title+" — "+value+" (страница в разработке)";
+     }else p.textContent=(language()==="en"?(course.title_en||course.title):course.title)+" — "+value+" (страница в разработке)";
      container.append(p);
    }
  }
