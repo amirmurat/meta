@@ -48,6 +48,7 @@ p{color:#6b7280;line-height:1.55;margin:0}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 const labels={"A.1":"Listening","A.2":"Academic Reading","A.3":"Academic Writing","A.4":"Speaking"};
 function mark(groups,records){
@@ -103,7 +104,7 @@ async function start(){
   const user=await authenticatedUser();
   if(!user){location.replace(authPage("./ielts.html"));return;}
   const [rows,completed]=await Promise.all([
-    supabase.from("lessons").select("id,external_id,title,sort_order,lesson_content").eq("course_slug","ielts").order("sort_order",{ascending:true}),
+    supabase.from("lessons").select("id,external_id,title,title_en,sort_order,lesson_content,lesson_content_en").eq("course_slug","ielts").order("sort_order",{ascending:true}),
     supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
   ]);
   if(rows.error)throw rows.error;if(completed.error)throw completed.error;
@@ -113,7 +114,7 @@ async function start(){
   }
   if(rows.data.length!==332)throw Error("Неполный список IELTS ("+rows.data.length+")");
   const ids=new Set((completed.data||[]).map(x=>x.lesson_id));
-  const lessons=rows.data.map(x=>({...x,completed:ids.has(x.id)}));
+  const lessons=rows.data.map(x=>({...x,title:language()==="en"?(x.title_en||x.title):x.title,lesson_content:language()==="en"?(x.lesson_content_en||x.lesson_content):x.lesson_content,completed:ids.has(x.id)}));
   const count=lessons.filter(x=>x.completed).length;
   $("summary").textContent="332 микроурока · 4 секции · "+count+" пройдено. Разверни раздел, затем навык и микроурок.";
   $("modules").replaceChildren();
