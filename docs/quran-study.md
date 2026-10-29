@@ -70,3 +70,13 @@ Supabase project `munmvexfrtqwmwptafkf`:
 - Other tokens clearly say that a separately verified Russian word gloss is not yet available, rather than silently auto-translating QAC's English gloss or misattributing an AI translation.
 - Quran Foundation announced removal of Russian word-by-word translation from its API at the rightsholder's request: https://qf-api-docs.pages.dev/docs/updates/ . Do not copy or republish the removed dataset without permission.
 - For scaling, source-licensed, independently reviewable per-word glosses will be needed, with explicit distinction between lexical possibilities, grammatical form, contextual translator choice and classical tafsir. Preserve an English source gloss where licensed and avoid automatic theological translation.
+
+## Current completion work — 2026-10-30
+
+- Added the owner-protected `quran_word_research` table: per-user, per-verse, per-token notes for contextual Russian meaning, alternative lexical senses, source title, HTTPS source URL, type of source, and updated timestamp. Existing sourced QAC word gloss is not overwritten.
+- Quran word panel now allows editing/deleting these private interpretations; titles clearly distinguish learner research from officially sourced morphology.
+- Authenticated insert/read smoke test succeeded for token 4 of 2:40 inside a ROLLBACK transaction; no permanent test record or completion was created.
+- Prepared the owner-private `quran_study_archive` table to retain journal snapshots with date, origin document and source line. Automatic bulk import of the Quran Study Journal was **blocked**, and the table currently contains **zero** entries. The Google Drive Journal remains authoritative; never represent this as a completed migration.
+- Source links to named classical tafsirs and Lane's Lexicon remain primary-source links because the rights to bulk republish full interpretive text have not been confirmed. Do not present them as in-app licensed reproductions.
+- Commercial warning: the Quranic Arabic Corpus FAQ explicitly limits its distributed morphological research data to noncommercial research. Before reselling Quran Study with QAC-derived material, obtain adequate permission or replace the integration with commercially licensed equivalents. https://corpus.quran.com/faq.jsp
+- Front-end syntax and database RLS write permissions were checked, but a real signed-in browser workflow has not been end-to-end validated on the user's device.
