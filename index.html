@@ -37,6 +37,9 @@
     .flutter-link:hover .progress-label { text-decoration: underline; }
     .flutter-link:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
 
+    .account-nav { position:fixed;top:22px;right:26px;font-size:14px;color:#555;text-decoration:none;z-index:1; }
+    .account-nav:hover { text-decoration:underline; }
+    .progress-context { width:min(100%,640px);padding:0 24px;font-size:12px;color:#777;line-height:1.5; }
     .progress-content {
       display: flex;
       align-items: center;
@@ -76,6 +79,7 @@
   </style>
 </head>
 <body>
+  <a class="account-nav" id="account-nav" href="./account.html">Войти</a>
   <main>
     <section class="progress" aria-label="IELTS: 3 из 332 уроков выполнено">
       <div class="progress-content">
@@ -104,6 +108,40 @@
         <div class="progress-fill quran"></div>
       </div>
     </section>
+    <p class="progress-context" id="progress-context">Показана прежняя сводка обучения. Войди, чтобы видеть личный прогресс.</p>
   </main>
+<script type="module">
+import {supabase,authenticatedUser} from "./meta-supabase.js";
+try {
+ const user=await authenticatedUser();
+ if(user){
+  const nav=document.getElementById("account-nav");
+  nav.textContent="Мой профиль";
+  nav.href="./profile.html";
+  const [progressResult,lessonResult]=await Promise.all([
+    supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id),
+    supabase.from("lessons").select("id,course_slug")
+  ]);
+  if(progressResult.error)throw progressResult.error;
+  if(lessonResult.error)throw lessonResult.error;
+  const byId=new Map((lessonResult.data||[]).map(l=>[l.id,l.course_slug]));
+  const counts={ielts:0,flutter:0,quran:0};
+  for(const item of progressResult.data||[]){
+    const course=byId.get(item.lesson_id);
+    if(course&&course in counts) counts[course]++;
+  }
+  const metas=[["ielts",332],["flutter",56],["quran",6236]];
+  const sections=[...document.querySelectorAll(".progress")];
+  metas.forEach(([slug,total],i)=>{
+    const section=sections[i],done=counts[slug];
+    section.querySelector(".progress-count").textContent=done+" / "+total;
+    section.querySelector(".progress-fill").style.width=100*done/total+"%";
+    section.querySelector(".progress-track").setAttribute("aria-valuenow",String(done));
+    section.setAttribute("aria-label",slug+": "+done+" из "+total+" выполнено");
+  });
+  document.getElementById("progress-context").textContent="Это личные результаты твоего аккаунта. Старый прогресс из Google Drive пока не перенесён.";
+ }
+}catch(error){console.error("Meta progress:",error)}
+</script>
 </body>
 </html>
