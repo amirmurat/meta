@@ -1,4 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
+import {language,localizeRecord,tr} from "./meta-language.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
@@ -282,7 +283,7 @@ async function load() {
     }
     const [lessonResult,navResult]=await Promise.all([
       supabase.from("lessons")
-        .select("id,external_id,title,sort_order,task_type,lesson_content")
+        .select("id,external_id,title,title_en,sort_order,task_type,lesson_content,lesson_content_en")
         .eq("course_slug","flutter").eq("external_id",lessonId).limit(1),
       supabase.from("lessons")
         .select("external_id,sort_order")
@@ -296,7 +297,7 @@ async function load() {
       return;
     }
     if(rows.length!==1||nav.length!==56)throw new Error("Неполный каталог");
-    row=rows[0];
+    row={...rows[0],...localizeRecord(rows[0])};
     const content = row.lesson_content || {};
     if (!content.theory || !content.example || !content.task || !Array.isArray(content.criteria)) throw new Error("Контент не найден");
     document.title = row.external_id + " — " + row.title + " | Meta";
