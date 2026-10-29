@@ -70,3 +70,12 @@ Each user should own goals, preferences, attempts, notes and progress. Shared ed
 ## Account security
 
 Supabase security advisor currently reports leaked-password protection disabled. Check the Supabase Auth password security settings and enable where available before public signup at scale.
+
+## IELTS Academic course (2026-10-30)
+- 332 leaf-level skill records imported from Amir's IELTS Academic competency tree (not official IELTS scoring descriptors); 71 Listening / 76 Reading / 103 Writing / 82 Speaking.
+- Full private module browser: `ielts.html` with expandable four-level skill tree and completion bars; unique lesson links at `ielts-lesson.html?id=A.1.1.2.1`.
+- Every lesson has a short author-generated explanation, example, task and three criterion-based self-checks. These are teaching drafts adapted from the skill names, NOT 332 authentic IELTS test questions or independently examiner-validated lesson plans.
+- For Listening and Reading the answer task uses authentic external material. For Speaking learners should make an actual spoken recording outside the site; transcript alone cannot validate pronunciation. No audio upload, automatic listening check, band score or browser audio player is implemented.
+- Existing 3 IELTS historical completions have retained their original UUIDs and dates. No personal IELTS source documents are linked in the course catalog.
+- New attempts, notes, explicit submission times and self-attested AI reviews use the same private Supabase tables and RLS as Flutter.
+- An official preparation source (not a claim of affiliation): https://ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test
