@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flutter — Meta</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{max-width:800px;margin:0 auto;padding:28px 20px 70px}
+.back{display:inline-block;color:#555;text-decoration:none;margin-bottom:28px;font-size:15px}
+h1{margin:0 0 7px;font-size:32px;letter-spacing:-.8px}p{margin:0;color:#777;font-size:15px}
+section{margin-top:38px}h2{font-size:18px;font-weight:600;margin:0 0 14px}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
+.lesson{background:transparent;border:1px solid #e6e6e6;text-align:left;padding:17px 16px;min-height:72px;display:flex;align-items:center;gap:14px;border-radius:0;font:inherit;color:inherit}
+.code{font-size:13px;color:#888;min-width:32px;font-variant-numeric:tabular-nums}
+.name{font-size:15px;line-height:1.45}
+.status{color:#777;margin-top:20px}
+@media(max-width:580px){main{padding-top:25px}h1{font-size:29px}.list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="./">← На главную</a>
+<header><h1>Flutter</h1><p>56 микроуроков · 7 модулей · 16 пройдено по журналу обучения</p></header>
+<div id="catalog" aria-live="polite"><p class="status">Загрузка уроков…</p></div>
+</main>
+<script>
+const API = "https://munmvexfrtqwmwptafkf.supabase.co/rest/v1/lessons?course_slug=eq.flutter&select=external_id,title,sort_order&order=sort_order.asc";
+const PUBLISHABLE_KEY = "sb_publishable_-4QiT3aG9-a54aKVxTFo3g_CjdpFCWz";
+const modules=[
+{prefix:"D",title:"Dart и модель данных"},
+{prefix:"U",title:"Flutter UI"},
+{prefix:"S",title:"Состояние и действия"},
+{prefix:"N",title:"Сеть и асинхронность"},
+{prefix:"P",title:"Постоянное хранение"},
+{prefix:"E",title:"Инженерная работа"},
+{prefix:"C",title:"Самостоятельный перенос"}
+];
+async function loadCatalog(){
+const root=document.getElementById("catalog");
+try{
+const response=await fetch(API,{headers:{"apikey":PUBLISHABLE_KEY}});
+if(!response.ok)throw new Error("HTTP "+response.status);
+const lessons=await response.json();
+if(!Array.isArray(lessons)||lessons.length!==56)throw new Error("Неполный каталог");
+root.replaceChildren();
+for(const mod of modules){
+ const group=lessons.filter(x=>x.external_id.startsWith(mod.prefix));
+ const section=document.createElement("section");
+ const title=document.createElement("h2");
+ title.textContent=mod.title+" · "+group.length;
+ const list=document.createElement("div");list.className="list";
+ for(const lesson of group){
+  const tile=document.createElement("div");tile.className="lesson";
+  const id=document.createElement("span");id.className="code";id.textContent=lesson.external_id;
+  const name=document.createElement("span");name.className="name";name.textContent=lesson.title;
+  tile.append(id,name);list.append(tile);
+ }
+ section.append(title,list);root.append(section);
+}
+}catch(error){
+root.replaceChildren();
+const p=document.createElement("p");p.className="status";p.textContent="Не удалось загрузить уроки. Обнови страницу позже.";root.append(p);
+console.error("Flutter catalog:",error);
+}
+}
+loadCatalog();
+</script>
+</body>
+</html>
