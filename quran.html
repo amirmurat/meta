@@ -55,7 +55,13 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <nav class="top"><a href="./" id="back">← My courses</a><a href="./statistics.html" id="statistics-link">Statistics</a></nav>
 <header class="masthead"><h1>Quran Study</h1><p class="muted" id="subtitle">Arabic text, word analysis, reliable references and private research notes.</p>
 <div class="row" style="margin-top:11px"><strong id="progress">— / 6236</strong><span class="muted" id="progress-label">studied verses</span></div>
-<div class="track"><div class="bar" id="progress-bar"></div></div></header>
+<div class="track"><div class="bar" id="progress-bar"></div></div>
+<div class="row" style="margin-top:17px">
+  <button type="button" id="session-start">Start study session</button>
+  <button type="button" id="session-stop" hidden>End session and save time</button>
+  <button type="button" id="session-cancel" hidden>Discard session</button>
+  <span class="muted" id="session-status" role="status"></span>
+</div></header>
 <p class="view-status" id="status" role="status">Checking your account…</p>
 <div class="layout" id="app" hidden>
 <aside>
