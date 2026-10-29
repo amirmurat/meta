@@ -44,38 +44,22 @@ function readerLabels(){
  ["word-help","Select a word to inspect its root, lemma and morphological segments. A dictionary gloss is not a contextual tafsir.","Нажми на слово: корень, лемма и части слова. Словарное значение не заменяет контекстное толкование."],
  ["sources-heading","Tafsir and dictionaries","Тафсиры и словари"],
  ["sources-help","Open the original source. AI paraphrases are not presented as scholarly quotations.","Открывай оригинальный источник. Пересказы ИИ не выдаются за цитаты учёных."],
- ["archive-heading","Previous studies","Прошлые исследования"],
- ["archive-help","Your Google Drive journal remains the original source. You can copy a selected past study here; importing it never marks a verse as newly completed.","Твой журнал в Google Drive остаётся первоисточником. Скопируй выбранное прежнее исследование сюда: импорт не засчитывает аят повторно."],
+ ["quick-heading","My notes","Мои заметки"],
+ ["quick-optional","(optional)","(необязательно)"],
+ ["quick-help","Just write what you want to remember. Verse and time are added automatically. You can study and mark the verse without writing anything.","Записывай только то, что хочешь запомнить. Аят и время добавляются автоматически. Можно изучить аят и отметить его без заметки."],
+ ["quick-save","Save note","Сохранить"],
+ ["copy-question","Copy AI study prompt","Скопировать запрос для ИИ"],
+ ["archive-heading","Previous studies and journal","Прежние исследования и журнал"],
+ ["archive-help","Older notes stay available. You do not need to copy them, choose dates or classify them.","Старые исследования сохранены. Ничего переносить, датировать или классифицировать не нужно."],
  ["archive-journal-link","Open Quran Study Journal","Открыть Quran Study Journal"],
- ["archive-date-label","Date of original study (if known)","Дата первоначального исследования (если известна)"],
- ["archive-kind-label","Research type","Тип исследования"],
- ["archive-body-label","Paste a selected passage from your own journal","Вставь фрагмент из своего журнала"],
- ["archive-save","Save historical research","Сохранить прежнее исследование"],
- ["research-heading","Private research","Личное исследование"],
- ["question-label","Your question","Твой вопрос"],["analysis-label","Your analysis and distinctions","Твой анализ и различия"],
- ["sources-label","Sources and citations","Источники и ссылки"],["save","Save research","Сохранить исследование"],
- ["copy-question","Copy AI research prompt","Скопировать запрос для ИИ"],
+ ["legacy-heading","Earlier detailed notes","Ранее сохранённые подробные заметки"],
  ["mark","Mark studied","Отметить изученным"],["unmark","Undo completion","Снять отметку"],
  ["attribution","Arabic: Tanzil Uthmani 1.1 (CC BY 3.0, unchanged). Word data: Leeds Quranic Arabic Corpus via QuranBench v0.8.0 (GPL). Translations are separately attributed. No automatic religious rulings.","Арабский текст: Tanzil Uthmani 1.1 (CC BY 3.0, без изменений). Слова: Leeds Quranic Arabic Corpus через QuranBench v0.8.0 (GPL). Авторы переводов указаны отдельно. Никаких автоматических религиозных постановлений."]
  ];
  for(const [id,enText,ruText]of entries)set(id,t(enText,ruText));
  $("new-tag").placeholder=t("e.g. Covenant","Например: Завет");
  $("rename-tag").placeholder=t("New name","Новое название");
- $("question").placeholder=t("What is unclear about this verse?","Что неясно в этом аяте?");
- $("analysis").placeholder=t("Distinguish direct text, dictionary meanings, tafsir and your own conclusions.","Разделяй текст, словари, тафсир и собственный вывод.");
- $("sources").placeholder=t("Reference / source URL / what it supports","Аят / ссылка / что подтверждает источник");
- $("archive-body").placeholder=t("Paste your previous research and citations here…","Вставь прежнее исследование и ссылки на источники…");
- const kindLabels=[
-  ["research","Research and explanation","Исследование и объяснение"],
-  ["question","Question and answer","Вопрос и ответ"],
-  ["theme","Cross-verse topic","Тема нескольких аятов"],
-  ["study_session","Study session notes","Заметки занятия"]
- ];
- for(const [key,enName,ruName] of kindLabels) {
-  const op=$("archive-kind").querySelector('option[value="'+key+'"]');
-  if(op)op.textContent=t(enName,ruName);
- }
-
+ $("quick-note").placeholder=t("What stood out? What should I remember?","Что я понял? Что хочу запомнить?");
  document.title=t("Quran Study — Meta","Изучение Корана — Meta");
 }
 async function apiVerse(s,a){
@@ -158,14 +142,17 @@ async function openVerse(s,a,addHistory=true){
  set("verse-ref",s+":"+a);set("verse-heading",SURAH_NAMES[s-1]);
  $("arabic").textContent="";$("translation").textContent="";$("footnotes").textContent="";
  $("translation-source").textContent="";$("words").replaceChildren();$("morph").hidden=true;
- set("completion-help","");notice("save-state","");
- $("archive-body").value="";$("archive-date").value="";
+ set("completion-help","");
+ $("quick-note").value="";
+ notice("quick-status","");
+ $("quick-entries").replaceChildren();
  notice("archive-status","");$("archive-records").replaceChildren();
+ $("legacy-notes").hidden=true;$("legacy-content").replaceChildren();
  status(t("Loading verified text and word data…","Загружаю проверенный текст и разбор слов…"));
  $("qurancom").href="https://quran.com/"+s+"/"+a;
  $("corpus").href="https://corpus.quran.com/wordbyword.jsp?chapter="+s+"&verse="+a;
  showCompletion();
- await Promise.all([loadNotes(),loadAyahTags(),loadStudyArchive()]);
+ await Promise.all([loadNotes(),loadAyahTags(),loadStudyArchive(),loadQuickNotes()]);
  try{
   const data=await apiVerse(s,a);
   if(id!==sequence)return;
@@ -449,11 +436,12 @@ function renderSources(){
   const ref=surah+":"+ayah;
   cite.onclick=()=>{
    if(ref!==surah+":"+ayah)return;
-   const note=label+" — "+url, textarea=$("sources");
+   const note=label+" — "+url, textarea=$("quick-note");
    if(!textarea.value.includes(note)){
     textarea.value+=(textarea.value.trim()?"\n":"")+note+"\n";
    }
-   notice("save-state",t("Reference added. Explain what it supports, then save your research.","Ссылка добавлена. Укажи, что она подтверждает, и сохрани исследование."));
+    saveQuickDraft();
+   notice("quick-status",t("Source added to your note. Save if useful.","Ссылка добавлена в заметку. Сохрани, если нужно."));
   };
   group.append(cite);box.append(group);
  }
@@ -655,60 +643,103 @@ async function loadStudyArchive(){
   item.append(row);root.append(item);
  }
 }
-async function saveStudyArchive(){
- const currentLesson=lessonId;
- const body=$("archive-body").value.trim(),date=$("archive-date").value||null;
- if(!body){notice("archive-status",t("Paste a journal entry first.","Сначала вставь запись из журнала."),true);return}
- if(body.length>16000){notice("archive-status",t("Entry is too long. Split it by research topic.","Запись слишком длинная: разбей по темам."),true);return}
- if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date)){notice("archive-status",t("Invalid study date.","Неверная дата."),true);return}
- const button=$("archive-save");button.disabled=true;
- const {error}=await supabase.from("quran_study_archive").insert({
-  user_id:user.id,lesson_id:currentLesson,source_date:date,source_document:ARCHIVE_JOURNAL,
-  source_line:null,kind:$("archive-kind").value,body
- });
- button.disabled=false;
- if(currentLesson!==lessonId)return;
- if(error){notice("archive-status",error.message,true);return}
- $("archive-body").value="";
- notice("archive-status",t("Archived under this verse, without changing reading progress.","Сохранено для этого аята без изменения прогресса."));
- await loadStudyArchive();
-}
-
 async function loadNotes(){
  const current=lessonId;
  const {data,error}=await supabase.from("quran_research_notes")
   .select("question,analysis,sources").eq("user_id",user.id).eq("lesson_id",current).maybeSingle();
  if(current!==lessonId)return;
- if(error){notice("save-state",error.message,true);return}
- $("question").value=data?.question||"";
- $("analysis").value=data?.analysis||"";
- $("sources").value=data?.sources||"";
+ if(error){notice("archive-status",error.message,true);return}
+ const root=$("legacy-content");root.replaceChildren();
+ const sections=[
+  [t("Question","Вопрос"),data?.question],
+  [t("Analysis","Анализ"),data?.analysis],
+  [t("Sources","Источники"),data?.sources]
+ ];
+ const present=sections.filter(([,body])=>String(body||"").trim());
+ $("legacy-notes").hidden=present.length===0;
+ for(const [label,body] of present){
+  const heading=document.createElement("strong");heading.textContent=label;
+  const p=document.createElement("p");p.style.whiteSpace="pre-wrap";p.style.overflowWrap="anywhere";
+  p.textContent=body;root.append(heading,p);
+ }
 }
-async function saveNotes(){
- const save=$("save");save.disabled=true;
- notice("save-state",t("Saving…","Сохраняю…"));
- try{
-  const {error}=await supabase.from("quran_research_notes").upsert({
-   user_id:user.id,lesson_id:lessonId,
-   question:$("question").value,analysis:$("analysis").value,sources:$("sources").value,
-   updated_at:new Date().toISOString()
-  },{onConflict:"user_id,lesson_id"});
-  if(error)throw error;
-  notice("save-state",t("Research saved privately to your account.","Исследование сохранено в личном аккаунте."));
- }catch(err){notice("save-state",err.message,true)}
- finally{save.disabled=false}
+// A single optional entry replaces the former question / analysis / sources form.
+// The server supplies timestamps, and the current authenticated verse supplies metadata.
+function quickDraftKey(verseId=lessonId){
+ return "meta-quran-draft-v1:"+user.id+":"+verseId;
+}
+function restoreQuickDraft(){
+ try{$("quick-note").value=localStorage.getItem(quickDraftKey())||""}catch{}
+}
+function saveQuickDraft(){
+ try{localStorage.setItem(quickDraftKey(),$("quick-note").value)}catch{}
+}
+async function loadQuickNotes(){
+ const current=lessonId;
+ const {data,error}=await supabase.from("quran_study_entries")
+  .select("id,body,created_at")
+  .eq("user_id",user.id).eq("lesson_id",current)
+  .order("created_at",{ascending:false}).limit(100);
+ if(current!==lessonId)return;
+ const root=$("quick-entries");root.replaceChildren();
+ if(error){notice("quick-status",error.message,true);return}
+ for(const entry of data||[]){
+  const panel=document.createElement("div");
+  panel.style.cssText="border-top:1px solid #e5e7eb;padding:12px 0";
+  const top=document.createElement("div");top.className="row between";
+  const label=document.createElement("span");label.className="muted";
+  label.textContent=new Intl.DateTimeFormat(en?"en-GB":"ru-RU",{
+   timeZone:"Asia/Almaty",dateStyle:"medium",timeStyle:"short"
+  }).format(new Date(entry.created_at));
+  const remove=document.createElement("button");remove.type="button";
+  remove.textContent=t("Delete","Удалить");
+  remove.onclick=async()=>{
+   if(!confirm(t("Delete this note?","Удалить эту заметку?")))return;
+   remove.disabled=true;
+   const {error:deleteError}=await supabase.from("quran_study_entries")
+    .delete().eq("user_id",user.id).eq("id",entry.id);
+   if(deleteError){notice("quick-status",deleteError.message,true);remove.disabled=false;return}
+   await loadQuickNotes();
+  };
+  top.append(label,remove);
+  const body=document.createElement("p");
+  body.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;margin:9px 0";
+  body.textContent=entry.body;
+  panel.append(top,body);root.append(panel);
+ }
+ restoreQuickDraft();
+}
+async function saveQuickNote(){
+ const current=lessonId,body=$("quick-note").value.trim();
+ if(!body){
+  notice("quick-status",t("You can leave notes blank. Write something only if useful.","Заметка необязательна. Пиши только если есть что сохранить."));
+  return;
+ }
+ const button=$("quick-save");button.disabled=true;
+ const {error}=await supabase.from("quran_study_entries")
+  .insert({user_id:user.id,lesson_id:current,body});
+ button.disabled=false;
+ if(current!==lessonId)return;
+ if(error){notice("quick-status",error.message,true);return}
+ try{localStorage.removeItem(quickDraftKey(current))}catch{}
+ $("quick-note").value="";
+ notice("quick-status",t("Saved. Verse and date were attached automatically.","Сохранено. Аят и дата добавлены автоматически."));
+ await loadQuickNotes();
 }
 async function copyResearchPrompt(){
+ const text=$("quick-note").value.trim();
  const prompt=[
- t("You are my research assistant for Quran study. Cite primary sources and distinguish direct Quranic wording, lexical possibilities, classical tafsir and my own interpretation.","Ты помощник по изучению Корана. Ссылайся на первоисточники и разделяй прямой текст, словарные значения, классический тафсир и мои предположения."),
+ t("You are my Quran study assistant. Help me understand this verse using verified sources. Distinguish the Quranic text, word morphology, dictionary alternatives, named classical tafsirs and my own notes.","Ты помощник по изучению Корана. Помоги понять этот аят с опорой на проверяемые источники. Различай текст Корана, морфологию, словарные значения, классические тафсиры и мои заметки."),
  t("Verse: ","Аят: ")+surah+":"+ayah,
- t("My question: ","Мой вопрос: ")+$("question").value,
- t("My analysis: ","Мой анализ: ")+$("analysis").value,
- t("Sources so far: ","Источники: ")+$("sources").value,
- t("Do not invent Arabic roots, quotations, grammatical forms or religious rulings. State uncertainty and provide links to the cited verse, dictionary or named tafsir.","Не выдумывай корни, цитаты, грамматические формы и религиозные постановления. Отмечай неопределённость и давай ссылки на аят, словарь или конкретный тафсир.")
+ t("My note or question (optional): ","Моя заметка или вопрос (если есть): ")+(text||t("Please guide me through the verse without revealing all conclusions immediately.","Помоги пошагово изучить аят, не выдавая сразу все выводы.")),
+ t("Do not invent Arabic roots, quotations or religious rulings. Name sources and mark uncertain interpretations clearly.","Не выдумывай корни, цитаты или религиозные постановления. Указывай источники и отмечай неопределённость.")
  ].join("\n\n");
- try{await navigator.clipboard.writeText(prompt);notice("save-state",t("Research prompt copied. Paste it into your preferred AI chat.","Запрос скопирован. Вставь его в чат с ИИ."))}
- catch{notice("save-state",t("Could not copy; check browser clipboard permissions.","Не удалось скопировать; проверь разрешения браузера."),true)}
+ try{
+  await navigator.clipboard.writeText(prompt);
+  notice("quick-status",t("AI study prompt copied.","Запрос для ИИ скопирован."));
+ }catch{
+  notice("quick-status",t("Could not copy. Check clipboard permissions.","Не удалось скопировать; проверь разрешения."),true);
+ }
 }
 function sessionKey(){return "meta-quran-active-session-"+user.id}
 function getSessionStart(){
@@ -785,8 +816,9 @@ async function init(){
  $("move-tag").onclick=moveTag;$("remove-tag").onclick=deleteTag;
  $("browse-tag").onchange=()=>{void showRelated()};
  $("manage-tag").onchange=()=>{$("manage-tag").dataset.picked=$("manage-tag").value};
- $("save").onclick=saveNotes;$("copy-question").onclick=copyResearchPrompt;
- $("archive-save").onclick=saveStudyArchive;
+ $("quick-save").onclick=saveQuickNote;
+ $("quick-note").addEventListener("input",saveQuickDraft);
+ $("copy-question").onclick=copyResearchPrompt;
  window.addEventListener("popstate",()=>{const u=new URL(location.href);void openVerse(Number(u.searchParams.get("s")||2),Number(u.searchParams.get("a")||40),false)});
  await openVerse(first,second,false);
 }
