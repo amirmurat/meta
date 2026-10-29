@@ -43,14 +43,12 @@ header{margin-bottom:26px}
 <body>
 <main>
 <div class="page-top"><a class="back" href="./">← На главную</a><a id="user-link" class="back" href="./account.html">Войти</a></div>
-<header><h1>Flutter</h1><p id="catalog-summary">56 микроуроков · 7 модулей · личный прогресс после входа</p></header>
+<header><h1>Flutter</h1><p id="catalog-summary">Проверяю доступ к программе…</p></header>
 <div id="catalog" aria-live="polite"><p class="status">Загрузка уроков…</p></div>
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-const API = "https://munmvexfrtqwmwptafkf.supabase.co/rest/v1/lessons?course_slug=eq.flutter&select=id,external_id,title,sort_order&order=sort_order.asc";
-const PUBLISHABLE_KEY = "sb_publishable_-4QiT3aG9-a54aKVxTFo3g_CjdpFCWz";
-// Each learner sees only their own completion records from Supabase.
+// Course material is read only with the authenticated user's RLS-protected session.
 const completedLessonIds=new Set();
 const modules=[
 {prefix:"D",title:"Dart и модель данных"},
@@ -64,26 +62,33 @@ const modules=[
 async function loadCatalog(){
 const root=document.getElementById("catalog");
 try{
-const response=await fetch(API,{headers:{"apikey":PUBLISHABLE_KEY}});
-if(!response.ok)throw new Error("HTTP "+response.status);
-const lessons=await response.json();
-if(!Array.isArray(lessons)||lessons.length!==56)throw new Error("Неполный каталог");
+const user=await authenticatedUser();
+if(!user){location.replace(authPage("./flutter.html"));return;}
+document.getElementById("user-link").textContent="Мой профиль";
+document.getElementById("user-link").href="./profile.html";
+const {data:lessons,error:catalogError}=await supabase.from("lessons")
+  .select("id,external_id,title,sort_order")
+  .eq("course_slug","flutter").order("sort_order",{ascending:true});
+if(catalogError)throw catalogError;
+if(!lessons?.length){
+ root.replaceChildren();
+ const p=document.createElement("p");p.className="status";
+ p.textContent="Эта учебная программа не назначена твоему аккаунту.";
+ const link=document.createElement("a");link.href="./";link.textContent="Мои программы";
+ root.append(p,link);
+ document.getElementById("catalog-summary").textContent="Нет доступа к программе";
+ return;
+}
+if(lessons.length!==56)throw new Error("Неполный каталог");
 root.replaceChildren();
 root.className="modules";
 completedLessonIds.clear();
-let user=null;
-try{user=await authenticatedUser()}catch(error){console.error("Auth:",error)}
-if(user){
- document.getElementById("user-link").textContent="Мой профиль";
- document.getElementById("user-link").href="./profile.html";
- const {data:progress,error}=await supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id);
- if(error)throw error;
- const map=new Map(lessons.map(l=>[l.id,l.external_id]));
- for(const record of progress||[])if(map.has(record.lesson_id))completedLessonIds.add(map.get(record.lesson_id));
- document.getElementById("catalog-summary").textContent="56 микроуроков · 7 модулей · "+completedLessonIds.size+" выполнено в аккаунте";
-}else{
- document.getElementById("catalog-summary").textContent="56 микроуроков · 7 модулей · войди, чтобы видеть личный прогресс";
-}
+const {data:progress,error}=await supabase.from("lesson_progress")
+ .select("lesson_id").eq("user_id",user.id);
+if(error)throw error;
+const map=new Map(lessons.map(l=>[l.id,l.external_id]));
+for(const record of progress||[])if(map.has(record.lesson_id))completedLessonIds.add(map.get(record.lesson_id));
+document.getElementById("catalog-summary").textContent="56 микроуроков · 7 модулей · "+completedLessonIds.size+" выполнено в аккаунте";
 for(const mod of modules){
  const group=lessons.filter(x=>x.external_id.startsWith(mod.prefix));
  const done=group.filter(x=>completedLessonIds.has(x.external_id)).length;
