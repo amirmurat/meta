@@ -1,7 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 
-const projectUrl = "https://munmvexfrtqwmwptafkf.supabase.co";
-const publishableKey = "sb_publishable_-4QiT3aG9-a54aKVxTFo3g_CjdpFCWz";
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
 const guestPrefix = "meta-flutter-guest-v1-";
@@ -244,17 +242,28 @@ async function load() {
   }
   $("back").href = "./flutter.html#module-" + lessonId[0];
   try {
-    const query = "?select=id,external_id,title,sort_order,task_type,lesson_content&course_slug=eq.flutter&external_id=eq." + lessonId + "&limit=1";
-    const navQuery = "?select=external_id,sort_order&course_slug=eq.flutter&order=sort_order.asc";
-    const [lessonResponse, navResponse, loggedIn] = await Promise.all([
-      fetch(projectUrl + "/rest/v1/lessons" + query, {headers:{apikey:publishableKey}}),
-      fetch(projectUrl + "/rest/v1/lessons" + navQuery, {headers:{apikey:publishableKey}}),
-      authenticatedUser()
+    currentUser=await authenticatedUser();
+    if(!currentUser){
+      location.replace(authPage("flutter-lesson.html?id="+encodeURIComponent(lessonId)));
+      return;
+    }
+    const [lessonResult,navResult]=await Promise.all([
+      supabase.from("lessons")
+        .select("id,external_id,title,sort_order,task_type,lesson_content")
+        .eq("course_slug","flutter").eq("external_id",lessonId).limit(1),
+      supabase.from("lessons")
+        .select("external_id,sort_order")
+        .eq("course_slug","flutter").order("sort_order",{ascending:true})
     ]);
-    if (!lessonResponse.ok || !navResponse.ok) throw new Error("Ошибка получения урока");
-    const rows = await lessonResponse.json(), nav = await navResponse.json();
-    if (rows.length!==1 || !Array.isArray(nav) || nav.length!==56) throw new Error("Неполный каталог");
-    row = rows[0]; currentUser = loggedIn;
+    if(lessonResult.error)throw lessonResult.error;
+    if(navResult.error)throw navResult.error;
+    const rows=lessonResult.data||[],nav=navResult.data||[];
+    if(!rows.length){
+      showError("Эта программа не назначена твоему аккаунту. Перейди в «Мои программы».");
+      return;
+    }
+    if(rows.length!==1||nav.length!==56)throw new Error("Неполный каталог");
+    row=rows[0];
     const content = row.lesson_content || {};
     if (!content.theory || !content.example || !content.task || !Array.isArray(content.criteria)) throw new Error("Контент не найден");
     document.title = row.external_id + " — " + row.title + " | Meta";
