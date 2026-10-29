@@ -159,6 +159,8 @@ async function openVerse(s,a,addHistory=true){
  $("arabic").textContent="";$("translation").textContent="";$("footnotes").textContent="";
  $("translation-source").textContent="";$("words").replaceChildren();$("morph").hidden=true;
  set("completion-help","");notice("save-state","");
+ $("archive-body").value="";$("archive-date").value="";
+ notice("archive-status","");$("archive-records").replaceChildren();
  status(t("Loading verified text and word data…","Загружаю проверенный текст и разбор слов…"));
  $("qurancom").href="https://quran.com/"+s+"/"+a;
  $("corpus").href="https://corpus.quran.com/wordbyword.jsp?chapter="+s+"&verse="+a;
@@ -654,16 +656,18 @@ async function loadStudyArchive(){
  }
 }
 async function saveStudyArchive(){
+ const currentLesson=lessonId;
  const body=$("archive-body").value.trim(),date=$("archive-date").value||null;
  if(!body){notice("archive-status",t("Paste a journal entry first.","Сначала вставь запись из журнала."),true);return}
  if(body.length>16000){notice("archive-status",t("Entry is too long. Split it by research topic.","Запись слишком длинная: разбей по темам."),true);return}
  if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date)){notice("archive-status",t("Invalid study date.","Неверная дата."),true);return}
  const button=$("archive-save");button.disabled=true;
  const {error}=await supabase.from("quran_study_archive").insert({
-  user_id:user.id,lesson_id:lessonId,source_date:date,source_document:ARCHIVE_JOURNAL,
+  user_id:user.id,lesson_id:currentLesson,source_date:date,source_document:ARCHIVE_JOURNAL,
   source_line:null,kind:$("archive-kind").value,body
  });
  button.disabled=false;
+ if(currentLesson!==lessonId)return;
  if(error){notice("archive-status",error.message,true);return}
  $("archive-body").value="";
  notice("archive-status",t("Archived under this verse, without changing reading progress.","Сохранено для этого аята без изменения прогресса."));
