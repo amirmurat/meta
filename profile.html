@@ -75,14 +75,18 @@ async function init(){
    p.textContent="Программ пока нет. Сохрани свою цель, чтобы подобрать учебный маршрут.";
    container.append(p);
  }else{
-   const [courses,lessons,progress]=await Promise.all([
+   const [courses,progress]=await Promise.all([
      supabase.from("courses").select("slug,title,title_en,total_units"),
-     supabase.from("lessons").select("id,course_slug"),
-     supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
+          supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
    ]);
-   for(const result of [courses,lessons,progress])if(result.error)throw result.error;
+   for(const result of [courses,progress])if(result.error)throw result.error;
    const ids=new Set(enrollments.map(e=>e.course_slug));
-   const lessonCourse=new Map((lessons.data||[]).map(l=>[l.id,l.course_slug]));
+   const completedIds=(progress.data||[]).map(x=>x.lesson_id);
+  const lookup=completedIds.length
+    ?await supabase.from("lessons").select("id,course_slug").in("id",completedIds)
+    :{data:[],error:null};
+  if(lookup.error)throw lookup.error;
+  const lessonCourse=new Map((lookup.data||[]).map(l=>[l.id,l.course_slug]));
    const count={};
    for(const item of progress.data||[]){
      const slug=lessonCourse.get(item.lesson_id);
@@ -92,9 +96,9 @@ async function init(){
      if(!ids.has(course.slug))continue;
      const p=document.createElement("p");
      const value=(count[course.slug]||0)+" / "+course.total_units;
-     if(course.slug==="flutter"||course.slug==="ielts"){
+     if(["flutter","ielts","quran"].includes(course.slug)){
        const link=document.createElement("a");
-       link.href=course.slug==="flutter"?"./flutter.html":"./ielts.html";
+       link.href=course.slug==="flutter"?"./flutter.html":course.slug==="ielts"?"./ielts.html":"./quran.html?s=2&a=40";
        link.textContent=language()==="en"?(course.title_en||course.title):course.title;
        p.append(link,document.createTextNode(" — "+value));
      }else p.textContent=(language()==="en"?(course.title_en||course.title):course.title)+" — "+value+" (страница в разработке)";
