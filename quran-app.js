@@ -28,6 +28,9 @@ function readerLabels(){
  ["back","← My courses","← Мои программы"],["statistics-link","Statistics","Статистика"],
  ["subtitle","Arabic text, word analysis, reliable references and private research notes.","Арабский текст, анализ слов, проверяемые источники и личные заметки."],
  ["progress-label","studied verses","изученных аятов"],
+ ["session-start","Start study session","Начать занятие"],
+ ["session-stop","End session and save time","Завершить и записать время"],
+ ["session-cancel","Discard session","Отменить занятие"],
  ["nav-heading","Navigate","Навигация"],["surah-label","Surah","Сура"],["ayah-label","Ayah","Аят"],
  ["previous","← Previous","← Предыдущий"],["following","Next →","Следующий →"],
  ["tags-heading","My nested tags","Мои вложенные метки"],
@@ -433,6 +436,52 @@ async function copyResearchPrompt(){
  try{await navigator.clipboard.writeText(prompt);notice("save-state",t("Research prompt copied. Paste it into your preferred AI chat.","Запрос скопирован. Вставь его в чат с ИИ."))}
  catch{notice("save-state",t("Could not copy; check browser clipboard permissions.","Не удалось скопировать; проверь разрешения браузера."),true)}
 }
+function sessionKey(){return "meta-quran-active-session-"+user.id}
+function getSessionStart(){
+ try{return localStorage.getItem(sessionKey())||null}catch{return null}
+}
+function refreshSession(){
+ const start=getSessionStart(),active=!!start;
+ $("session-start").hidden=active;
+ $("session-stop").hidden=!active;
+ $("session-cancel").hidden=!active;
+ if(!active){set("session-status","");return}
+ const date=new Date(start);
+ if(!Number.isFinite(date.getTime())){
+  set("session-status",t("Invalid session timestamp; discard it.","Неверная дата занятия; отмени запись."));
+  return;
+ }
+ set("session-status",t("Started: ","Начато: ")+new Intl.DateTimeFormat(en?"en-GB":"ru-RU",{timeZone:"Asia/Almaty",dateStyle:"medium",timeStyle:"short"}).format(date));
+}
+function beginSession(){
+ if(getSessionStart())return;
+ try{localStorage.setItem(sessionKey(),new Date().toISOString());refreshSession()}
+ catch{set("session-status",t("Browser storage is unavailable.","Не удалось сохранить начало занятия."))}
+}
+async function finishSession(){
+ const started=getSessionStart();if(!started)return;
+ const startDate=new Date(started),endDate=new Date(),minutes=(endDate.getTime()-startDate.getTime())/60000;
+ if(!Number.isFinite(minutes)||minutes<0||minutes>1440){
+  set("session-status",t("Session is invalid or older than 24 hours. Discard it and start a new one.","Сессия неверна или старше 24 часов. Отмени её и начни новую."));
+  return;
+ }
+ $("session-stop").disabled=true;
+ const {error}=await supabase.from("learning_sessions").insert({
+  user_id:user.id,course_slug:"quran",session_date:safeDate(),
+  started_at:started,ended_at:endDate.toISOString(),evidence:"confirmed_fact"
+ });
+ $("session-stop").disabled=false;
+ if(error){set("session-status",t("Could not save: ","Ошибка сохранения: ")+error.message);return}
+ try{localStorage.removeItem(sessionKey())}catch{}
+ refreshSession();
+ set("session-status",t("Session saved: ","Занятие сохранено: ")+Math.floor(minutes)+" "+t("minutes","мин."));
+}
+function cancelSession(){
+ if(!getSessionStart())return;
+ if(!confirm(t("Discard this unsaved study session?","Отменить незаписанное занятие?")))return;
+ try{localStorage.removeItem(sessionKey())}catch{}
+ refreshSession();
+}
 async function init(){
  readerLabels();
  user=await authenticatedUser();
@@ -452,6 +501,10 @@ async function init(){
  $("ayah").onchange=()=>{void openVerse(surah,Number($("ayah").value))};
  $("previous").onclick=()=>nextPosition(-1);
  $("following").onclick=()=>nextPosition(1);
+ $("session-start").onclick=beginSession;
+ $("session-stop").onclick=finishSession;
+ $("session-cancel").onclick=cancelSession;
+ refreshSession();
  $("mark").onclick=markStudied;
  $("unmark").onclick=unmarkStudied;
  $("add-tag").onclick=createTag;$("rename").onclick=renameTag;
