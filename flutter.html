@@ -48,6 +48,7 @@ header{margin-bottom:26px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 // Course material is read only with the authenticated user's RLS-protected session.
 const completedLessonIds=new Set();
 const modules=[
@@ -66,11 +67,11 @@ const user=await authenticatedUser();
 if(!user){location.replace(authPage("./flutter.html"));return;}
 document.getElementById("user-link").textContent="Мой профиль";
 document.getElementById("user-link").href="./profile.html";
-const {data:lessons,error:catalogError}=await supabase.from("lessons")
-  .select("id,external_id,title,sort_order")
+const {data:rawLessons,error:catalogError}=await supabase.from("lessons")
+  .select("id,external_id,title,title_en,sort_order")
   .eq("course_slug","flutter").order("sort_order",{ascending:true});
 if(catalogError)throw catalogError;
-if(!lessons?.length){
+if(!rawLessons?.length){
  root.replaceChildren();
  const p=document.createElement("p");p.className="status";
  p.textContent="Эта учебная программа не назначена твоему аккаунту.";
@@ -79,7 +80,8 @@ if(!lessons?.length){
  document.getElementById("catalog-summary").textContent="Нет доступа к программе";
  return;
 }
-if(lessons.length!==56)throw new Error("Неполный каталог");
+if(rawLessons.length!==56)throw new Error("Неполный каталог");
+const lessons=rawLessons.map(x=>({...x,title:language()==="en"?(x.title_en||x.title):x.title}));
 root.replaceChildren();
 root.className="modules";
 completedLessonIds.clear();
