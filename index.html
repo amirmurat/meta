@@ -52,15 +52,19 @@ async function main(){
   if(assignedError)throw assignedError;
   $("loading").hidden=true;$("heading").hidden=false;
   if(!assigned?.length){$("empty").hidden=false;return;}
-  const [catalog,lessons,progress]=await Promise.all([
+  const [catalog,progress]=await Promise.all([
    supabase.from("courses").select("slug,title,title_en,total_units"),
-   supabase.from("lessons").select("id,course_slug"),
-   supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
+      supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
   ]);
-  for(const result of [catalog,lessons,progress])if(result.error)throw result.error;
+  for(const result of [catalog,progress])if(result.error)throw result.error;
   const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
   const visible=(catalog.data||[]).filter(c=>assignedSlugs.has(c.slug));
-  const lessonCourse=new Map((lessons.data||[]).map(l=>[l.id,l.course_slug]));
+  const completedIds=(progress.data||[]).map(x=>x.lesson_id);
+  const lookup=completedIds.length
+    ?await supabase.from("lessons").select("id,course_slug").in("id",completedIds)
+    :{data:[],error:null};
+  if(lookup.error)throw lookup.error;
+  const lessonCourse=new Map((lookup.data||[]).map(l=>[l.id,l.course_slug]));
   const counts=new Map();
   for(const row of progress.data||[]){
     const slug=lessonCourse.get(row.lesson_id);
@@ -68,11 +72,12 @@ async function main(){
   }
   const root=$("courses");
   for(const course of visible){
-    const canOpen=course.slug==="flutter"||course.slug==="ielts";
+    const canOpen=["flutter","ielts","quran"].includes(course.slug);
     const card=document.createElement(canOpen?"a":"div");
     card.className="course";
     if(course.slug==="flutter")card.href="./flutter.html";
     if(course.slug==="ielts")card.href="./ielts.html";
+    if(course.slug==="quran")card.href="./quran.html?s=2&a=40";
     const top=document.createElement("div");top.className="course-top";
     const title=document.createElement("span");title.className="name";title.textContent=language()==="en"?(course.title_en||course.title):course.title;
     const amount=document.createElement("span");amount.className="count";
@@ -89,7 +94,7 @@ async function main(){
   }
   if(!root.children.length){$("empty").hidden=false;return;}
   root.hidden=false;
-  if(visible.some(c=>c.slug==="quran")){
+  if(false){
     $("notice").textContent="Для Корана пока доступен счётчик; страница изучения аятов появится позже.";
     $("notice").hidden=false;
   }
