@@ -203,12 +203,19 @@ async function completeLesson() {
   try {
     if (attemptTimer) clearTimeout(attemptTimer);
     await saveAttemptNow();
-    const {error} = await supabase.from("lesson_progress").upsert({
-      user_id:currentUser.id,
-      lesson_id:row.id,
-      verification_method:"self_ai_review"
-    }, {onConflict:"user_id,lesson_id"});
-    if (error) throw error;
+    // Completion table intentionally disallows UPDATE to clients.
+    // Insert only when not already complete, rather than upserting.
+    const {data:existing,error:readError} = await supabase.from("lesson_progress")
+      .select("lesson_id").eq("user_id",currentUser.id).eq("lesson_id",row.id).maybeSingle();
+    if (readError) throw readError;
+    if (!existing) {
+      const {error} = await supabase.from("lesson_progress").insert({
+        user_id:currentUser.id,
+        lesson_id:row.id,
+        verification_method:"self_ai_review"
+      });
+      if (error) throw error;
+    }
     $("completion-status").hidden = false;
     setText("completion-status", "Отмечено выполненным. Проверку с ИИ подтвердил ты сам; автоматической оценки нет.");
     $("unmark-completion").hidden = false;
