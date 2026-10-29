@@ -90,3 +90,13 @@ Supabase project `munmvexfrtqwmwptafkf`:
 - Primary tafsir and dictionary texts remain at their attributed sites, not copied wholesale. Users can add an original source URL to their personal research with a one-click citation action; they should explain how it supports a claim before saving.
 - Word-level Russian meanings remain **personal sourced research** unless independently verified and appropriately licensed. The QAC English corpus gloss is retained with attribution and never rebranded as a verified Russian dictionary translation.
 - The manual archive editor and policies were tested transactionally as a signed-in course-enrolled user; the test transaction was rolled back, leaving real history and completion records unchanged.
+
+## Simplified Quran reading flow (latest, 2026-10-30)
+
+- **Notes are optional.** Users may read and mark a verse studied without writing anything, selecting a type, choosing a date, importing an archive or managing tags.
+- The main verse page has a single quick-note textbox and one Save button directly after the verse. Meta automatically attaches the authenticated user, current verse and server-side timestamp in the owner-only `quran_study_entries` table. New entries are chronological, per-verse and deletable.
+- Unsaved text drafts remain locally per-verse and per-user; input is never copied to another verse on navigation. One-click source citations can be appended into the same textbox.
+- The old `quran_research_notes` and historical `quran_study_archive` data have not been deleted. Previous detailed notes are shown read-only under a collapsed "Previous studies" section, alongside the original Drive journal link. Earlier manually imported archive records remain readable and deletable by the owner; the now-removed type/date importer is no longer part of the primary UI.
+- The timer, nested tags, comparison tools and personal word-meaning editor are collapsed under optional disclosures. Verbatim Arabic, verified sources and original progress are unaffected.
+- This UI no longer exposes a manual bulk journal migration task to a learner. Historical backfill remains a separate administrative task requiring authorized transfer.
+- RLS insert/read/delete smoke tested under an authenticated Quran-enrolled account with ROLLBACK; signed-in real-browser end-to-end tests are still pending.
