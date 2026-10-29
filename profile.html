@@ -91,8 +91,10 @@ async function init(){
      if(!ids.has(course.slug))continue;
      const p=document.createElement("p");
      const value=(count[course.slug]||0)+" / "+course.total_units;
-     if(course.slug==="flutter"){
-       const link=document.createElement("a");link.href="./flutter.html";link.textContent=course.title;
+     if(course.slug==="flutter"||course.slug==="ielts"){
+       const link=document.createElement("a");
+       link.href=course.slug==="flutter"?"./flutter.html":"./ielts.html";
+       link.textContent=course.title;
        p.append(link,document.createTextNode(" — "+value));
      }else p.textContent=course.title+" — "+value+" (страница в разработке)";
      container.append(p);
