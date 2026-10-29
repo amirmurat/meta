@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Профиль — Meta</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{max-width:660px;margin:0 auto;padding:38px 24px 80px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.back{font-size:15px;color:#555;text-decoration:none}
+h1{font-size:32px;letter-spacing:-.5px;margin:38px 0 10px}
+.email{color:#666;margin:0 0 36px}
+.field{margin-bottom:19px}label{display:block;font-size:15px;font-weight:600;margin-bottom:8px}
+input,textarea{width:100%;font:inherit;border:1px solid #d1d5db;padding:12px;border-radius:0;background:#fff;color:#111}
+textarea{min-height:116px;resize:vertical;line-height:1.6}
+.help{color:#777;font-size:13px;margin-top:7px;line-height:1.5}
+button{font:inherit;font-size:15px;padding:12px 18px;cursor:pointer;border:1px solid #111;background:#111;color:white}
+button:disabled{opacity:.5}
+.message{margin:18px 0;line-height:1.6;color:#444;font-size:14px}
+.message.error{color:#a10f1c}
+section{margin-top:34px;border-top:1px solid #e5e5e5;padding-top:25px}
+section h2{font-size:19px}
+a{color:inherit}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><a class="back" href="./">← На главную</a><a class="back" href="./flutter.html">Flutter</a></div>
+<h1>Мой профиль</h1>
+<p id="email" class="email">Проверяю вход…</p>
+<div id="visitor" hidden><p>Чтобы сохранить личные цели и результаты, нужно войти.</p><a href="./account.html?next=profile.html">Войти или зарегистрироваться</a></div>
+<form id="profile-form" hidden>
+<div class="field"><label for="display-name">Имя</label><input id="display-name" type="text" maxlength="80" autocomplete="name" placeholder="Как к тебе обращаться"></div>
+<div class="field"><label for="username">Никнейм</label><input id="username" type="text" minlength="3" maxlength="24" pattern="[a-z0-9_]{3,24}" autocapitalize="none" autocomplete="off" placeholder="например, amir_dev"><p class="help">Необязательно. 3–24 символа: маленькие латинские буквы, цифры и _.</p></div>
+<div class="field"><label for="goal">Моя главная учебная цель</label><textarea id="goal" maxlength="1500" placeholder="Например: самостоятельно разрабатывать Flutter-приложения или подготовиться к IELTS."></textarea><p class="help">У других пользователей могут быть совершенно другие цели. Пока это запись о цели; персональные курсы для них добавим отдельно.</p></div>
+<div class="field"><label for="about">О себе и предпочтения в обучении</label><textarea id="about" maxlength="2000" placeholder="Как мне удобнее учиться? Какие ограничения по времени и опыту?"></textarea></div>
+<button id="save" type="submit">Сохранить профиль</button>
+<p id="message" class="message" role="status" aria-live="polite"></p>
+</form>
+<section id="course-progress" hidden>
+<h2>Мои курсы</h2>
+<p id="flutter-progress">Flutter — проверяю прогресс…</p>
+<p><a href="./flutter.html">Открыть программу Flutter</a></p>
+<p class="help">Начальный прогресс 16 / 56 из старого журнала Амира пока не перенесён в аккаунт. У каждого нового пользователя отдельная история обучения.</p>
+</section>
+<section id="account-actions" hidden>
+<h2>Аккаунт</h2>
+<p><a href="./account.html">Вход и выход</a></p>
+<p class="help">Профиль и результаты доступны только владельцу аккаунта. Для смены пароля используй восстановление доступа на странице входа.</p>
+</section>
+</main>
+<script type="module">
+import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
+const $=id=>document.getElementById(id);
+let user;
+function report(text,error=false){$("message").textContent=text;$("message").className=error?"message error":"message"}
+async function init(){
+ try{
+ user=await authenticatedUser();
+ if(!user){$("email").textContent="";$("visitor").hidden=false;return;}
+ $("email").textContent=user.email||"Аккаунт";
+ const profile=await ensureProfile(user);
+ $("display-name").value=profile.display_name||"";
+ $("username").value=profile.username||"";
+ $("goal").value=profile.learning_goal||"";
+ $("about").value=profile.about||"";
+ $("profile-form").hidden=false;$("course-progress").hidden=false;$("account-actions").hidden=false;
+ const {data,error}=await supabase.from("lesson_progress").select("lesson_id");
+ if(error)throw error;
+ const {data:lessons, error:courseError}=await supabase.from("lessons").select("id").eq("course_slug","flutter");
+ if(courseError)throw courseError;
+ const ids=new Set((lessons||[]).map(x=>x.id));
+ const count=(data||[]).filter(x=>ids.has(x.lesson_id)).length;
+ $("flutter-progress").textContent="Flutter: "+count+" / 56 подтверждено в этом аккаунте";
+ }catch(e){
+ $("email").textContent="Ошибка загрузки профиля";
+ $("visitor").hidden=false;
+ $("visitor").append(document.createTextNode(" "+String(e.message||e)));
+ }
+}
+$("profile-form").onsubmit=async event=>{
+ event.preventDefault();const btn=$("save");btn.disabled=true;report("");
+ try{
+  const username=$("username").value.trim().toLowerCase();
+  if(username&&!/^[a-z0-9_]{3,24}$/.test(username))throw new Error("Проверь никнейм.");
+  const {error}=await supabase.from("profiles").upsert({
+   id:user.id,display_name:$("display-name").value.trim(),username:username||null,
+   learning_goal:$("goal").value.trim(),about:$("about").value.trim(),
+   updated_at:new Date().toISOString()
+  },{onConflict:"id"});
+  if(error)throw error;
+  report("Профиль сохранён.");
+ }catch(err){
+  const msg=err.code==="23505"?"Этот никнейм уже занят.":String(err.message||err);
+  report(msg,true);
+ }finally{btn.disabled=false}
+};
+await init();
+</script>
+</body>
+</html>
