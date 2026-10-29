@@ -26,7 +26,7 @@ a{color:inherit}
 </head>
 <body>
 <main>
-<div class="top"><a class="back" href="./">← На главную</a><a class="back" href="./flutter.html">Flutter</a></div>
+<div class="top"><a class="back" href="./">← На главную</a><a class="back" href="./account.html">Аккаунт</a></div>
 <h1>Мой профиль</h1>
 <p id="email" class="email">Проверяю вход…</p>
 <div id="visitor" hidden><p>Чтобы сохранить личные цели и результаты, нужно войти.</p><a href="./account.html?next=profile.html">Войти или зарегистрироваться</a></div>
@@ -39,10 +39,9 @@ a{color:inherit}
 <p id="message" class="message" role="status" aria-live="polite"></p>
 </form>
 <section id="course-progress" hidden>
-<h2>Мои курсы</h2>
-<p id="flutter-progress">Flutter — проверяю прогресс…</p>
-<p><a href="./flutter.html">Открыть программу Flutter</a></p>
-<p class="help">Начальный прогресс 16 / 56 из старого журнала Амира пока не перенесён в аккаунт. У каждого нового пользователя отдельная история обучения.</p>
+<h2>Мои программы</h2>
+<div id="assigned-courses"><p class="help">Загрузка программ…</p></div>
+<p class="help">Каждому аккаунту назначаются только его учебные программы. Прежний прогресс из других источников отдельно привязывается к владельцу.</p>
 </section>
 <section id="account-actions" hidden>
 <h2>Аккаунт</h2>
@@ -66,13 +65,39 @@ async function init(){
  $("goal").value=profile.learning_goal||"";
  $("about").value=profile.about||"";
  $("profile-form").hidden=false;$("course-progress").hidden=false;$("account-actions").hidden=false;
- const {data,error}=await supabase.from("lesson_progress").select("lesson_id");
- if(error)throw error;
- const {data:lessons, error:courseError}=await supabase.from("lessons").select("id").eq("course_slug","flutter");
- if(courseError)throw courseError;
- const ids=new Set((lessons||[]).map(x=>x.id));
- const count=(data||[]).filter(x=>ids.has(x.lesson_id)).length;
- $("flutter-progress").textContent="Flutter: "+count+" / 56 подтверждено в этом аккаунте";
+ const {data:enrollments,error:enrollmentError}=await supabase.from("course_enrollments")
+    .select("course_slug").eq("user_id",user.id);
+ if(enrollmentError)throw enrollmentError;
+ const container=$("assigned-courses");container.replaceChildren();
+ if(!enrollments?.length){
+   const p=document.createElement("p");p.className="help";
+   p.textContent="Программ пока нет. Сохрани свою цель, чтобы подобрать учебный маршрут.";
+   container.append(p);
+ }else{
+   const [courses,lessons,progress]=await Promise.all([
+     supabase.from("courses").select("slug,title,total_units"),
+     supabase.from("lessons").select("id,course_slug"),
+     supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
+   ]);
+   for(const result of [courses,lessons,progress])if(result.error)throw result.error;
+   const ids=new Set(enrollments.map(e=>e.course_slug));
+   const lessonCourse=new Map((lessons.data||[]).map(l=>[l.id,l.course_slug]));
+   const count={};
+   for(const item of progress.data||[]){
+     const slug=lessonCourse.get(item.lesson_id);
+     if(slug)count[slug]=(count[slug]||0)+1;
+   }
+   for(const course of courses.data||[]){
+     if(!ids.has(course.slug))continue;
+     const p=document.createElement("p");
+     const value=(count[course.slug]||0)+" / "+course.total_units;
+     if(course.slug==="flutter"){
+       const link=document.createElement("a");link.href="./flutter.html";link.textContent=course.title;
+       p.append(link,document.createTextNode(" — "+value));
+     }else p.textContent=course.title+" — "+value+" (страница в разработке)";
+     container.append(p);
+   }
+ }
  }catch(e){
  $("email").textContent="Ошибка загрузки профиля";
  $("visitor").hidden=false;
