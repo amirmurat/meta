@@ -226,24 +226,94 @@ function renderWordButtons(){
   $("words").append(button);
  }
 }
+// Display helpers translate grammatical codes, never the sacred Arabic text.
+const QAC_POS_RU={
+ N:"существительное",PN:"имя собственное",V:"глагол",ADJ:"прилагательное",
+ PRON:"местоимение",P:"предлог",PREP:"предлог",DET:"определённый артикль",
+ CONJ:"союз",REL:"относительное местоимение",DEM:"указательное местоимение",
+ NEG:"отрицательная частица",VOC:"частица обращения",COND:"условная частица",
+ INTG:"вопросительная частица",ADV:"наречие",LOC:"обстоятельство места",
+ T:"частица времени",RES:"результативная частица",PART:"частица",
+ EMPH:"усилительная частица",ACC:"винительный падеж",
+ GEN:"родительный падеж",NOM:"именительный падеж"
+};
+const QAC_FEATURE_RU={
+ case:"падеж",gender:"род",number:"число",person:"лицо",tense:"форма/время",
+ verb_form:"порода глагола",voice:"залог",mood:"наклонение",
+ aspect:"вид",state:"состояние",definiteness:"определённость",
+ adjective:"признак прилагательного"
+};
+const QAC_VALUES_RU={
+ ACC:"винительный",GEN:"родительный",NOM:"именительный",
+ M:"мужской",F:"женский",masculine:"мужской",feminine:"женский",
+ singular:"единственное",plural:"множественное",dual:"двойственное",
+ PERF:"прошедшая форма",IMPF:"несовершенная форма",IMPV:"повелительная форма",
+ IND:"изъявительное",SUBJ:"сослагательное",JUS:"усечённое",
+ ACT:"действительный",PASS:"страдательный",
+ true:"да",false:"нет"
+};
+const QAC_SEGMENT_RU={
+ prefix:"приставка",stem:"основа",suffix:"суффикс",infix:"вставка",
+ clitic:"клитика"
+};
+function localizeCode(value,glossary){
+ const key=String(value??"");
+ if(en)return key;
+ return glossary[key] ? glossary[key]+" ("+key+")" : key;
+}
+function describeFeatures(features){
+ return Object.entries(features||{}).map(([key,value])=>
+  (en?key:QAC_FEATURE_RU[key]||key)+": "+localizeCode(value,QAC_VALUES_RU)
+ ).join("; ")||"—";
+}
+// This is a CONTEXTUAL phrase from the Rowwad VERSE translation,
+// not an independently published Arabic–Russian dictionary entry.
+// Extend only with separately sourced and editorially reviewed alignments.
+const RU_CONTEXTUAL_VERSE_PHRASES={
+ "2:40:4":{
+  text:"Моё благодеяние",
+  source:"Rowwad Translation Center · QuranEnc, Аль-Бакара 2:40",
+  url:"https://quranenc.com/ru/browse/russian_rwwad/2/40",
+  kind:"verse_context"
+ }
+};
 function renderMorph(token){
- const morph=token.morphology||{};const root=$("morph");root.hidden=false;root.replaceChildren();
- const arabic=document.createElement("div");arabic.className="morph-ar";arabic.lang="ar";
- arabic.textContent=token.text?.uthmani||"";root.append(arabic);
+ const morph=token.morphology||{}, root=$("morph");
+ root.hidden=false;root.replaceChildren();
+ const arabic=document.createElement("div");
+ arabic.className="morph-ar";arabic.lang="ar";arabic.dir="rtl";
+ arabic.textContent=token.text?.uthmani||"";
+ root.append(arabic);
  const dl=document.createElement("dl");
- info(dl,t("Dictionary gloss (English, QAC)","Словарная глосса (английский, QAC)"),morph.gloss);
+ if(!en){
+  const key=surah+":"+ayah+":"+token.position;
+  const contextual=RU_CONTEXTUAL_VERSE_PHRASES[key];
+  info(dl,"Русское значение в данном аяте",contextual?contextual.text:"Проверенное пословное значение пока не добавлено");
+  if(contextual){
+   const source=document.createElement("p");source.className="source";
+   source.textContent="Контекстный перевод из перевода аята, не отдельная словарная статья: ";
+   source.append(anchor(contextual.source,contextual.url));
+   root.append(source);
+  }
+ }
+ info(dl,t("English word gloss (Leeds QAC)","Английская глосса (Leeds QAC)"),morph.gloss);
  info(dl,t("Transliteration","Транслитерация"),morph.transliteration);
  info(dl,t("Root","Корень"),morph.root||t("Not assigned","Не указан"));
  info(dl,t("Lemma","Лемма"),morph.lemma);
- info(dl,t("Part of speech","Часть речи"),morph.pos);
- info(dl,t("Grammar","Грамматика"),Object.entries(morph.features||{}).map(([k,v])=>k+": "+v).join("; ")||"—");
+ info(dl,t("Part of speech","Часть речи"),localizeCode(morph.pos,QAC_POS_RU));
+ info(dl,t("Grammar","Грамматика"),describeFeatures(morph.features));
  root.append(dl);
  const title=document.createElement("strong");title.textContent=t("Morphological segments","Морфемы");root.append(title);
  const parts=document.createElement("div");parts.className="parts";
  for(const seg of morph.segments||[]){
   const block=document.createElement("div");block.className="part";
-  const arab=document.createElement("div");arab.dir="rtl";arab.lang="ar";arab.style.fontSize="23px";arab.textContent=seg.text;
-  const meta=document.createElement("span");meta.textContent=[seg.type,seg.pos].filter(Boolean).join(" · ");
+  const arab=document.createElement("div");arab.dir="rtl";arab.lang="ar";
+  arab.style.fontSize="23px";arab.textContent=seg.text;
+  const meta=document.createElement("span");
+  const category=en?(seg.type||""):(QAC_SEGMENT_RU[seg.type]||seg.type||"");
+  meta.textContent=[category,localizeCode(seg.pos,QAC_POS_RU)].filter(Boolean).join(" · ");
+  const detail=describeFeatures(seg.features);
+  if(!en&&detail!=="—")meta.title=detail;
   block.append(arab,meta);parts.append(block);
  }
  root.append(parts);
@@ -254,7 +324,10 @@ function renderMorph(token){
  links.append(anchor("Lane's Lexicon","https://laneslexicon.github.io/lexicon/"));
  root.append(links);
  const caption=document.createElement("p");caption.className="source";
- caption.textContent=t("Morphology: Leeds QAC via QuranBench. Root and gloss show possible lexical information, not a ruling or definitive verse interpretation.","Морфология: Leeds QAC через QuranBench. Корень и значения не являются окончательным толкованием аята.");root.append(caption);
+ caption.textContent=t(
+  "Morphology is sourced from Leeds QAC via QuranBench. The gloss is an English learning aid, not a definitive interpretation.",
+  "Морфология: Leeds QAC через QuranBench. Английская глосса — учебное приближение, не исчерпывающее значение слова и не тафсир."
+ );root.append(caption);
 }
 function renderSources(){
  const box=$("source-links");box.replaceChildren();
