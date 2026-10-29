@@ -72,12 +72,24 @@ async function apiVerse(s,a){
  cache.set(ref,obj);return obj;
 }
 async function russianTranslation(s,a){
- const response=await fetch("https://quranenc.com/api/v1/translation/aya/russian_rwwad/"+s+"/"+a);
- if(!response.ok)throw Error("QuranEnc HTTP "+response.status);
- const data=await response.json();
- const entry=Array.isArray(data.result)?data.result[0]:data.result;
- if(!entry?.translation||Number(entry.sura)!==s||Number(entry.aya)!==a)throw Error("QuranEnc verse mismatch");
- return entry;
+ const url="https://quranenc.com/api/v1/translation/aya/russian_rwwad/"+s+"/"+a;
+ // Try QuranEnc itself first. If direct browser access is blocked by CORS,
+ // fetch through our authenticated read-only Edge Function instead.
+ try{
+  const response=await fetch(url);
+  if(response.ok){
+   const data=await response.json();
+   const entry=Array.isArray(data.result)?data.result[0]:data.result;
+   if(entry?.translation&&Number(entry.sura)===s&&Number(entry.aya)===a)return entry;
+  }
+ }catch(error){console.info("QuranEnc direct request unavailable; trying Supabase bridge.",error)}
+ const {data,error}=await supabase.functions.invoke("quran-russian-translation",{
+  body:{surah:s,ayah:a}
+ });
+ if(error)throw Error("QuranEnc translation bridge unavailable");
+ if(!data?.translation||Number(data.surah)!==s||Number(data.ayah)!==a)
+  throw Error("QuranEnc translation reference mismatch");
+ return {translation:data.translation,footnotes:data.footnotes||"",sura:s,aya:a};
 }
 async function loadCatalog(){
  const chunks=await Promise.all(Array.from({length:7},(_,i)=>
@@ -152,11 +164,12 @@ async function openVerse(s,a,addHistory=true){
     set("translation-source","Rowwad Translation Center · QuranEnc (russian_rwwad v1.0.1, 29.03.2026)");
    }catch(e){
     if(id!==sequence)return;
-    const fallback=(verse.translations||[]).find(x=>x.edition_id==="en-pickthall");
-    set("translation",fallback?.text||"");
-    set("translation-source","Русский перевод QuranEnc недоступен — показан английский перевод Pickthall (1930, Public Domain). Открой QuranEnc для проверки.");
-    const link=anchor("QuranEnc — русский перевод","https://quranenc.com/ru/browse/russian_rwwad/"+s+"/"+a);
+    set("translation","Не удалось загрузить русский перевод этого аята. Арабский оригинал остаётся доступным.");
+    set("footnotes","");
+    set("translation-source","Источник: Rowwad Translation Center / QuranEnc. Перевод не заменён английским.");
+    const link=anchor("Открыть русский перевод в QuranEnc","https://quranenc.com/ru/browse/russian_rwwad/"+s+"/"+a);
     $("translation-source").append(document.createTextNode(" "),link);
+    console.error("Russian QuranEnc translation failed:",e);
    }
   }
  }catch(err){
@@ -217,7 +230,7 @@ function renderMorph(token){
  const arabic=document.createElement("div");arabic.className="morph-ar";arabic.lang="ar";
  arabic.textContent=token.text?.uthmani||"";root.append(arabic);
  const dl=document.createElement("dl");
- info(dl,t("Dictionary gloss","Словарное значение"),morph.gloss);
+ info(dl,t("Dictionary gloss (English, QAC)","Словарная глосса (английский, QAC)"),morph.gloss);
  info(dl,t("Transliteration","Транслитерация"),morph.transliteration);
  info(dl,t("Root","Корень"),morph.root||t("Not assigned","Не указан"));
  info(dl,t("Lemma","Лемма"),morph.lemma);
