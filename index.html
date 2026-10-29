@@ -11,7 +11,7 @@ html,body{margin:0;min-height:100%;background:transparent;color:#111;font-family
 main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:70px 24px}
 header{width:min(100%,640px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px}
 h1{margin:0;font-size:24px;letter-spacing:-.4px}
-.profile{font-size:14px;text-decoration:none;color:#555}.profile:hover{text-decoration:underline}
+.nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.profile{font-size:14px;text-decoration:none;color:#555}.profile:hover{text-decoration:underline}
 .courses{width:min(100%,640px);display:flex;flex-direction:column;gap:24px}
 .course{display:block;text-decoration:none;color:inherit;width:100%;background:transparent}
 .course:not([href]){cursor:default}
@@ -30,7 +30,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </head>
 <body>
 <main>
-<header id="heading" hidden><h1>Мои программы</h1><a class="profile" href="./profile.html">Профиль</a></header>
+<header id="heading" hidden><h1>Мои программы</h1><div class="nav-links"><a class="profile" href="./statistics.html">Статистика</a><a class="profile" href="./profile.html">Профиль</a></div></header>
 <p class="small" id="loading">Проверяю вход…</p>
 <div class="courses" id="courses" hidden></div>
 <div class="empty" id="empty" hidden>
