@@ -56,8 +56,10 @@ alter table public.lessons enable row level security;
 alter table public.lesson_progress enable row level security;
 alter table public.notes enable row level security;
 
+-- Defaults on new Supabase projects can grant more permissions than intended.
+-- Revoke privileges for BOTH browser roles before granting the exact minimum.
 revoke all on table public.courses, public.lessons,
-  public.lesson_progress, public.notes from anon;
+  public.lesson_progress, public.notes from anon, authenticated;
 grant select on table public.courses, public.lessons to authenticated;
 -- Task-based progress is written by trusted server-side validation only.
 -- Browser-side completion is permitted for Quran ayahs, which have no tasks.
