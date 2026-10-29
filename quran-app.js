@@ -29,17 +29,18 @@ function readerLabels(){
  ["back","← My courses","← Мои программы"],["statistics-link","Statistics","Статистика"],
  ["subtitle","Arabic text, word analysis, reliable references and private research notes.","Арабский текст, анализ слов, проверяемые источники и личные заметки."],
  ["progress-label","studied verses","изученных аятов"],
+ ["session-heading","Study timer (optional)","Таймер занятия (необязательно)"],
  ["session-start","Start study session","Начать занятие"],
  ["session-stop","End session and save time","Завершить и записать время"],
  ["session-cancel","Discard session","Отменить занятие"],
  ["nav-heading","Navigate","Навигация"],["surah-label","Surah","Сура"],["ayah-label","Ayah","Аят"],
  ["previous","← Previous","← Предыдущий"],["following","Next →","Следующий →"],
- ["tags-heading","My nested tags","Мои вложенные метки"],
+ ["tags-heading","Topics & tags (optional)","Темы и метки (необязательно)"],
  ["tag-help","Assign multiple tags to one verse. Parent tags include verses under their children.","Один аят может иметь несколько меток. Родительская метка включает аяты из дочерних."],
  ["new-tag-label","New tag","Новая метка"],["parent-tag-label","Parent tag","Родительская метка"],["add-tag","Create tag","Создать метку"],
  ["manage-tag-label","Manage an existing tag","Управление меткой"],["rename","Rename","Переименовать"],["remove-tag","Delete","Удалить"],
  ["move-label","Move to parent","Переместить к родителю"],["move-tag","Move","Переместить"],
- ["linked-heading","Related verses","Связанные аяты"],["browse-label","Browse a topic, including child tags","Показать тему, включая дочерние метки"],
+ ["linked-heading","Related verses (optional)","Связанные аяты (необязательно)"],["browse-label","Browse a topic, including child tags","Показать тему, включая дочерние метки"],
  ["word-heading","Word-by-word research","Пословное исследование"],
  ["word-help","Select a word to inspect its root, lemma and morphological segments. A dictionary gloss is not a contextual tafsir.","Нажми на слово: корень, лемма и части слова. Словарное значение не заменяет контекстное толкование."],
  ["sources-heading","Tafsir and dictionaries","Тафсиры и словари"],
@@ -332,9 +333,10 @@ function renderMorph(token){
  links.append(anchor("Lane's Lexicon","https://laneslexicon.github.io/lexicon/"));
  root.append(links);
  // Per-learner lexical research is distinct from the sourced corpus gloss.
- const panel=document.createElement("div");panel.className="segment";
- const heading=document.createElement("h3");
- heading.textContent=t("My word research (private)","Моё исследование слова (личное)");
+ const panel=document.createElement("details");panel.className="segment";
+ const heading=document.createElement("summary");
+ heading.style.cssText="font-size:14px;cursor:pointer;font-weight:600";
+ heading.textContent=t("Add personal word meanings (optional)","Добавить свои значения слова (необязательно)");
  panel.append(heading);
  const hint=document.createElement("p");hint.className="help";
  hint.textContent=t("Record alternative meanings and cite the original dictionary or tafsir. Your notes are not certified dictionary translations.","Запиши другие возможные значения и ссылку на словарь или тафсир. Это личные заметки, а не проверенный словарный перевод.");
