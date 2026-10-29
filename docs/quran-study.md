@@ -80,3 +80,13 @@ Supabase project `munmvexfrtqwmwptafkf`:
 - Source links to named classical tafsirs and Lane's Lexicon remain primary-source links because the rights to bulk republish full interpretive text have not been confirmed. Do not present them as in-app licensed reproductions.
 - Commercial warning: the Quranic Arabic Corpus FAQ explicitly limits its distributed morphological research data to noncommercial research. Before reselling Quran Study with QAC-derived material, obtain adequate permission or replace the integration with commercially licensed equivalents. https://corpus.quran.com/faq.jsp
 - Front-end syntax and database RLS write permissions were checked, but a real signed-in browser workflow has not been end-to-end validated on the user's device.
+
+## Quran Study product and archive boundary (confirmed 2026-10-30)
+
+- Quran Study access and Quran-specific learning resources in Meta are **free**. Amir's possible paid offering is a separate service: interviewing a client, diagnosing learning needs, and creating a bespoke recursive study course (e.g., Arabic language certificate preparation). Do not represent Quran access as a paid course, tier, or subscription.
+- The `quran_study_archive` database now supports private, per-verse user-managed historical entries with a known/unknown original study date and kind; `source_document` keeps the original Google Drive Journal link. Original journal remains canonical and is not deleted or overwritten.
+- An on-page **Previous studies** section supports reading, selective copy/paste import, and deletion of imported copies. Import does not update `lesson_progress` or fabricate dates/times.
+- Direct mass import of private journal content was blocked by the connected data access workflow. Archive count remains zero until the user imports selected entries, or a separately authorized migration succeeds. Do not call the archive complete.
+- Primary tafsir and dictionary texts remain at their attributed sites, not copied wholesale. Users can add an original source URL to their personal research with a one-click citation action; they should explain how it supports a claim before saving.
+- Word-level Russian meanings remain **personal sourced research** unless independently verified and appropriately licensed. The QAC English corpus gloss is retained with attribution and never rebranded as a verified Russian dictionary translation.
+- The manual archive editor and policies were tested transactionally as a signed-in course-enrolled user; the test transaction was rolled back, leaving real history and completion records unchanged.
