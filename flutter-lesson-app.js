@@ -93,6 +93,34 @@ function scheduleAttempt() {
   setText("save-state", "Сохраняю…");
   attemptTimer = setTimeout(() => { void saveAttemptNow().catch(() => {}); }, 700);
 }
+async function recordSubmission() {
+  if (!row || !currentUser) {
+    setText("submission-state","Войди в аккаунт, чтобы зафиксировать время.");
+    return;
+  }
+  if (!$("answer").value.trim()){
+    setText("submission-state","Сначала напиши ответ.");
+    $("answer").focus();
+    return;
+  }
+  const button=$("record-submission");
+  button.disabled=true;
+  setText("submission-state","Записываю время сдачи…");
+  try{
+    if(attemptTimer)clearTimeout(attemptTimer);
+    await saveAttemptNow();
+    const timestamp=new Date().toISOString();
+    const {error}=await supabase.from("lesson_attempts")
+      .update({submitted_at:timestamp})
+      .eq("user_id",currentUser.id).eq("lesson_id",row.id);
+    if(error)throw error;
+    setText("submission-state","Сдача зафиксирована: "+
+      new Intl.DateTimeFormat("ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"}).format(new Date(timestamp))+
+      " (Алматы).");
+  }catch(error){
+    setText("submission-state","Ошибка записи: "+error.message);
+  }finally{button.disabled=false;}
+}
 async function saveNotesNow() {
   if (!row) return;
   if (!currentUser) {
@@ -160,7 +188,7 @@ async function loadPersonalState() {
   setText("account-status", currentUser.email || "Мой аккаунт");
   $("profile-link").href = "./profile.html";
   const [a,n,c] = await Promise.all([
-    supabase.from("lesson_attempts").select("answer_text,ai_reviewed,self_passed")
+    supabase.from("lesson_attempts").select("answer_text,ai_reviewed,self_passed,submitted_at,ai_review_confirmed_at")
       .eq("user_id",currentUser.id).eq("lesson_id",row.id).maybeSingle(),
     supabase.from("notes").select("id,body").eq("user_id",currentUser.id)
       .eq("lesson_id",row.id).order("updated_at",{ascending:false}).limit(1),
@@ -171,6 +199,11 @@ async function loadPersonalState() {
   $("answer").value = a.data?.answer_text || "";
   $("ai-reviewed").checked = !!a.data?.ai_reviewed;
   $("self-passed").checked = !!a.data?.self_passed;
+  if(a.data?.submitted_at){
+    setText("submission-state","Последняя сдача: "+
+      new Intl.DateTimeFormat("ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"})
+        .format(new Date(a.data.submitted_at))+" (Алматы).");
+  }
   const note = (n.data || [])[0];
   noteId = note?.id || null;
   $("notes").value = note?.body || "";
@@ -300,7 +333,22 @@ async function load() {
     initNav(nav);
     $("answer").addEventListener("input",()=>{updateButton();scheduleAttempt();});
     $("notes").addEventListener("input",scheduleNotes);
-    $("ai-reviewed").addEventListener("change",()=>{updateButton();scheduleAttempt();});
+    $("ai-reviewed").addEventListener("change",()=>{
+      updateButton();
+      scheduleAttempt();
+      if($("ai-reviewed").checked && currentUser){
+        void (async()=>{
+          try{
+            if(attemptTimer)clearTimeout(attemptTimer);
+            await saveAttemptNow();
+            const {error}=await supabase.from("lesson_attempts")
+              .update({ai_review_confirmed_at:new Date().toISOString()})
+              .eq("user_id",currentUser.id).eq("lesson_id",row.id);
+            if(error)throw error;
+          }catch(error){setText("save-state","Ошибка записи проверки: "+error.message);}
+        })();
+      }
+    });
     $("self-passed").addEventListener("change",()=>{updateButton();scheduleAttempt();});
     $("confirm-completion").addEventListener("click",completeLesson);
     $("unmark-completion").addEventListener("click",unmarkLesson);
@@ -308,6 +356,7 @@ async function load() {
       if (attemptTimer) clearTimeout(attemptTimer);
       try {await saveAttemptNow();}catch{}
     });
+    $("record-submission").addEventListener("click",recordSubmission);
     $("save-notes").addEventListener("click",async()=>{
       if (notesTimer) clearTimeout(notesTimer);
       await saveNotesNow();
