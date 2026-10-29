@@ -112,7 +112,7 @@ async function recordSubmission() {
       .eq("user_id",currentUser.id).eq("lesson_id",row.id);
     if(error)throw error;
     setText("submission-state","Сдача зафиксирована: "+
-      new Intl.DateTimeFormat("ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"}).format(new Date(timestamp))+
+      new Intl.DateTimeFormat(language()==="en"?"en-GB":"ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"}).format(new Date(timestamp))+
       " (Алматы).");
   }catch(error){
     setText("submission-state","Ошибка записи: "+error.message);
@@ -198,7 +198,7 @@ async function loadPersonalState() {
   $("self-passed").checked = !!a.data?.self_passed;
   if(a.data?.submitted_at){
     setText("submission-state","Последняя сдача: "+
-      new Intl.DateTimeFormat("ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"})
+      new Intl.DateTimeFormat(language()==="en"?"en-GB":"ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"medium"})
         .format(new Date(a.data.submitted_at))+" (Алматы).");
   }
   const note = (n.data || [])[0];
@@ -326,7 +326,7 @@ async function load() {
         "Не утверждай, что услышал аудио или оценил произношение без реальной записи. Отличай текстовую проверку от фактического Listening/Speaking.",
         "В конце скажи, соответствуют ли ответы критериям, или нужно доработать."
       ];
-      void copyText(instructions.join("\n\n"),$("copy-ai-request"));
+      void copyText(instructions.map(tr).join("\n\n"),$("copy-ai-request"));
     });
     showTaskMode(row.task_type);
     initCriteria(content.criteria);
