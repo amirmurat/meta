@@ -38,7 +38,6 @@ async function copyText(text, button) {
   }
 }
 function showTaskMode(type) {
-  {
   $("answer").classList.add("plain");
   $("answer-label").textContent=type==="practical"?"Ответ и свидетельство практики":"Твой письменный ответ";
   const sec=lessonId.split(".")[1];
@@ -48,7 +47,6 @@ function showTaskMode(type) {
    :sec==="3"?"Напиши английский фрагмент самостоятельно. Проверь смысл, структуру и язык."
    :"Сначала произнеси ответ вслух и по возможности запиши аудио отдельно. Сюда внеси текст/наблюдения; одна расшифровка не доказывает беглость и произношение.";
   $("editor-toolbar").hidden=true;
- }
 }
 function updateButton() {
   const answer = $("answer").value.trim();
@@ -269,7 +267,7 @@ async function unmarkLesson() {
 }
 async function load() {
   if (!/^A\.[1-4](?:\.\d+){3}$/.test(lessonId)) {
-    showError("Неверная ссылка. Вернись к списку модулей."); return;
+    showError("Неверная ссылка. Вернись к разделам IELTS."); return;
   }
   $("back").href = "./ielts.html#group-" + lessonId.split(".").slice(0,4).join(".");
   try {
