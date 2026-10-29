@@ -98,32 +98,27 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <div class="segment"><h2 id="sources-heading">Classical tafsir and dictionaries</h2>
 <p class="help" id="sources-help">Open the original source; the app does not invent interpretations or present AI paraphrases as scholarly quotes.</p>
 <div class="link-list" id="source-links"></div></div>
-<div class="segment" id="historical-study">
-<h2 id="archive-heading">Previous studies</h2>
-<p class="help" id="archive-help">Your Google Drive journal remains the original source. You can copy a selected past study here; importing it never marks a verse as newly completed.</p>
+<div class="segment" id="simple-notes">
+<h2 id="quick-heading">My notes <span class="muted" id="quick-optional">(optional)</span></h2>
+<p class="help" id="quick-help">Write anything worth remembering. Meta attaches the verse and save time automatically. You can simply study and mark the verse without writing a note.</p>
+<textarea id="quick-note" maxlength="16000" rows="4" placeholder="What did I understand? What should I remember?"></textarea>
+<div class="row" style="margin-top:10px">
+<button type="button" id="quick-save" class="button-primary">Save note</button>
+<button type="button" id="copy-question">Copy AI study prompt</button>
+</div>
+<p class="view-status" id="quick-status" role="status"></p>
+<div id="quick-entries" class="tag-results"></div>
+</div>
+<details class="segment" id="historical-study">
+<summary id="archive-heading" style="cursor:pointer;font-size:17px;font-weight:600">Previous research and journal</summary>
+<p class="help" id="archive-help" style="margin-top:9px">Older notes remain available. You do not need to copy them, select dates or classify them.</p>
 <p class="source"><a id="archive-journal-link" href="https://docs.google.com/document/d/1bNDg88Cm7cw23K9u3jcwH0si_nRk_aGT8I__Qi2UxaY/edit" target="_blank" rel="noopener noreferrer">Open Quran Study Journal</a></p>
 <div id="archive-records" class="tag-results"></div>
-<label for="archive-date" id="archive-date-label">Date of original study (if known)</label>
-<input id="archive-date" type="date" min="2020-01-01" max="2100-12-31">
-<label for="archive-kind" id="archive-kind-label">Research type</label>
-<select id="archive-kind">
-<option value="research">Research and explanation</option>
-<option value="question">Question and answer</option>
-<option value="theme">Cross-verse topic</option>
-<option value="study_session">Study session notes</option>
-</select>
-<label for="archive-body" id="archive-body-label">Paste a selected passage from your own journal</label>
-<textarea id="archive-body" maxlength="16000" placeholder="Paste your past research, including any source links…"></textarea>
-<button type="button" id="archive-save">Save historical research</button>
-<p class="view-status" id="archive-status" role="status"></p>
+<div id="legacy-notes" hidden>
+<h3 id="legacy-heading">Earlier detailed notes</h3>
+<div id="legacy-content"></div>
 </div>
-<div class="segment"><h2 id="research-heading">Private research</h2>
-<label for="question" id="question-label">Your question</label><textarea id="question" maxlength="6000" placeholder="What is unclear about this verse?"></textarea>
-<label for="analysis" id="analysis-label">Your analysis and distinctions</label><textarea id="analysis" maxlength="30000" placeholder="Separate the Quranic text, dictionary meanings, tafsir and your own conclusion."></textarea>
-<label for="sources" id="sources-label">Sources and citations</label><textarea id="sources" maxlength="12000" placeholder="Reference / source link / what it supports"></textarea>
-<div class="row" style="margin-top:11px"><button id="save" type="button" class="button-primary">Save research</button><button id="copy-question" type="button">Copy AI research prompt</button></div>
-<p class="view-status" id="save-state" role="status"></p>
-</div>
+</details>
 <div class="segment source" id="attribution">Arabic text: Tanzil Project, Uthmani 1.1 (CC BY 3.0, verbatim). Morphology and word glosses: Leeds Quranic Arabic Corpus via QuranBench v0.8.0 (GPL). Readings and translations are human-authored and separately attributed. No automatic religious verdicts.</div>
 </div></div>
 </main>
