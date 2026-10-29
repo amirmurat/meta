@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Аккаунт — Meta</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{width:min(100%,480px);margin:0 auto;padding:42px 24px 85px}
+.back{color:#555;text-decoration:none;font-size:15px}
+h1{font-size:32px;letter-spacing:-.5px;margin:40px 0 8px}
+.subtitle{color:#777;line-height:1.5;margin:0 0 26px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0 0 30px;border-bottom:1px solid #e5e5e5}
+.tab{border:0;background:white;color:#777;font:inherit;padding:14px 8px;cursor:pointer}
+.tab.active{color:#111;font-weight:600;border-bottom:2px solid #111}
+form{display:flex;flex-direction:column;gap:16px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:7px}
+input{width:100%;font:inherit;padding:12px;border:1px solid #d1d5db;border-radius:0;outline-offset:2px;background:#fff;color:#111}
+button.primary{width:100%;padding:13px 16px;background:#111;color:#fff;border:1px solid #111;font:inherit;cursor:pointer}
+button.primary:disabled{opacity:.5;cursor:wait}
+.secondary{border:0;background:transparent;color:#555;text-align:left;text-decoration:underline;padding:0;font:inherit;cursor:pointer}
+.message{margin-top:20px;font-size:14px;line-height:1.6;white-space:pre-line;color:#444}
+.message.error{color:#a10f1c}
+h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
+.actions{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="./">← Meta</a>
+<h1 id="heading">Аккаунт</h1>
+<p class="subtitle" id="subtitle">Личные уроки, прогресс и заметки.</p>
+
+<div id="guest">
+<div class="tabs" role="tablist" aria-label="Режим аккаунта">
+<button class="tab active" id="login-tab" type="button">Войти</button>
+<button class="tab" id="signup-tab" type="button">Регистрация</button>
+</div>
+<form id="login-form">
+<div><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="username" required></div>
+<div><label for="login-password">Пароль</label><input id="login-password" type="password" autocomplete="current-password" required></div>
+<button class="primary" type="submit">Войти</button>
+<button class="secondary" id="forgot" type="button">Забыли пароль?</button>
+</form>
+<form id="signup-form" hidden>
+<div><label for="signup-name">Имя</label><input id="signup-name" type="text" maxlength="80" autocomplete="name" required></div>
+<div><label for="signup-email">Email</label><input id="signup-email" type="email" autocomplete="username" required></div>
+<div><label for="signup-password">Пароль (не менее 8 символов)</label><input id="signup-password" type="password" autocomplete="new-password" minlength="8" required></div>
+<button class="primary" type="submit">Создать аккаунт</button>
+<p class="small">Подтверждение email может потребоваться. Каждый пользователь видит только собственные ответы и заметки.</p>
+</form>
+<form id="recover-form" hidden>
+<div><label for="recover-email">Твой Email</label><input id="recover-email" type="email" required></div>
+<button class="primary" type="submit">Отправить ссылку</button>
+<button class="secondary" type="button" id="return-login">Вернуться ко входу</button>
+</form>
+</div>
+
+<div id="signed-in" hidden>
+<p id="identity"></p>
+<div class="actions">
+<a href="./profile.html">Открыть профиль</a>
+<a href="./flutter.html">Продолжить Flutter</a>
+<button class="secondary" id="sign-out" type="button">Выйти из аккаунта</button>
+</div>
+</div>
+
+<form id="reset-form" hidden>
+<div><label for="new-password">Новый пароль (не менее 8 символов)</label><input id="new-password" type="password" autocomplete="new-password" minlength="8" required></div>
+<button class="primary" type="submit">Обновить пароль</button>
+</form>
+<p class="message" id="message" role="status" aria-live="polite"></p>
+</main>
+<script type="module">
+import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
+const $=id=>document.getElementById(id);
+let mode="login",recovering=false;
+function say(s,error=false){$("message").textContent=s;$("message").className=error?"message error":"message"}
+function showMode(m){
+  mode=m;say("");
+  $("login-form").hidden=m!=="login";
+  $("signup-form").hidden=m!=="signup";
+  $("recover-form").hidden=m!=="recover";
+  $("login-tab").classList.toggle("active",m==="login");
+  $("signup-tab").classList.toggle("active",m==="signup");
+  if(m==="recover")$("login-tab").classList.remove("active");
+}
+function safeDestination(){
+  const raw=new URLSearchParams(location.search).get("next");
+  if(!raw)return "./profile.html";
+  try{
+    const target=new URL(raw,location.href);
+    if(target.origin===location.origin&&target.pathname.startsWith(new URL("./",location.href).pathname))
+      return target.href;
+  }catch{}
+  return "./profile.html";
+}
+function busy(form,value){form.querySelector("button.primary").disabled=value}
+function errorText(err){
+  const msg=String(err?.message||err||"Ошибка сервера");
+  if(/invalid login credentials/i.test(msg))return "Неверный email или пароль.";
+  if(/email not confirmed/i.test(msg))return "Сначала подтверди email по ссылке в письме.";
+  if(/rate limit|too many/i.test(msg))return "Слишком много попыток. Повтори позже.";
+  return msg;
+}
+async function showSignedIn(user){
+ $("guest").hidden=true;$("signed-in").hidden=false;
+ $("identity").textContent="Вход выполнен: "+user.email;
+ $("heading").textContent="Ты в Meta";
+ $("subtitle").textContent="У каждого аккаунта свой прогресс.";
+ try{await ensureProfile(user)}catch(e){say("Вход выполнен, но профиль пока не создан: "+errorText(e),true)}
+}
+async function current(){
+ if(recovering)return;
+ try{
+  const user=await authenticatedUser();
+  if(user)await showSignedIn(user);
+  else{$("guest").hidden=false;$("signed-in").hidden=true;}
+ }catch(e){say(errorText(e),true)}
+}
+$("login-tab").onclick=()=>showMode("login");
+$("signup-tab").onclick=()=>showMode("signup");
+$("forgot").onclick=()=>showMode("recover");
+$("return-login").onclick=()=>showMode("login");
+$("login-form").onsubmit=async e=>{
+ e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ try{
+  const {error}=await supabase.auth.signInWithPassword({email:$("login-email").value.trim(),password:$("login-password").value});
+  if(error)throw error;
+  location.assign(safeDestination());
+ }catch(e){say(errorText(e),true);busy(form,false)}
+};
+$("signup-form").onsubmit=async e=>{
+ e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ try{
+  const {data,error}=await supabase.auth.signUp({
+   email:$("signup-email").value.trim(),password:$("signup-password").value,
+   options:{emailRedirectTo:new URL("./account.html",location.href).href,data:{full_name:$("signup-name").value.trim()}}
+  });
+  if(error)throw error;
+  if(data.session){
+   const user=data.user;if(user)await ensureProfile(user);
+   location.assign(safeDestination());return;
+  }
+  say("Проверь почту и подтверди регистрацию. После подтверждения войди в аккаунт.");
+  busy(form,false);
+ }catch(e){say(errorText(e),true);busy(form,false)}
+};
+$("recover-form").onsubmit=async e=>{
+ e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ try{
+  const {error}=await supabase.auth.resetPasswordForEmail($("recover-email").value.trim(),
+   {redirectTo:new URL("./account.html",location.href).href});
+  if(error)throw error;
+  say("Если аккаунт существует, письмо для восстановления отправлено.");
+ }catch(e){say(errorText(e),true)}
+ finally{busy(form,false)}
+};
+$("reset-form").onsubmit=async e=>{
+ e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ try{
+  const {error}=await supabase.auth.updateUser({password:$("new-password").value});
+  if(error)throw error;
+  recovering=false;$("reset-form").hidden=true;const user=await authenticatedUser();
+  if(user)await showSignedIn(user);
+  say("Пароль изменён.");
+ }catch(e){say(errorText(e),true)}finally{busy(form,false)}
+};
+$("sign-out").onclick=async()=>{
+ const {error}=await supabase.auth.signOut();
+ if(error){say(errorText(error),true);return}
+ location.assign("./account.html");
+};
+supabase.auth.onAuthStateChange((event)=>{
+ if(event==="PASSWORD_RECOVERY"){
+  recovering=true;$("guest").hidden=true;$("signed-in").hidden=true;
+  $("reset-form").hidden=false;$("heading").textContent="Новый пароль";
+  $("subtitle").textContent="Установи пароль для своего аккаунта.";
+ }
+});
+await current();
+</script>
+</body>
+</html>
