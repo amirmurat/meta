@@ -15,8 +15,8 @@ let activeToken=null;
 const set=(id,content)=>{$(id).textContent=content;};
 function status(msg,error=false){set("status",msg);$("status").className=error?"view-status alert":"view-status";}
 function notice(id,msg,error=false){set(id,msg);$(id).className=error?"view-status alert":"view-status";}
-function safeDate(){
- return new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+function safeDate(date=new Date()){
+ return new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
 }
 function urlFor(s,a){return "./quran.html?s="+s+"&a="+a}
 function option(value,text){const o=document.createElement("option");o.value=String(value);o.textContent=text;return o;}
@@ -467,7 +467,7 @@ async function finishSession(){
  }
  $("session-stop").disabled=true;
  const {error}=await supabase.from("learning_sessions").insert({
-  user_id:user.id,course_slug:"quran",session_date:safeDate(),
+  user_id:user.id,course_slug:"quran",session_date:safeDate(startDate),
   started_at:started,ended_at:endDate.toISOString(),evidence:"confirmed_fact"
  });
  $("session-stop").disabled=false;
