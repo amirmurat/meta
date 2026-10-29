@@ -1,7 +1,16 @@
 // Shared localization for Meta
 export const DEFAULT_LANGUAGE="en";
 export const LOCALE_KEY="meta-language";
-export function language(){try{return localStorage.getItem(LOCALE_KEY)==="ru"?"ru":"en"}catch{return DEFAULT_LANGUAGE}}
+export function language(){
+ try {
+  const selected=localStorage.getItem(LOCALE_KEY);
+  if(selected==="ru"||selected==="en")return selected;
+ }catch{}
+ // On first visit only, Quran Study starts in Russian.
+ // Once chosen, one shared site language persists across all courses.
+ return typeof location!=="undefined"&&/\/quran\.html$/i.test(location.pathname)
+   ?"ru":DEFAULT_LANGUAGE;
+}
 export function localizeRecord(row){return language()==="en"?{title:row.title_en||row.title,lesson_content:row.lesson_content_en||row.lesson_content||{}}:{title:row.title,lesson_content:row.lesson_content||{}}}
 export const translationsRUtoEN={};
 export function tr(s){
