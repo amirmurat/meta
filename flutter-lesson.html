@@ -39,6 +39,11 @@
     .checklist li{padding:11px 0;border-bottom:1px solid #ececec;line-height:1.5}
     .checklist label{font-weight:400;margin:0;display:flex;align-items:flex-start;gap:10px}
     .checklist input{margin-top:4px;accent-color:#166534}
+    .checklist>label{display:flex;align-items:flex-start;gap:10px;padding:9px 0;font-weight:400}
+    .checklist>label input{width:17px;height:17px;flex:none}
+    #completion-status{color:#166534;font-weight:600}
+    .counter a{color:inherit;text-decoration:none}
+    .counter a:hover{text-decoration:underline}
     .disclaimer{font-size:13px;line-height:1.55;color:#666;margin-top:12px}
     .nav-bottom{margin-top:42px;border-top:1px solid #e5e5e5;padding-top:23px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     .nav-bottom a{font-size:15px;text-decoration:none}
@@ -51,7 +56,7 @@
 <main>
   <nav class="topbar" aria-label="Навигация">
     <a class="back" id="back" href="./flutter.html">← Все модули Flutter</a>
-    <span class="counter" id="position"></span>
+    <span class="counter"><span id="position"></span> · <a id="profile-link" href="./account.html"><span id="account-status">Войти</span></a></span>
   </nav>
   <header>
     <p class="eyebrow" id="code">Загрузка урока…</p>
@@ -73,13 +78,15 @@
       <h2 id="task-title">Самостоятельное задание</h2>
       <div class="task" id="task"></div>
     </section>
+    <p class="instructions" id="auth-notice" hidden>Для сохранения в Supabase и зачёта урока нужен аккаунт. <a id="auth-notice-link" href="./account.html">Войти или зарегистрироваться</a>. Без входа черновики сохраняются только в этом браузере.</p>
     <section aria-labelledby="answer-title">
       <h2 id="answer-title">Твоя попытка</h2>
       <p class="instructions" id="input-help"></p>
       <label for="answer" id="answer-label">Твой ответ</label>
-      <textarea id="answer" placeholder="Напиши свой ответ здесь…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      <textarea id="answer" maxlength="50000" placeholder="Напиши свой ответ здесь…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
       <div class="toolbar" id="editor-toolbar">
         <button type="button" id="copy-answer">Скопировать ответ</button>
+        <button type="button" id="save-now">Сохранить ответ</button>
         <a class="tool-link" href="https://dartpad.dev/" target="_blank" rel="noopener noreferrer" id="dartpad">Открыть DartPad</a>
       </div>
       <p class="save-state" id="save-state" role="status"></p>
@@ -89,13 +96,26 @@
       <button type="button" id="check-button" disabled>Показать критерии после попытки</button>
       <div id="check-panel" hidden>
         <ul class="checklist" id="criteria"></ul>
-        <p class="disclaimer">Это критерии для самостоятельной проверки. Галочки не означают, что код был запущен или проверен сервером. Прогресс курса автоматически не изменяется.</p>
+        <p class="disclaimer">Самопроверка не запускает код. Проверь его в DartPad, IDE или нужной среде. Для обратной связи можно обратиться к ИИ; оцени также реальные результаты и критерии задания.</p>
       </div>
+    </section>
+    <section aria-labelledby="completion-title">
+      <h2 id="completion-title">Подтверждение выполнения</h2>
+      <p class="instructions">Система не отправляет код ИИ автоматически. После самостоятельной проверки ты можешь подтвердить её и зачесть урок. Это честная личная отметка, а не автоматическая оценка.</p>
+      <div class="checklist">
+        <label><input id="ai-reviewed" type="checkbox"> Я проверил ответ с ИИ и разобрал ошибки</label>
+        <label><input id="self-passed" type="checkbox"> По результатам проверки задание соответствует критериям</label>
+      </div>
+      <button type="button" id="confirm-completion" disabled>Отметить выполненным</button>
+      <p id="completion-status" class="disclaimer" hidden></p>
+      <button type="button" id="unmark-completion" hidden>Снять отметку выполнения</button>
+      <p id="completion-result" class="save-state" role="status"></p>
     </section>
     <section aria-labelledby="notes-title">
       <h2 id="notes-title">Личные заметки</h2>
       <label for="notes">Что запомнить или повторить</label>
-      <textarea id="notes" class="plain" placeholder="Твои замечания, ошибки и вопросы…" spellcheck="true"></textarea>
+      <textarea id="notes" class="plain" maxlength="20000" placeholder="Твои замечания, ошибки и вопросы…" spellcheck="true"></textarea>
+      <div class="toolbar"><button type="button" id="save-notes">Сохранить заметку</button></div>
       <p class="save-state" id="notes-state" role="status"></p>
     </section>
     <nav class="nav-bottom" aria-label="Соседние уроки">
@@ -105,129 +125,6 @@
   </div>
   <p class="instructions" id="error" role="alert" hidden></p>
 </main>
-<script>
-"use strict";
-const projectUrl="https://munmvexfrtqwmwptafkf.supabase.co";
-const publishableKey="sb_publishable_-4QiT3aG9-a54aKVxTFo3g_CjdpFCWz";
-const lessonId=new URLSearchParams(location.search).get("id")||"";
-const $=id=>document.getElementById(id);
-const headers={apikey:publishableKey};
-const keys={answer:"meta-flutter-answer-v1-"+lessonId,notes:"meta-flutter-notes-v1-"+lessonId};
-function readLocal(key){try{return localStorage.getItem(key)||""}catch{return ""}}
-function writeLocal(key,value){try{localStorage.setItem(key,value);return true}catch{return false}}
-function setStatus(id,message){$(id).textContent=message}
-async function copyText(value,button){
- try{
-  await navigator.clipboard.writeText(value);
-  const old=button.textContent;
-  button.textContent="Скопировано";
-  setTimeout(()=>{button.textContent=old},1500);
- }catch{
-  setStatus("save-state","Копирование недоступно — выдели текст вручную.");
- }
-}
-function showError(message){
- $("error").hidden=false;$("error").textContent=message;
- $("code").textContent="Ошибка загрузки";
-}
-function initAnswer(type){
- const answer=$("answer");
- if(type==="code"){
-  $("answer-label").textContent="Редактор кода";
-  $("input-help").textContent="Пиши Dart/Flutter-код прямо здесь. Для выполнения используй DartPad или свой Flutter-проект. Некоторые задания требуют устройства, плагинов или flutter test и не выполняются в DartPad. Проверка компиляции на сайте пока не подключена.";
-  $("dartpad").hidden=lessonId==="P02";
-  if(lessonId==="P02")$("input-help").textContent="Напиши SQL и проверь его в тестовой базе. На этой странице код не запускается.";
- }else{
-  answer.classList.add("plain");
-  $("answer-label").textContent=type==="practical"?"Что сделал и какой получил результат":"Твоё объяснение";
-  $("input-help").textContent=type==="practical"
-   ?"Выполни действия в своей среде и запиши фактический результат. Не отмечай запуск, если он не выполнялся."
-   :"Напиши объяснение своими словами. Критерии откроются после первой попытки.";
-  $("editor-toolbar").hidden=true;
- }
- const saved=readLocal(keys.answer);
- answer.value=saved;
- $("check-button").disabled=!answer.value.trim();
- if(saved)setStatus("save-state","Черновик восстановлен с этого устройства.");
- answer.addEventListener("input",()=>{
-  $("check-button").disabled=!answer.value.trim();
-  setStatus("save-state",writeLocal(keys.answer,answer.value)
-   ?"Черновик сохранён на этом устройстве."
-   :"Не удалось сохранить черновик. Скопируй ответ перед выходом.");
- });
- $("copy-answer").addEventListener("click",()=>copyText(answer.value,$("copy-answer")));
-}
-function initCriteria(items){
- const list=$("criteria");
- for(const criterion of items){
-  const li=document.createElement("li"),label=document.createElement("label");
-  const box=document.createElement("input");box.type="checkbox";
-  const text=document.createElement("span");text.textContent=criterion;
-  label.append(box,text);li.append(label);list.append(li);
- }
- $("check-button").addEventListener("click",()=>{
-  if(!$("answer").value.trim())return;
-  const panel=$("check-panel");
-  panel.hidden=!panel.hidden;
-  $("check-button").textContent=panel.hidden?"Показать критерии после попытки":"Скрыть критерии";
- });
-}
-function initNotes(){
- const notes=$("notes");notes.value=readLocal(keys.notes);
- if(notes.value)setStatus("notes-state","Заметки восстановлены с этого устройства.");
- notes.addEventListener("input",()=>{
-  setStatus("notes-state",writeLocal(keys.notes,notes.value)
-   ?"Заметки сохранены на этом устройстве (не в Supabase)."
-   :"Не удалось сохранить заметки. Скопируй текст перед выходом.");
- });
-}
-function initNav(catalog,current){
- const index=catalog.findIndex(x=>x.external_id===current);
- $("position").textContent=(index+1)+" / "+catalog.length;
- for(const [el,offset,defaultText] of [["prev",-1,"← Все модули"],["next",1,"Все модули →"]]){
-  const item=catalog[index+offset],link=$(el);
-  link.href=item?"./flutter-lesson.html?id="+encodeURIComponent(item.external_id):"./flutter.html";
-  link.textContent=item
-   ?(offset<0?"← ":"")+item.external_id+(offset>0?" →":"")
-   :defaultText;
- }
-}
-async function load(){
- if(!/^(D|U|S|N|P|E|C)\d{2}$/.test(lessonId)){
-  showError("Неверный адрес урока. Вернись к списку модулей.");return;
- }
- $("back").href="./flutter.html#module-"+lessonId[0];
- try{
-  const courseQuery="?select=external_id,title,sort_order,task_type,lesson_content&course_slug=eq.flutter&external_id=eq."+lessonId+"&limit=1";
-  const listQuery="?select=external_id,sort_order&course_slug=eq.flutter&order=sort_order.asc";
-  const [lessonResponse,navResponse]=await Promise.all([
-   fetch(projectUrl+"/rest/v1/lessons"+courseQuery,{headers}),
-   fetch(projectUrl+"/rest/v1/lessons"+listQuery,{headers})
-  ]);
-  if(!lessonResponse.ok||!navResponse.ok)throw new Error("Server error");
-  const rows=await lessonResponse.json(),nav=await navResponse.json();
-  if(rows.length!==1||!Array.isArray(nav)||nav.length!==56)throw new Error("Lesson not found");
-  const row=rows[0],content=row.lesson_content||{};
-  if(!content.theory||!content.example||!content.task||!Array.isArray(content.criteria))throw new Error("Missing content");
-  document.title=row.external_id+" — "+row.title+" | Flutter · Meta";
-  $("code").textContent="Flutter · "+row.external_id;
-  $("title").textContent=row.title;
-  $("prerequisites").textContent=content.prerequisites?"Предпосылки: "+content.prerequisites:"";
-  $("theory").textContent=content.theory;
-  $("example").textContent=content.example;
-  $("task").textContent=content.task;
-  $("copy-example").addEventListener("click",()=>copyText(content.example,$("copy-example")));
-  initAnswer(row.task_type);
-  initCriteria(content.criteria);
-  initNotes();
-  initNav(nav,row.external_id);
-  $("lesson").hidden=false;
- }catch(err){
-  console.error("Micro-lesson:",err);
-  showError("Не удалось загрузить микроурок. Проверь соединение и обнови страницу.");
- }
-}
-load();
-</script>
+<script type="module" src="./flutter-lesson-app.js"></script>
 </body>
 </html>
