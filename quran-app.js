@@ -437,7 +437,24 @@ function renderSources(){
   ["Ibn Kathir","https://quran.ksu.edu.sa/tafseer/katheer/sura"+surah+"-aya"+ayah+".html"],
   ["As-Sa'di","https://quran.ksu.edu.sa/tafseer/saadi/sura"+surah+"-aya"+ayah+".html"],
   ["Quranic Arabic Corpus","https://corpus.quran.com/wordbyword.jsp?chapter="+surah+"&verse="+ayah]
- ])box.append(anchor(label,url));
+ ]){
+  const group=document.createElement("span");
+  group.className="row";group.style.gap="4px";
+  group.append(anchor(label,url));
+  const cite=document.createElement("button");
+  cite.type="button";cite.style.cssText="font-size:12px;padding:7px";
+  cite.textContent=t("+ Cite","+ Ссылка");
+  const ref=surah+":"+ayah;
+  cite.onclick=()=>{
+   if(ref!==surah+":"+ayah)return;
+   const note=label+" — "+url, textarea=$("sources");
+   if(!textarea.value.includes(note)){
+    textarea.value+=(textarea.value.trim()?"\n":"")+note+"\n";
+   }
+   notice("save-state",t("Reference added. Explain what it supports, then save your research.","Ссылка добавлена. Укажи, что она подтверждает, и сохрани исследование."));
+  };
+  group.append(cite);box.append(group);
+ }
 }
 function descendants(startId){
  const found=new Set();const todo=[startId];
