@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff"><title>Quran Study — Meta</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif}a{color:inherit}
+main{max-width:1140px;padding:25px 25px 85px;margin:0 auto}
+nav.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:28px}
+.muted,.help{color:#646b75;font-size:13px;line-height:1.6}
+h1{font-size:32px;line-height:1.2;margin:0 0 6px;letter-spacing:-.5px}
+h2{font-size:19px;line-height:1.35;margin:0 0 13px}h3{font-size:16px;margin:0 0 12px}
+.masthead{margin-bottom:28px}.masthead p{margin:0}
+.layout{display:grid;grid-template-columns:264px minmax(0,1fr);gap:32px;align-items:start}
+aside{position:sticky;top:20px}.panel{border-top:1px solid #e5e7eb;padding:20px 0;margin-top:18px}
+label{display:block;font-weight:600;margin:10px 0 7px;font-size:14px}
+select,input,textarea{border:1px solid #d1d5db;background:#fff;border-radius:0;padding:10px 11px;font:inherit;color:#111;width:100%}
+textarea{min-height:120px;resize:vertical;line-height:1.6}
+button{background:#fff;border:1px solid #d1d5db;color:#111;padding:9px 12px;border-radius:0;font:inherit;cursor:pointer}
+button:hover{background:#f4f4f5}button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid #111;outline-offset:2px}
+button:disabled{opacity:.45;cursor:default}
+.button-primary{background:#111;color:#fff;border-color:#111}.button-primary:hover{background:#303030}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.between{justify-content:space-between}
+.flex{flex:1}.inline-link{font-size:14px;color:#555}
+.track{height:14px;background:#e5e7eb;margin-top:11px}.bar{height:100%;width:0;background:#111}
+.reader{min-width:0}
+.verse-top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.big-arabic{direction:rtl;text-align:right;font-family:"Noto Naskh Arabic","Amiri","Times New Roman",serif;font-size:clamp(27px,4.3vw,40px);line-height:2.2;font-weight:400;margin:15px 0 17px;white-space:pre-wrap}
+.translation{font-size:17px;line-height:1.75;margin:0 0 10px;white-space:pre-wrap}
+.footnotes{white-space:pre-wrap;line-height:1.6;font-size:13px;color:#606775;margin:9px 0}
+.source{font-size:12px;color:#656b72;line-height:1.7}
+.segment{border-top:1px solid #e5e7eb;padding-top:21px;margin-top:27px}
+.words{display:flex;flex-direction:row-reverse;gap:9px;flex-wrap:wrap;justify-content:flex-start}
+.word{font-family:"Noto Naskh Arabic","Amiri","Times New Roman",serif;font-size:24px;line-height:1.8;padding:8px 15px;background:#fafafa}
+.word.selected{background:#111;color:white;border-color:#111}
+.morph{background:#f6f6f6;padding:17px;margin-top:14px}
+.morph-ar{font-size:30px;text-align:right;direction:rtl;line-height:1.7;margin-bottom:7px}
+dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margin:10px 0;font-size:14px}dt{color:#555}dd{margin:0;overflow-wrap:anywhere}
+.parts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.part{background:#fff;border:1px solid #dedede;padding:7px 10px;text-align:center}.part span{display:block;font-size:11px;color:#6b7280}
+.tag-list{display:flex;flex-direction:column;gap:8px;margin:9px 0}.tag-item{display:flex;gap:7px;align-items:center;padding:7px 8px;border:1px solid #e5e7eb}
+.tag-item input{width:16px;flex:none;accent-color:#111}
+.tag-item label{margin:0;font-weight:400;font-size:13px;flex:1;cursor:pointer}
+.tag-chip{font-size:13px;background:#f0f0f0;padding:3px 7px}
+.tag-results{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:260px;overflow:auto}
+.tag-results a{border-bottom:1px solid #eee;text-decoration:none;padding:6px 0;font-size:14px}
+.tag-results a:hover{text-decoration:underline}
+.alert{color:#ac2424;font-size:13px}.ok{color:#166534;font-size:13px}
+.view-status{min-height:19px;margin:8px 0 0;font-size:13px;color:#555;line-height:1.5}
+.link-list{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.link-list a{border:1px solid #ddd;padding:7px 10px;text-decoration:none;font-size:13px}
+.link-list a:hover{text-decoration:underline}
+.hidden,[hidden]{display:none!important}
+@media(max-width:760px){main{padding:19px 17px 80px}.layout{grid-template-columns:1fr;gap:8px}aside{position:static}.nav-top{flex-wrap:wrap}.reader{margin-top:20px}}
+</style>
+</head><body>
+<main>
+<nav class="top"><a href="./" id="back">← My courses</a><a href="./statistics.html" id="statistics-link">Statistics</a></nav>
+<header class="masthead"><h1>Quran Study</h1><p class="muted" id="subtitle">Arabic text, word analysis, reliable references and private research notes.</p>
+<div class="row" style="margin-top:11px"><strong id="progress">— / 6236</strong><span class="muted" id="progress-label">studied verses</span></div>
+<div class="track"><div class="bar" id="progress-bar"></div></div></header>
+<p class="view-status" id="status" role="status">Checking your account…</p>
+<div class="layout" id="app" hidden>
+<aside>
+<div><h2 id="nav-heading">Navigate</h2>
+<label for="surah" id="surah-label">Surah</label><select id="surah"></select>
+<label for="ayah" id="ayah-label">Ayah</label><select id="ayah"></select>
+<div class="row" style="margin-top:13px"><button id="previous" type="button">← Previous</button><button id="following" type="button">Next →</button></div>
+</div>
+<div class="panel"><h2 id="tags-heading">My nested tags</h2>
+<p class="help" id="tag-help">Tag a verse with several topics. Parent tags include verses tagged with descendants.</p>
+<div id="tag-tree" class="tag-list"></div>
+<label for="new-tag" id="new-tag-label">New tag</label><input id="new-tag" maxlength="80" placeholder="e.g. Covenant">
+<label for="parent-tag" id="parent-tag-label">Parent tag</label><select id="parent-tag"></select>
+<button type="button" id="add-tag" style="margin-top:9px">Create tag</button>
+<label for="manage-tag" id="manage-tag-label">Manage an existing tag</label><select id="manage-tag"></select>
+<input id="rename-tag" maxlength="80" placeholder="New name" style="margin-top:9px">
+<div class="row" style="margin-top:9px"><button type="button" id="rename">Rename</button><button type="button" id="remove-tag">Delete</button></div>
+<label for="move-parent" id="move-label">Move to parent</label><select id="move-parent"></select><button type="button" id="move-tag" style="margin-top:9px">Move</button>
+<p class="view-status" id="tag-status" role="status"></p>
+</div>
+<div class="panel"><h2 id="linked-heading">Related verses</h2>
+<label for="browse-tag" id="browse-label">Browse a topic (includes child tags)</label><select id="browse-tag"></select>
+<div id="tag-results" class="tag-results"></div>
+</div>
+</aside>
+<div class="reader">
+<div class="verse-top"><div><span class="muted" id="verse-ref">—</span><h2 id="verse-heading" style="margin:4px 0">Verse</h2></div><span class="muted" id="completion-indicator"></span></div>
+<p class="big-arabic" id="arabic" lang="ar" dir="rtl"></p>
+<p class="translation" id="translation"></p><p class="footnotes" id="footnotes"></p>
+<p class="source" id="translation-source"></p>
+<div class="link-list"><a id="qurancom" href="https://quran.com/2/40" target="_blank" rel="noopener">Quran.com</a><a id="corpus" href="https://corpus.quran.com/wordbyword.jsp?chapter=2&verse=40" target="_blank" rel="noopener">Quranic Arabic Corpus</a></div>
+<div class="row" style="margin:17px 0"><button type="button" id="mark" class="button-primary">Mark studied</button><button type="button" id="unmark" hidden>Undo completion</button></div><p class="source" id="completion-help"></p>
+<div class="segment"><h2 id="word-heading">Word-by-word research</h2><p class="help" id="word-help">Select an Arabic word to inspect its root, lemma and morphological segments. Dictionary glosses are not a contextual tafsir.</p><div class="words" id="words"></div><div id="morph" class="morph" hidden></div></div>
+<div class="segment"><h2 id="sources-heading">Classical tafsir and dictionaries</h2>
+<p class="help" id="sources-help">Open the original source; the app does not invent interpretations or present AI paraphrases as scholarly quotes.</p>
+<div class="link-list" id="source-links"></div></div>
+<div class="segment"><h2 id="research-heading">Private research</h2>
+<label for="question" id="question-label">Your question</label><textarea id="question" maxlength="6000" placeholder="What is unclear about this verse?"></textarea>
+<label for="analysis" id="analysis-label">Your analysis and distinctions</label><textarea id="analysis" maxlength="30000" placeholder="Separate the Quranic text, dictionary meanings, tafsir and your own conclusion."></textarea>
+<label for="sources" id="sources-label">Sources and citations</label><textarea id="sources" maxlength="12000" placeholder="Reference / source link / what it supports"></textarea>
+<div class="row" style="margin-top:11px"><button id="save" type="button" class="button-primary">Save research</button><button id="copy-question" type="button">Copy AI research prompt</button></div>
+<p class="view-status" id="save-state" role="status"></p>
+</div>
+<div class="segment source" id="attribution">Arabic text: Tanzil Project, Uthmani 1.1 (CC BY 3.0, verbatim). Morphology and word glosses: Leeds Quranic Arabic Corpus via QuranBench v0.8.0 (GPL). Readings and translations are human-authored and separately attributed. No automatic religious verdicts.</div>
+</div></div>
+</main>
+<script type="module" src="./quran-app.js"></script>
+<script type="module" src="./meta-language.js"></script>
+</body></html>
