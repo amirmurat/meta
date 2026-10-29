@@ -56,12 +56,14 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <header class="masthead"><h1 id="page-title">Quran Study</h1><p class="muted" id="subtitle">Arabic text, word analysis, reliable references and private research notes.</p>
 <div class="row" style="margin-top:11px"><strong id="progress">— / 6236</strong><span class="muted" id="progress-label">studied verses</span></div>
 <div class="track"><div class="bar" id="progress-bar"></div></div>
-<div class="row" style="margin-top:17px">
+<details style="margin-top:13px">
+<summary id="session-heading" class="muted" style="cursor:pointer">Study timer (optional)</summary>
+<div class="row" style="margin-top:11px">
   <button type="button" id="session-start">Start study session</button>
   <button type="button" id="session-stop" hidden>End session and save time</button>
   <button type="button" id="session-cancel" hidden>Discard session</button>
   <span class="muted" id="session-status" role="status"></span>
-</div></header>
+</div></details></header>
 <p class="view-status" id="status" role="status">Checking your account…</p>
 <div class="layout" id="app" hidden>
 <aside>
@@ -70,7 +72,7 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <label for="ayah" id="ayah-label">Ayah</label><select id="ayah"></select>
 <div class="row" style="margin-top:13px"><button id="previous" type="button">← Previous</button><button id="following" type="button">Next →</button></div>
 </div>
-<div class="panel"><h2 id="tags-heading">My nested tags</h2>
+<details class="panel"><summary id="tags-heading" style="cursor:pointer;font-size:16px;font-weight:600">Topics &amp; tags (optional)</summary>
 <p class="help" id="tag-help">Tag a verse with several topics. Parent tags include verses tagged with descendants.</p>
 <div id="tag-tree" class="tag-list"></div>
 <label for="new-tag" id="new-tag-label">New tag</label><input id="new-tag" maxlength="80" placeholder="e.g. Covenant">
@@ -81,11 +83,11 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <div class="row" style="margin-top:9px"><button type="button" id="rename">Rename</button><button type="button" id="remove-tag">Delete</button></div>
 <label for="move-parent" id="move-label">Move to parent</label><select id="move-parent"></select><button type="button" id="move-tag" style="margin-top:9px">Move</button>
 <p class="view-status" id="tag-status" role="status"></p>
-</div>
-<div class="panel"><h2 id="linked-heading">Related verses</h2>
+</details>
+<details class="panel"><summary id="linked-heading" style="cursor:pointer;font-size:16px;font-weight:600">Related verses (optional)</summary>
 <label for="browse-tag" id="browse-label">Browse a topic (includes child tags)</label><select id="browse-tag"></select>
 <div id="tag-results" class="tag-results"></div>
-</div>
+</details>
 </aside>
 <div class="reader">
 <div class="verse-top"><div><span class="muted" id="verse-ref">—</span><h2 id="verse-heading" style="margin:4px 0">Verse</h2></div><span class="muted" id="completion-indicator"></span></div>
