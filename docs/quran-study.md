@@ -61,3 +61,12 @@ Supabase project `munmvexfrtqwmwptafkf`:
 - Personal Quran historical completions: 39; Flutter: 16; IELTS: 3.
 - Transactional test successfully inserted, linked and read private nested tags and a research note as an authenticated enrolled user, then rolled back the test data.
 - No modification was made to `amirmurat/quran-app`.
+
+## Russian word-level meanings and morphology (2026-10-30)
+
+- The Arabic word, root, lemma, segmented morphemes and English gloss are cited to the Leeds Quranic Arabic Corpus via QuranBench. QAC does not supply independently verified Russian word glosses in this integration.
+- The Russian UI localizes grammatical labels and codes such as `N`, `ACC`, `F`, `stem`, `suffix`; these are Meta's translations of linguistic terminology, **not religious translations from QAC**.
+- A narrowly sourced contextual Russian phrase for verse **2:40:4** (`نِعْمَتِىَ`) is taken from the Rowwad Translation Center's QuranEnc *verse* translation: `Моё благодеяние`. It is labeled contextual and explicitly not treated as an independent Arabic–Russian lexicon entry.
+- Other tokens clearly say that a separately verified Russian word gloss is not yet available, rather than silently auto-translating QAC's English gloss or misattributing an AI translation.
+- Quran Foundation announced removal of Russian word-by-word translation from its API at the rightsholder's request: https://qf-api-docs.pages.dev/docs/updates/ . Do not copy or republish the removed dataset without permission.
+- For scaling, source-licensed, independently reviewable per-word glosses will be needed, with explicit distinction between lexical possibilities, grammatical form, contextual translator choice and classical tafsir. Preserve an English source gloss where licensed and avoid automatic theological translation.
