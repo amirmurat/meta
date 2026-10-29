@@ -79,3 +79,14 @@ Supabase security advisor currently reports leaked-password protection disabled.
 - Existing 3 IELTS historical completions have retained their original UUIDs and dates. No personal IELTS source documents are linked in the course catalog.
 - New attempts, notes, explicit submission times and self-attested AI reviews use the same private Supabase tables and RLS as Flutter.
 - An official preparation source (not a claim of affiliation): https://ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test
+
+## Site-wide bilingual experience (RU/EN)
+
+- One shared language switch in `meta-language.js` is included on every Meta HTML page: homepage, account, profile, statistics, IELTS/Flutter catalogs and individual lessons.
+- Selection persists in browser localStorage using `meta-language` and survives page navigation. English is the default for new browsers to match the English-only IELTS practice preference.
+- Course titles use `courses.title_en`; lesson names use `lessons.title_en`; lesson bodies use `lessons.lesson_content_en` when EN is selected.
+- 332 IELTS and 56 Flutter lesson records have translated titles, explanations, examples, tasks, prerequisite text and criteria. IELTS module titles are translated via English ancestor metadata. Russian originals are retained.
+- Quran's existing 39 completion placeholder records have English titles (`Al-Baqarah 2:n`); there are no actual full verse lessons or translations of scripture in the database yet. Do not present this as an English Quran translation.
+- Translations are an initial machine-assisted educational localization. Preserve technical code syntax and review instructions before using material as a graded exam.
+- Lesson IDs, per-user notes, attempts, timestamps and progress are language-independent. A language change must not create new completion records.
+- No external translation API key is present in the browser. The translation staging sheet in Amir's Google Drive was deleted after successful import.
