@@ -24,6 +24,7 @@ function anchor(text,url){
  const a=document.createElement("a");a.href=url;a.textContent=text;a.target="_blank";a.rel="noopener noreferrer";return a;
 }
 function readerLabels(){
+ set("page-title",t("Quran Study","Изучение Корана"));
  const entries=[
  ["back","← My courses","← Мои программы"],["statistics-link","Statistics","Статистика"],
  ["subtitle","Arabic text, word analysis, reliable references and private research notes.","Арабский текст, анализ слов, проверяемые источники и личные заметки."],
