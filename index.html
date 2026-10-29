@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <title>Meta — IELTS Progress</title>
+  <title>Meta — Learning Progress</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -20,8 +20,10 @@
       min-height: 100vh;
       min-height: 100svh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 24px;
       padding: 24px;
     }
 
@@ -59,6 +61,10 @@
       height: 100%;
       background: #111111;
     }
+
+    .progress-fill.flutter {
+      width: 28.571429%;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +76,15 @@
       </div>
       <div class="progress-track" role="progressbar" aria-label="Завершённые уроки IELTS" aria-valuemin="0" aria-valuemax="332" aria-valuenow="3">
         <div class="progress-fill"></div>
+      </div>
+    </section>
+    <section class="progress" aria-label="Flutter: 16 из 56 уроков выполнено">
+      <div class="progress-content">
+        <span class="progress-label">Flutter</span>
+        <span class="progress-count">16 / 56</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Завершённые уроки Flutter" aria-valuemin="0" aria-valuemax="56" aria-valuenow="16">
+        <div class="progress-fill flutter"></div>
       </div>
     </section>
   </main>
