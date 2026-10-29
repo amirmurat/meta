@@ -1,147 +1,101 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
-  <title>Meta — Learning Progress</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: transparent;
-      color: #111111;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    main {
-      min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      padding: 24px;
-    }
-
-    .progress {
-      width: min(100%, 640px);
-      background: transparent;
-      overflow: hidden;
-    }
-
-    .flutter-link { display: block; color: inherit; text-decoration: none; cursor: pointer; }
-    .flutter-link:hover .progress-label { text-decoration: underline; }
-    .flutter-link:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
-
-    .account-nav { position:fixed;top:22px;right:26px;font-size:14px;color:#555;text-decoration:none;z-index:1; }
-    .account-nav:hover { text-decoration:underline; }
-    .progress-context { width:min(100%,640px);padding:0 24px;font-size:12px;color:#777;line-height:1.5; }
-    .progress-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 20px 24px;
-      font-size: 18px;
-      line-height: 1.4;
-    }
-
-    .progress-label { font-weight: 600; }
-
-    .progress-count {
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-
-    .progress-track {
-      height: 18px;
-      margin: 0 24px;
-      background: #e5e7eb;
-    }
-
-    .progress-fill {
-      width: 0.903614%;
-      height: 100%;
-      background: #111111;
-    }
-
-    .progress-fill.flutter {
-      width: 28.571429%;
-    }
-
-    .progress-fill.quran {
-      width: 0.625401%;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Meta — Мои программы</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:transparent;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:70px 24px}
+header{width:min(100%,640px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px}
+h1{margin:0;font-size:24px;letter-spacing:-.4px}
+.profile{font-size:14px;text-decoration:none;color:#555}.profile:hover{text-decoration:underline}
+.courses{width:min(100%,640px);display:flex;flex-direction:column;gap:24px}
+.course{display:block;text-decoration:none;color:inherit;width:100%;background:transparent}
+.course:not([href]){cursor:default}
+.course[href]:hover .name{text-decoration:underline}
+.course[href]:focus-visible{outline:2px solid #111;outline-offset:4px}
+.course-top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;font-size:18px;line-height:1.4}
+.name{font-weight:600}.count{font-variant-numeric:tabular-nums;white-space:nowrap}
+.track{height:18px;margin:0 24px;background:#e5e7eb}
+.fill{height:100%;background:#111;width:0}
+.small{width:min(100%,640px);padding:0 24px;font-size:14px;line-height:1.65;color:#777}
+.empty{width:min(100%,640px);padding:22px 24px}
+.empty p{color:#666;font-size:16px;line-height:1.65;margin:0 0 16px}
+.empty a{font-size:15px;color:#111}
+[hidden]{display:none!important}
+</style>
 </head>
 <body>
-  <a class="account-nav" id="account-nav" href="./account.html">Войти</a>
-  <main>
-    <section class="progress" aria-label="IELTS: 3 из 332 уроков выполнено">
-      <div class="progress-content">
-        <span class="progress-label">IELTS</span>
-        <span class="progress-count">3 / 332</span>
-      </div>
-      <div class="progress-track" role="progressbar" aria-label="Завершённые уроки IELTS" aria-valuemin="0" aria-valuemax="332" aria-valuenow="3">
-        <div class="progress-fill"></div>
-      </div>
-    </section>
-    <a href="./flutter.html" class="progress flutter-link" aria-label="Открыть курс Flutter, 16 из 56 уроков выполнено">
-      <div class="progress-content">
-        <span class="progress-label">Flutter</span>
-        <span class="progress-count">16 / 56</span>
-      </div>
-      <div class="progress-track" role="progressbar" aria-label="Завершённые уроки Flutter" aria-valuemin="0" aria-valuemax="56" aria-valuenow="16">
-        <div class="progress-fill flutter"></div>
-      </div>
-    </a>
-    <section class="progress" aria-label="Коран: подтверждено последовательное изучение 39 из 6236 аятов">
-      <div class="progress-content">
-        <span class="progress-label">Коран</span>
-        <span class="progress-count">39 / 6236</span>
-      </div>
-      <div class="progress-track" role="progressbar" aria-label="Последовательно изученные аяты Корана" aria-valuemin="0" aria-valuemax="6236" aria-valuenow="39">
-        <div class="progress-fill quran"></div>
-      </div>
-    </section>
-    <p class="progress-context" id="progress-context">Показана прежняя сводка обучения. Войди, чтобы видеть личный прогресс.</p>
-  </main>
+<main>
+<header id="heading" hidden><h1>Мои программы</h1><a class="profile" href="./profile.html">Профиль</a></header>
+<p class="small" id="loading">Проверяю вход…</p>
+<div class="courses" id="courses" hidden></div>
+<div class="empty" id="empty" hidden>
+<p>Пока у тебя нет назначенных программ. Укажи свою цель в профиле. После этого можно будет подобрать или создать учебный маршрут.</p>
+<a href="./profile.html">Указать цель</a>
+</div>
+<p class="small" id="notice" hidden></p>
+</main>
 <script type="module">
 import {supabase,authenticatedUser} from "./meta-supabase.js";
-try {
- const user=await authenticatedUser();
- if(user){
-  const nav=document.getElementById("account-nav");
-  nav.textContent="Мой профиль";
-  nav.href="./profile.html";
-  const [progressResult,lessonResult]=await Promise.all([
-    supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id),
-    supabase.from("lessons").select("id,course_slug")
+const $=id=>document.getElementById(id);
+async function main(){
+ try{
+  const user=await authenticatedUser();
+  if(!user){location.replace("./account.html?next="+encodeURIComponent("./"));return;}
+  const {data:assigned,error:assignedError}=await supabase.from("course_enrollments")
+    .select("course_slug").eq("user_id",user.id);
+  if(assignedError)throw assignedError;
+  $("loading").hidden=true;$("heading").hidden=false;
+  if(!assigned?.length){$("empty").hidden=false;return;}
+  const [catalog,lessons,progress]=await Promise.all([
+   supabase.from("courses").select("slug,title,total_units"),
+   supabase.from("lessons").select("id,course_slug"),
+   supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
   ]);
-  if(progressResult.error)throw progressResult.error;
-  if(lessonResult.error)throw lessonResult.error;
-  const byId=new Map((lessonResult.data||[]).map(l=>[l.id,l.course_slug]));
-  const counts={ielts:0,flutter:0,quran:0};
-  for(const item of progressResult.data||[]){
-    const course=byId.get(item.lesson_id);
-    if(course&&course in counts) counts[course]++;
+  for(const result of [catalog,lessons,progress])if(result.error)throw result.error;
+  const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
+  const visible=(catalog.data||[]).filter(c=>assignedSlugs.has(c.slug));
+  const lessonCourse=new Map((lessons.data||[]).map(l=>[l.id,l.course_slug]));
+  const counts=new Map();
+  for(const row of progress.data||[]){
+    const slug=lessonCourse.get(row.lesson_id);
+    if(slug)counts.set(slug,(counts.get(slug)||0)+1);
   }
-  const metas=[["ielts",332],["flutter",56],["quran",6236]];
-  const sections=[...document.querySelectorAll(".progress")];
-  metas.forEach(([slug,total],i)=>{
-    const section=sections[i],done=counts[slug];
-    section.querySelector(".progress-count").textContent=done+" / "+total;
-    section.querySelector(".progress-fill").style.width=100*done/total+"%";
-    section.querySelector(".progress-track").setAttribute("aria-valuenow",String(done));
-    section.setAttribute("aria-label",slug+": "+done+" из "+total+" выполнено");
-  });
-  document.getElementById("progress-context").textContent="Это личные результаты твоего аккаунта. Старый прогресс из Google Drive пока не перенесён.";
+  const root=$("courses");
+  for(const course of visible){
+    const card=document.createElement(course.slug==="flutter"?"a":"div");
+    card.className="course";
+    if(course.slug==="flutter")card.href="./flutter.html";
+    const top=document.createElement("div");top.className="course-top";
+    const title=document.createElement("span");title.className="name";title.textContent=course.title;
+    const amount=document.createElement("span");amount.className="count";
+    const done=counts.get(course.slug)||0;
+    amount.textContent=done+" / "+course.total_units;
+    top.append(title,amount);
+    const track=document.createElement("div");track.className="track";
+    track.setAttribute("role","progressbar");track.setAttribute("aria-label",course.title);
+    track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(course.total_units));
+    track.setAttribute("aria-valuenow",String(done));
+    const fill=document.createElement("div");fill.className="fill";
+    fill.style.width=(100*done/course.total_units)+"%";
+    track.append(fill);card.append(top,track);root.append(card);
+  }
+  if(!root.children.length){$("empty").hidden=false;return;}
+  root.hidden=false;
+  if(visible.some(c=>c.slug!=="flutter")){
+    $("notice").textContent="Другие программы пока доступны только в виде прогресса; страницы уроков появятся позже.";
+    $("notice").hidden=false;
+  }
+ }catch(e){
+  console.error("Meta dashboard:",e);
+  $("loading").textContent="Не удалось загрузить твои программы. Обнови страницу или проверь вход в аккаунт.";
  }
-}catch(error){console.error("Meta progress:",error)}
+}
+void main();
 </script>
 </body>
 </html>
