@@ -11,6 +11,8 @@ h1{margin:0 0 7px;font-size:32px;letter-spacing:-.8px}p{margin:0;color:#777;font
 section{margin-top:38px}h2{font-size:18px;font-weight:600;margin:0 0 14px}
 .list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
 .lesson{background:transparent;border:1px solid #e6e6e6;text-align:left;padding:17px 16px;min-height:72px;display:flex;align-items:center;gap:14px;border-radius:0;font:inherit;color:inherit}
+.lesson.completed{background:#dcfce7;border-color:#86d6a0;color:#14532d}
+.lesson.completed .code{color:#166534}
 .code{font-size:13px;color:#888;min-width:32px;font-variant-numeric:tabular-nums}
 .name{font-size:15px;line-height:1.45}
 .status{color:#777;margin-top:20px}
@@ -26,6 +28,13 @@ section{margin-top:38px}h2{font-size:18px;font-weight:600;margin:0 0 14px}
 <script>
 const API = "https://munmvexfrtqwmwptafkf.supabase.co/rest/v1/lessons?course_slug=eq.flutter&select=external_id,title,sort_order&order=sort_order.asc";
 const PUBLISHABLE_KEY = "sb_publishable_-4QiT3aG9-a54aKVxTFo3g_CjdpFCWz";
+// Confirmed completion snapshot from Amir's Flutter START HERE (19.10.2026).
+// Do not infer completion from sequence: U01 is not yet completed.
+const completedLessonIds=new Set([
+  "D01","D02","D03","D04","D05","D06",
+  "D07","D08","D09","D10","D11","D12",
+  "U02","U03","U04","U05"
+]);
 const modules=[
 {prefix:"D",title:"Dart и модель данных"},
 {prefix:"U",title:"Flutter UI"},
@@ -50,7 +59,7 @@ for(const mod of modules){
  title.textContent=mod.title+" · "+group.length;
  const list=document.createElement("div");list.className="list";
  for(const lesson of group){
-  const tile=document.createElement("div");tile.className="lesson";
+  const tile=document.createElement("div");tile.className=completedLessonIds.has(lesson.external_id)?"lesson completed":"lesson";
   const id=document.createElement("span");id.className="code";id.textContent=lesson.external_id;
   const name=document.createElement("span");name.className="name";name.textContent=lesson.title;
   tile.append(id,name);list.append(tile);
