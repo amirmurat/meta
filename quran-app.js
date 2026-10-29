@@ -12,7 +12,15 @@ const API="https://quranbench.com/api/v1";
 let user,verse,surah=2,ayah=40,lessonId=null,sequence=0;
 let tags=[],assigned=new Set(),catalog=new Map(),reverseCatalog=new Map(),completions=new Map(),cache=new Map();
 let activeToken=null;
-const set=(id,content)=>{$(id).textContent=content;};
+const set=(id,content)=>{
+ const element=$(id);
+ if(!element){
+  console.warn("Quran Study: expected UI element is missing:",id);
+  return false;
+ }
+ element.textContent=content;
+ return true;
+};
 function status(msg,error=false){set("status",msg);$("status").className=error?"view-status alert":"view-status";}
 function notice(id,msg,error=false){set(id,msg);$(id).className=error?"view-status alert":"view-status";}
 function safeDate(date=new Date()){
@@ -22,6 +30,35 @@ function urlFor(s,a){return "./quran.html?s="+s+"&a="+a}
 function option(value,text){const o=document.createElement("option");o.value=String(value);o.textContent=text;return o;}
 function anchor(text,url){
  const a=document.createElement("a");a.href=url;a.textContent=text;a.target="_blank";a.rel="noopener noreferrer";return a;
+}
+const READER_UI_VERSION="20261030-reader-compat-v2";
+// GitHub Pages HTML and ES modules may briefly have different cached versions.
+// Validate before the first text update; refresh mismatched HTML once.
+function verifyReaderMarkup(){
+ const required=[
+  "status","app","page-title","progress","progress-bar",
+  "surah","ayah","previous","following","verse-ref","verse-heading",
+  "arabic","translation","words","morph","source-links",
+  "quick-note","quick-save","quick-entries","quick-status",
+  "archive-records","archive-status","legacy-notes","legacy-content",
+  "session-start","session-stop","tag-tree","browse-tag","mark","unmark"
+ ];
+ const missing=required.filter(id=>!$(id));
+ if(!missing.length)return true;
+ console.error("Quran Study HTML/JavaScript mismatch. Missing:",missing);
+ const url=new URL(window.location.href);
+ if(url.searchParams.get("_ui")!==READER_UI_VERSION){
+  url.searchParams.set("_ui",READER_UI_VERSION);
+  window.location.replace(url.toString());
+  return false;
+ }
+ const errorMessage=t(
+  "The Quran Study page is out of date. Please reopen the current page or refresh.",
+  "Версии страницы Quran Study не совпадают. Обнови страницу или открой её заново."
+ );
+ const statusElement=$("status")||document.body;
+ statusElement.textContent=errorMessage;
+ return false;
 }
 function readerLabels(){
  set("page-title",t("Quran Study","Изучение Корана"));
@@ -791,6 +828,7 @@ function cancelSession(){
  refreshSession();
 }
 async function init(){
+ if(!verifyReaderMarkup())return;
  readerLabels();
  user=await authenticatedUser();
  if(!user){location.replace(authPage("./quran.html"+location.search));return}
