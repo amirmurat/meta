@@ -145,6 +145,7 @@ async function openVerse(s,a,addHistory=true){
  $("translation-source").textContent="";$("words").replaceChildren();$("morph").hidden=true;
  set("completion-help","");
  $("quick-note").value="";
+ restoreQuickDraft();
  notice("quick-status","");
  $("quick-entries").replaceChildren();
  notice("archive-status","");$("archive-records").replaceChildren();
@@ -709,7 +710,7 @@ async function loadQuickNotes(){
   body.textContent=entry.body;
   panel.append(top,body);root.append(panel);
  }
- restoreQuickDraft();
+ // Draft was restored synchronously on verse navigation.
 }
 async function saveQuickNote(){
  const current=lessonId,body=$("quick-note").value.trim();
