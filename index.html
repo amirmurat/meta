@@ -94,10 +94,6 @@ async function main(){
   }
   if(!root.children.length){$("empty").hidden=false;return;}
   root.hidden=false;
-  if(false){
-    $("notice").textContent="Для Корана пока доступен счётчик; страница изучения аятов появится позже.";
-    $("notice").hidden=false;
-  }
  }catch(e){
   console.error("Meta dashboard:",e);
   $("loading").textContent="Не удалось загрузить твои программы. Обнови страницу или проверь вход в аккаунт.";
