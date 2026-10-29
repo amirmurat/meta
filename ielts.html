@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Academic — Meta</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{max-width:830px;margin:0 auto;padding:28px 24px 72px}
+a{color:inherit}.top{display:flex;justify-content:space-between;gap:20px}
+.back{font-size:15px;color:#555;text-decoration:none;margin-bottom:31px}
+.back:hover{text-decoration:underline}
+h1{font-size:32px;letter-spacing:-.7px;margin:0 0 9px}
+p{color:#6b7280;line-height:1.55;margin:0}
+.intro{margin-bottom:27px}
+.modules{display:flex;flex-direction:column;gap:20px}
+.skill{width:100%;margin-top:0}
+.skill>button{background:none;border:0;width:100%;color:inherit;text-align:left;cursor:pointer;display:block;padding:0;font:inherit}
+.skill>button:focus-visible,a:focus-visible{outline:2px solid #111;outline-offset:4px}
+.skill>button:hover .title{text-decoration:underline}
+.heading{padding:17px 12px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:17px;line-height:1.4}
+.title{font-weight:600}.amount{font-variant-numeric:tabular-nums;white-space:nowrap;color:#555;font-size:15px}
+.track{background:#e5e7eb;height:18px;margin:0 12px}
+.fill{height:100%;background:#111;width:0}
+.subgroups{padding:15px 8px 4px 18px}
+.subgroups .heading{padding:13px 12px;font-size:15px}
+.subgroups .title{font-weight:500}
+.subgroups .track{height:10px}
+.subgroups .subgroups{padding-left:12px;padding-top:10px}
+.leaf-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:9px;padding:17px 9px 5px 14px}
+.leaf{display:flex;gap:12px;align-items:flex-start;border:1px solid #e5e7eb;padding:13px;text-decoration:none;color:#111;font-size:14px;line-height:1.5}
+.leaf.completed{background:#dcfce7;border-color:#86d6a0;color:#14532d}
+.leaf:hover{border-color:#9ca3af}
+.id{white-space:nowrap;color:#666;font:12px/1.6 ui-monospace,Consolas,monospace}
+.leaf.completed .id{color:#166534}
+.status{padding:16px 12px;font-size:14px;color:#666}
+.next{margin-top:22px;font-size:14px;line-height:1.6;color:#555}
+.next a{color:#111}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:26px 16px 60px}.heading{padding-left:4px;padding-right:4px}.subgroups{padding-left:10px}.leaf-list{grid-template-columns:1fr}.track{margin:0 4px}}
+</style>
+</head>
+<body>
+<main>
+<nav class="top"><a class="back" href="./">← Мои программы</a><a class="back" href="./profile.html">Профиль</a></nav>
+<header class="intro"><h1>IELTS Academic</h1><p id="summary">Проверяю учебный план…</p></header>
+<div class="modules" id="modules" aria-live="polite"><p class="status">Загрузка…</p></div>
+<p class="next" id="next" hidden></p>
+</main>
+<script type="module">
+import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
+const $=id=>document.getElementById(id);
+const labels={"A.1":"Listening","A.2":"Academic Reading","A.3":"Academic Writing","A.4":"Speaking"};
+function mark(groups,records){
+  const container=document.createElement("div");container.className="subgroups";
+  const keyed=new Map();
+  for(const lesson of records){
+    const parts=lesson.external_id.split(".");
+    const id=parts.slice(0,groups+1).join(".");
+    if(!keyed.has(id))keyed.set(id,[]);
+    keyed.get(id).push(lesson);
+  }
+  for(const [id,items] of keyed){
+    const ancestor=items[0].lesson_content?.ancestors?.find(x=>x.id===id);
+    const name=labels[id]||ancestor?.title||id;
+    const section=document.createElement("section");section.className="skill";section.id="group-"+id;
+    const toggle=document.createElement("button");toggle.type="button";
+    const heading=document.createElement("div");heading.className="heading";
+    const title=document.createElement("span");title.className="title";title.textContent=name;
+    const count=document.createElement("span");count.className="amount";
+    count.textContent=items.filter(x=>x.completed).length+" / "+items.length;
+    heading.append(title,count);
+    const track=document.createElement("div");track.className="track";
+    const fill=document.createElement("div");fill.className="fill";
+    fill.style.width=100*items.filter(x=>x.completed).length/items.length+"%";
+    track.append(fill);toggle.append(heading,track);
+    const child=document.createElement("div");child.hidden=true;
+    child.id="children-"+id;
+    toggle.setAttribute("aria-controls",child.id);
+    toggle.setAttribute("aria-expanded","false");
+    if(groups<4){
+      child.append(mark(groups+1,items));
+    }else{
+      const list=document.createElement("div");list.className="leaf-list";
+      for(const lesson of items){
+        const a=document.createElement("a");a.className="leaf"+(lesson.completed?" completed":"");
+        a.href="./ielts-lesson.html?id="+encodeURIComponent(lesson.external_id);
+        const code=document.createElement("span");code.className="id";code.textContent=lesson.external_id;
+        const text=document.createElement("span");text.textContent=lesson.title;
+        a.append(code,text);list.append(a);
+      }
+      child.append(list);
+    }
+    toggle.addEventListener("click",()=>{
+      child.hidden=!child.hidden;
+      toggle.setAttribute("aria-expanded",String(!child.hidden));
+    });
+    section.append(toggle,child);container.append(section);
+  }
+  return container;
+}
+async function start(){
+ try{
+  const user=await authenticatedUser();
+  if(!user){location.replace(authPage("./ielts.html"));return;}
+  const [rows,completed]=await Promise.all([
+    supabase.from("lessons").select("id,external_id,title,sort_order,lesson_content").eq("course_slug","ielts").order("sort_order",{ascending:true}),
+    supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
+  ]);
+  if(rows.error)throw rows.error;if(completed.error)throw completed.error;
+  if(!rows.data?.length){
+    $("modules").textContent="IELTS пока не назначен твоему аккаунту.";
+    $("summary").textContent="Нет доступа к программе";return;
+  }
+  if(rows.data.length!==332)throw Error("Неполный список IELTS ("+rows.data.length+")");
+  const ids=new Set((completed.data||[]).map(x=>x.lesson_id));
+  const lessons=rows.data.map(x=>({...x,completed:ids.has(x.id)}));
+  const count=lessons.filter(x=>x.completed).length;
+  $("summary").textContent="332 микроурока · 4 секции · "+count+" пройдено. Разверни раздел, затем навык и микроурок.";
+  $("modules").replaceChildren();
+  const groups=mark(2,lessons);
+  // make top-level groups (A.1...A.4) first, then nested branches.
+  $("modules").append(groups);
+  const first=lessons.find(x=>!x.completed);
+  if(first){
+    const next=$("next");next.hidden=false;
+    next.append("Первый незакрытый по порядку справочника: ");
+    const link=document.createElement("a");link.href="./ielts-lesson.html?id="+encodeURIComponent(first.external_id);
+    link.textContent=first.external_id+" — "+first.title;
+    next.append(link);
+  }
+  const requested=decodeURIComponent(location.hash.slice(1));
+  if(requested.startsWith("group-A.")){
+    const node=document.getElementById(requested);
+    if(node){
+      let parent=node;
+      while(parent && parent!==$("modules")){
+        if(parent.tagName==="DIV" && parent.id?.startsWith("children-")){
+          parent.hidden=false;
+          parent.previousElementSibling?.setAttribute("aria-expanded","true");
+        }
+        parent=parent.parentElement;
+      }
+      requestAnimationFrame(()=>node.scrollIntoView({block:"start"}));
+    }
+  }
+ }catch(err){
+  console.error(err);
+  $("modules").textContent="Не удалось загрузить план. Проверь соединение и войди снова.";
+ }
+}
+void start();
+</script>
+</body>
+</html>
