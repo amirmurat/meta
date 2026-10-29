@@ -17,6 +17,22 @@ section{margin-top:38px}h2{font-size:18px;font-weight:600;margin:0 0 14px}
 .name{font-size:15px;line-height:1.45}
 .status{color:#777;margin-top:20px}
 @media(max-width:580px){main{padding-top:25px}h1{font-size:29px}.list{grid-template-columns:1fr}}
+
+/* Module progress cards use the same spacing and bar height as the homepage. */
+main{max-width:688px;padding-left:24px;padding-right:24px}
+section.module{margin-top:0}
+.modules{display:flex;flex-direction:column;gap:18px}
+.module-toggle{display:block;width:100%;background:transparent;color:inherit;border:0;border-radius:0;padding:0;text-align:left;font:inherit;cursor:pointer}
+.module-toggle:hover .module-name{text-decoration:underline}
+.module-toggle:focus-visible{outline:2px solid #111;outline-offset:4px}
+.module-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;font-size:18px;line-height:1.4}
+.module-name{font-weight:600}
+.module-count{font-variant-numeric:tabular-nums;white-space:nowrap}
+.module-track{height:18px;margin:0 24px;background:#e5e7eb}
+.module-fill{height:100%;background:#111}
+.module-lessons{margin:18px 24px 4px}
+.module-lessons[hidden]{display:none}
+header{margin-bottom:26px}
 </style>
 </head>
 <body>
@@ -52,19 +68,37 @@ if(!response.ok)throw new Error("HTTP "+response.status);
 const lessons=await response.json();
 if(!Array.isArray(lessons)||lessons.length!==56)throw new Error("Неполный каталог");
 root.replaceChildren();
+root.className="modules";
 for(const mod of modules){
  const group=lessons.filter(x=>x.external_id.startsWith(mod.prefix));
- const section=document.createElement("section");
- const title=document.createElement("h2");
- title.textContent=mod.title+" · "+group.length;
+ const done=group.filter(x=>completedLessonIds.has(x.external_id)).length;
+ const section=document.createElement("section");section.className="module";
+ const toggle=document.createElement("button");toggle.type="button";toggle.className="module-toggle";
+ const heading=document.createElement("div");heading.className="module-heading";
+ const name=document.createElement("span");name.className="module-name";name.textContent=mod.title;
+ const count=document.createElement("span");count.className="module-count";count.textContent=done+" / "+group.length;
+ heading.append(name,count);
+ const track=document.createElement("div");track.className="module-track";
+ const fill=document.createElement("div");fill.className="module-fill";
+ fill.style.width=(group.length?100*done/group.length:0)+"%";
+ track.append(fill);toggle.append(heading,track);
+ const content=document.createElement("div");content.className="module-lessons";
+ content.id="module-"+mod.prefix;content.hidden=true;
+ toggle.setAttribute("aria-controls",content.id);
+ toggle.setAttribute("aria-expanded","false");
  const list=document.createElement("div");list.className="list";
  for(const lesson of group){
   const tile=document.createElement("div");tile.className=completedLessonIds.has(lesson.external_id)?"lesson completed":"lesson";
   const id=document.createElement("span");id.className="code";id.textContent=lesson.external_id;
-  const name=document.createElement("span");name.className="name";name.textContent=lesson.title;
-  tile.append(id,name);list.append(tile);
+  const label=document.createElement("span");label.className="name";label.textContent=lesson.title;
+  tile.append(id,label);list.append(tile);
  }
- section.append(title,list);root.append(section);
+ content.append(list);
+ toggle.addEventListener("click",()=>{
+  content.hidden=!content.hidden;
+  toggle.setAttribute("aria-expanded",String(!content.hidden));
+ });
+ section.append(toggle,content);root.append(section);
 }
 }catch(error){
 root.replaceChildren();
