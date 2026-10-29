@@ -266,6 +266,26 @@ async function load() {
     setText("task", content.task);
     $("copy-example").addEventListener("click",()=>copyText(content.example, $("copy-example")));
     $("copy-answer").addEventListener("click",()=>copyText($("answer").value, $("copy-answer")));
+    $("copy-ai-request").addEventListener("click",()=>{
+      const response=$("answer").value.trim();
+      if(!response){
+        setText("save-state","Сначала напиши собственный ответ.");
+        $("answer").focus();
+        return;
+      }
+      const instructions=[
+        "Ты проверяющий моего самостоятельного микроурока Flutter. Проверь по критериям, не решай за меня.",
+        "Микроурок: "+row.external_id+" — "+row.title,
+        "Тип: "+row.task_type,
+        "Задание:\n"+content.task,
+        "Критерии:\n"+content.criteria.map((x,i)=>(i+1)+". "+x).join("\n"),
+        "Мой ответ:\n"+response,
+        "Дай конкретные замечания, укажи, что исправить, и попроси при необходимости показать вывод запуска.",
+        "Не утверждай, что код компилировался или запускался, если ты не выполнял реальный запуск.",
+        "В конце скажи, соответствуют ли ответы критериям, или нужно доработать."
+      ];
+      void copyText(instructions.join("\n\n"),$("copy-ai-request"));
+    });
     showTaskMode(row.task_type);
     initCriteria(content.criteria);
     initNav(nav);
