@@ -59,8 +59,10 @@ alter table public.notes enable row level security;
 revoke all on table public.courses, public.lessons,
   public.lesson_progress, public.notes from anon;
 grant select on table public.courses, public.lessons to authenticated;
-grant select, insert, update, delete
-  on table public.lesson_progress, public.notes to authenticated;
+-- Task-based progress is written by trusted server-side validation only.
+-- Browser-side completion is permitted for Quran ayahs, which have no tasks.
+grant select, insert, delete on table public.lesson_progress to authenticated;
+grant select, insert, update, delete on table public.notes to authenticated;
 
 create policy "signed_in_users_read_courses"
   on public.courses for select to authenticated using (true);
@@ -70,16 +72,26 @@ create policy "signed_in_users_read_lessons"
 create policy "users_read_own_progress"
   on public.lesson_progress for select to authenticated
   using ((select auth.uid()) = user_id);
-create policy "users_insert_own_progress"
+-- Do not trust client-side IELTS/Flutter completion:
+-- the application must validate their exercises on the server first.
+create policy "users_insert_own_quran_progress"
   on public.lesson_progress for insert to authenticated
-  with check ((select auth.uid()) = user_id);
-create policy "users_update_own_progress"
-  on public.lesson_progress for update to authenticated
-  using ((select auth.uid()) = user_id)
-  with check ((select auth.uid()) = user_id);
-create policy "users_delete_own_progress"
+  with check (
+    (select auth.uid()) = user_id
+    and exists (
+      select 1 from public.lessons l
+      where l.id = lesson_id and l.course_slug = 'quran'
+    )
+  );
+create policy "users_delete_own_quran_progress"
   on public.lesson_progress for delete to authenticated
-  using ((select auth.uid()) = user_id);
+  using (
+    (select auth.uid()) = user_id
+    and exists (
+      select 1 from public.lessons l
+      where l.id = lesson_id and l.course_slug = 'quran'
+    )
+  );
 
 create policy "users_read_own_notes"
   on public.notes for select to authenticated
