@@ -93,7 +93,6 @@ async function load(){
   const rs=await Promise.all([
    supabase.from("course_enrollments").select("course_slug").eq("user_id",user.id),
    supabase.from("courses").select("slug,title,title_en,total_units"),
-   supabase.from("lessons").select("id,external_id,course_slug,title,title_en"),
    supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method,verified_on")
     .eq("user_id",user.id),
    supabase.from("lesson_attempts").select("lesson_id,submitted_at,ai_review_confirmed_at")
@@ -102,7 +101,13 @@ async function load(){
     .eq("user_id",user.id)
   ]);
   for(const r of rs)if(r.error)throw r.error;
-  const [enrollments,courses,lessons,progress,attempts,sessions]=rs.map(r=>r.data||[]);
+  const [enrollments,courses,progress,attempts,sessions]=rs.map(r=>r.data||[]);
+  const ids=[...new Set([...progress.map(x=>x.lesson_id),...attempts.map(x=>x.lesson_id)])];
+  const details=ids.length
+   ?await supabase.from("lessons").select("id,external_id,course_slug,title,title_en").in("id",ids)
+   :{data:[],error:null};
+  if(details.error)throw details.error;
+  const lessons=details.data||[];
   const assigned=new Set(enrollments.map(e=>e.course_slug));
   const visible=courses.filter(c=>assigned.has(c.slug));
   const byLesson=new Map(lessons.map(l=>[l.id,l]));
