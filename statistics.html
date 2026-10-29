@@ -71,6 +71,7 @@ h2{font-size:20px;margin:0 0 18px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 const fmtDay=s=>s?String(s).split("-").reverse().join("."):"—";
 const todayAlmaty=timestamp=>{
@@ -91,8 +92,8 @@ async function load(){
   if(!user){location.replace("./account.html?next="+encodeURIComponent("./statistics.html"));return;}
   const rs=await Promise.all([
    supabase.from("course_enrollments").select("course_slug").eq("user_id",user.id),
-   supabase.from("courses").select("slug,title,total_units"),
-   supabase.from("lessons").select("id,external_id,course_slug,title"),
+   supabase.from("courses").select("slug,title,title_en,total_units"),
+   supabase.from("lessons").select("id,external_id,course_slug,title,title_en"),
    supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method,verified_on")
     .eq("user_id",user.id),
    supabase.from("lesson_attempts").select("lesson_id,submitted_at,ai_review_confirmed_at")
@@ -130,7 +131,7 @@ async function load(){
   for(const course of visible){
    const group=node("div");
    const heading=node("div","progress-top");
-   const name=node("strong","",course.title);
+   const name=node("strong","",language()==="en"?(course.title_en||course.title):course.title);
    const done=doneByCourse.get(course.slug)||0;
    const total=node("span","",done+" / "+course.total_units);
    heading.append(name,total);
@@ -165,7 +166,7 @@ async function load(){
   for(const item of dated.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20)){
    const tr=node("tr");
    for(const txt of [fmtDay(item.date),item.course?.title||item.lesson.course_slug,
-     item.lesson.title||item.lesson.external_id,item.precision]){
+     (language()==="en"?(item.lesson.title_en||item.lesson.title):item.lesson.title)||item.lesson.external_id,item.precision]){
     tr.append(node("td","",txt));
    }
    timeline.append(tr);
