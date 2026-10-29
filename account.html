@@ -29,7 +29,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <main>
 <a class="back" href="./">← Meta</a>
 <h1 id="heading">Аккаунт</h1>
-<p class="subtitle" id="subtitle">Личные уроки, прогресс и заметки.</p>
+<p class="subtitle" id="subtitle">Сначала войди, чтобы открыть свои программы и прогресс.</p>
 
 <div id="guest">
 <div class="tabs" role="tablist" aria-label="Режим аккаунта">
@@ -60,7 +60,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <p id="identity"></p>
 <div class="actions">
 <a href="./profile.html">Открыть профиль</a>
-<a href="./flutter.html">Продолжить Flutter</a>
+<a href="./">Мои программы</a>
 <button class="secondary" id="sign-out" type="button">Выйти из аккаунта</button>
 </div>
 </div>
@@ -87,13 +87,13 @@ function showMode(m){
 }
 function safeDestination(){
   const raw=new URLSearchParams(location.search).get("next");
-  if(!raw)return "./profile.html";
+  if(!raw)return "./";
   try{
     const target=new URL(raw,location.href);
     if(target.origin===location.origin&&target.pathname.startsWith(new URL("./",location.href).pathname))
       return target.href;
   }catch{}
-  return "./profile.html";
+  return "./";
 }
 function busy(form,value){form.querySelector("button.primary").disabled=value}
 function errorText(err){
