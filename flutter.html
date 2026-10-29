@@ -13,6 +13,9 @@ section{margin-top:38px}h2{font-size:18px;font-weight:600;margin:0 0 14px}
 .lesson{background:transparent;border:1px solid #e6e6e6;text-align:left;padding:17px 16px;min-height:72px;display:flex;align-items:center;gap:14px;border-radius:0;font:inherit;color:inherit}
 .lesson.completed{background:#dcfce7;border-color:#86d6a0;color:#14532d}
 .lesson.completed .code{color:#166534}
+.lesson{text-decoration:none;cursor:pointer}
+.lesson:hover{border-color:#a3a3a3}
+.lesson:focus-visible{outline:2px solid #111;outline-offset:3px}
 .code{font-size:13px;color:#888;min-width:32px;font-variant-numeric:tabular-nums}
 .name{font-size:15px;line-height:1.45}
 .status{color:#777;margin-top:20px}
@@ -88,7 +91,9 @@ for(const mod of modules){
  toggle.setAttribute("aria-expanded","false");
  const list=document.createElement("div");list.className="list";
  for(const lesson of group){
-  const tile=document.createElement("div");tile.className=completedLessonIds.has(lesson.external_id)?"lesson completed":"lesson";
+  const tile=document.createElement("a");tile.className=completedLessonIds.has(lesson.external_id)?"lesson completed":"lesson";
+  tile.href="./flutter-lesson.html?id="+encodeURIComponent(lesson.external_id);
+  tile.setAttribute("aria-label",lesson.external_id+" — "+lesson.title+(completedLessonIds.has(lesson.external_id)?" (пройден)":""));
   const id=document.createElement("span");id.className="code";id.textContent=lesson.external_id;
   const label=document.createElement("span");label.className="name";label.textContent=lesson.title;
   tile.append(id,label);list.append(tile);
@@ -99,6 +104,11 @@ for(const mod of modules){
   toggle.setAttribute("aria-expanded",String(!content.hidden));
  });
  section.append(toggle,content);root.append(section);
+ if(location.hash==="#module-"+mod.prefix){
+  content.hidden=false;
+  toggle.setAttribute("aria-expanded","true");
+  requestAnimationFrame(()=>section.scrollIntoView({block:"start"}));
+ }
 }
 }catch(error){
 root.replaceChildren();
