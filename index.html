@@ -3,15 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Meta</title>
+  <meta name="theme-color" content="#ffffff">
+  <title>Meta — IELTS Progress</title>
   <style>
+    * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
-      width: 100%;
       min-height: 100%;
-      background: #fff;
+      background: #ffffff;
+      color: #111111;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    main {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .progress {
+      width: min(100%, 640px);
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fafafa;
+      overflow: hidden;
+    }
+
+    .progress-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 24px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .progress-label { font-weight: 600; }
+
+    .progress-count {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 3px;
+      background: #e5e7eb;
+    }
+
+    .progress-fill {
+      width: 0.903614%;
+      height: 100%;
+      background: #111111;
     }
   </style>
 </head>
-<body></body>
+<body>
+  <main>
+    <section class="progress" aria-label="IELTS: 3 из 332 уроков выполнено">
+      <div class="progress-content">
+        <span class="progress-label">IELTS</span>
+        <span class="progress-count">3 / 332</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Завершённые уроки IELTS" aria-valuemin="0" aria-valuemax="332" aria-valuenow="3">
+        <div class="progress-fill"></div>
+      </div>
+    </section>
+  </main>
+</body>
 </html>
