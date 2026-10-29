@@ -41,6 +41,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 async function main(){
  try{
@@ -52,7 +53,7 @@ async function main(){
   $("loading").hidden=true;$("heading").hidden=false;
   if(!assigned?.length){$("empty").hidden=false;return;}
   const [catalog,lessons,progress]=await Promise.all([
-   supabase.from("courses").select("slug,title,total_units"),
+   supabase.from("courses").select("slug,title,title_en,total_units"),
    supabase.from("lessons").select("id,course_slug"),
    supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
   ]);
@@ -73,13 +74,13 @@ async function main(){
     if(course.slug==="flutter")card.href="./flutter.html";
     if(course.slug==="ielts")card.href="./ielts.html";
     const top=document.createElement("div");top.className="course-top";
-    const title=document.createElement("span");title.className="name";title.textContent=course.title;
+    const title=document.createElement("span");title.className="name";title.textContent=language()==="en"?(course.title_en||course.title):course.title;
     const amount=document.createElement("span");amount.className="count";
     const done=counts.get(course.slug)||0;
     amount.textContent=done+" / "+course.total_units;
     top.append(title,amount);
     const track=document.createElement("div");track.className="track";
-    track.setAttribute("role","progressbar");track.setAttribute("aria-label",course.title);
+    track.setAttribute("role","progressbar");track.setAttribute("aria-label",language()==="en"?(course.title_en||course.title):course.title);
     track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(course.total_units));
     track.setAttribute("aria-valuenow",String(done));
     const fill=document.createElement("div");fill.className="fill";
