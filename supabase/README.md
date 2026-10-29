@@ -10,7 +10,7 @@ Repository: https://github.com/amirmurat/meta
 - lesson_attempts (one attempt draft per user and lesson)
 - RLS enabled on all six public tables
 - each profile, attempt, note, and completion is private to its authenticated owner
-- course catalog (only educational materials) readable by visitors
+- course catalog and lessons are private to explicitly enrolled accounts; no guest access
 
 ## Accounts
 - account.html: email/password registration, sign-in/out, email reset link
@@ -24,7 +24,8 @@ Repository: https://github.com/amirmurat/meta
 - Frontend sign-up/password-reset flows have NOT been end-to-end tested with a real email and a login.
 
 ## Per-user Flutter learning
-- flutter.html: 7 module bars, 56 lesson links, green lessons and counts from signed-in user's own completion records
+- index.html: login-first dashboard; only courses assigned via private course_enrollments are shown, no hardcoded Amir study blocks
+- flutter.html: protected 7 module bars, 56 lesson links, green lessons and counts from signed-in enrolled user's own completion records
 - flutter-lesson.html?id=U06: lesson theory, sample, task, typed answer, self-check, notes
 - flutter-lesson-app.js: cloud autosave for registered users, browser-only drafts for guests
 - User can copy an AI-review request with task, answer and criteria, paste it into ChatGPT, and then attest:
@@ -32,6 +33,13 @@ Repository: https://github.com/amirmurat/meta
 - A self-attested completion is identified by verification_method='self_ai_review'. This is NOT an automatic AI judgment and does NOT run Dart, Flutter, SQL, or tests.
 - Flutter code must still be run/tested in the user's IDE, DartPad or a suitable test environment.
 - For a future automated evaluator, build an authenticated server-side assessment service and do not expose API secrets to GitHub Pages.
+
+## Private course assignment
+- `course_enrollments(user_id, course_slug)` is created by a trusted administrator, not self-service. Login does not enroll someone automatically.
+- Currently there are no Auth users or course assignments; after Amir registers his own Meta account, explicitly link it to `ielts`, `flutter`, and `quran` only after verifying account ownership.
+- Friends and relatives see an empty personal dashboard and can enter their own learning goal in Profile; a personalized curriculum builder is not yet implemented.
+- Direct Flutter URLs and Supabase Data API lessons require both authentication and assigned enrollment.
+- The 21:00 progress monitoring automation is retained in read-only form and must NOT overwrite login-first index.html or assign courses without owner confirmation.
 
 ## Personal progress and source-of-truth caveat
 - The original confirmed Amir Flutter checkpoint is 16/56 (D01-D12 and U02-U05), held in Amir's canonical Google Drive Flutter START HERE.
