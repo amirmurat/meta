@@ -67,9 +67,11 @@ async function main(){
   }
   const root=$("courses");
   for(const course of visible){
-    const card=document.createElement(course.slug==="flutter"?"a":"div");
+    const canOpen=course.slug==="flutter"||course.slug==="ielts";
+    const card=document.createElement(canOpen?"a":"div");
     card.className="course";
     if(course.slug==="flutter")card.href="./flutter.html";
+    if(course.slug==="ielts")card.href="./ielts.html";
     const top=document.createElement("div");top.className="course-top";
     const title=document.createElement("span");title.className="name";title.textContent=course.title;
     const amount=document.createElement("span");amount.className="count";
@@ -86,8 +88,8 @@ async function main(){
   }
   if(!root.children.length){$("empty").hidden=false;return;}
   root.hidden=false;
-  if(visible.some(c=>c.slug!=="flutter")){
-    $("notice").textContent="Другие программы пока доступны только в виде прогресса; страницы уроков появятся позже.";
+  if(visible.some(c=>c.slug==="quran")){
+    $("notice").textContent="Для Корана пока доступен счётчик; страница изучения аятов появится позже.";
     $("notice").hidden=false;
   }
  }catch(e){
