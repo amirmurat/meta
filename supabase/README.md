@@ -55,3 +55,18 @@ Each user should own goals, preferences, attempts, notes and progress. Shared ed
 - Keep RLS policies under review; security advisor was clean after schema migration.
 - Implement data export/deletion, rate limits, error monitoring, verified email delivery and account recovery before large-scale release.
 - The original supabase/schema.sql is a historical baseline; do not reapply to this live project. Use the live migration history and current schema.
+
+## Historical progress and statistics
+
+- Historical study evidence is stored ONLY in authenticated, private rows, not committed to this public repository.
+- All three courses are assigned via course_enrollments. There is a one-profile, three-enrollment safety guard in the separate, user-delivered SQL import file.
+- The restored baseline is expected to be IELTS 3, Flutter 16 and Quran 39. The historical import must be run by the project owner in the Supabase SQL Editor and verified; it has NOT been run by ChatGPT.
+- lesson_progress.achieved_on is DATE; date_accuracy distinguishes exact_day from on_or_before_day and unknown. verified_on records the source evidence/checkpoint date, not necessarily submission. imported_at records when the legacy row was migrated.
+- lesson_attempts.submitted_at is set only by an explicit "Зафиксировать сдачу ответа" action, not autosave. ai_review_confirmed_at records the user's own AI-review confirmation.
+- learning_sessions stores source-confirmed start and end times separately from submission and achievement. An Oct 9 Quran study session at 05:30–06:00 Asia/Almaty is staged in the manual import as one verified session, not 2:38 completion.
+- statistics.html displays assigned course progress, actual recorded submission counts, review confirmations, confirmed study minutes and exact-date learning history. Approximate/bound-only dates are not plotted as exact events.
+- The 21:00 monitor only reviews canonical Drive milestones; it must never overwrite the login-first homepage or create speculative progress in Supabase.
+
+## Account security
+
+Supabase security advisor currently reports leaked-password protection disabled. Check the Supabase Auth password security settings and enable where available before public signup at scale.
