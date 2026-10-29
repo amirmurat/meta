@@ -1,34 +1,32 @@
 # Meta learning backend
 
-This directory contains the prepared, **not yet deployed** Supabase schema.
+Live Supabase project: Meta (ref: munmvexfrtqwmwptafkf).
+Frontend: https://amirmurat.github.io/meta/
+
+## Deployed
+
+- Four Postgres tables: courses, lessons, lesson_progress, notes.
+- All tables use Row Level Security (RLS).
+- Course names and educational lesson material are publicly readable.
+- Private progress and notes require an authenticated owner.
+- All 56 Flutter micro-lessons are populated from Amir's specialist Flutter course materials in Google Drive.
+- Each Flutter lesson has theory, an example, a unique practice task, and measurable self-check criteria.
+- Task formats: 34 code, 13 practical reports, and 9 written explanations.
 
 ## Frontend
 
-The existing GitHub Pages page stays at https://amirmurat.github.io/meta/.
-No change to `index.html` is needed until a dedicated Supabase project exists.
+- Module list: https://amirmurat.github.io/meta/flutter.html
+- Individual page: https://amirmurat.github.io/meta/flutter-lesson.html?id=U06
+- Each lesson has a distinct deep link with the same shared page template.
+- Learner responses and notes are drafts stored in localStorage only (per browser/device).
+- The text editor does not compile or execute code. DartPad and a local IDE are recommended for actual runs.
+- Self-check is NOT trusted grading. It does not change server progress.
 
-## Planned data model
+## Important boundaries
 
-- `courses`: IELTS (332 micro-lessons), Flutter (56 micro-lessons), Quran (6236 ayahs).
-- `lessons`: lesson content / tasks and Quran ayahs, to be imported from approved sources.
-- `lesson_progress`: completion records for an authenticated user.
-- `notes`: private notes linked to a course and optionally a lesson.
-
-## Security
-
-- Login will use Supabase Auth.
-- Database Row Level Security (RLS) restricts progress and notes to their owner.
-- Catalog reading requires login; catalog editing stays administrative.
-- No private Google Drive document data has been copied.
-- Never commit Supabase secret/service_role keys to this public repository.
-- Use only a **publishable** key in a browser app.
-
-## Next deployment step
-
-1. Create a dedicated Supabase project in the account/organization selected by Amir.
-2. Apply `schema.sql` **once** to that new project and test RLS.
-3. Set up Auth and connect the publishable project URL/key to the frontend.
-4. Only then implement lesson pages, task verification, manual Quran completion and notes.
-5. Decide the source-of-truth synchronization policy before mirroring progress from Google Drive.
-
-The existing daily 21:00 update automation still reads Drive and edits the static homepage; it is not a Supabase sync.
+- The 16/56 completion display is a confirmed historical snapshot from Amir's canonical Flutter START HERE, not imported database completion records.
+- The 21:00 monitoring automation still checks Google Drive and updates homepage counters. It does not update Supabase.
+- Do not copy personal journals, private source code, or credentials into the public catalog.
+- Only Supabase publishable keys belong in browser code, never secret/service role keys.
+- Task evaluation and durable cloud notes require later authentication and a trusted assessment service.
+- schema.sql is the original baseline and may be behind the deployed schema. Always inspect the live project and its migrations before relying on or reapplying it.
