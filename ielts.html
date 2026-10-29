@@ -77,7 +77,7 @@ function mark(groups,records){
     child.id="children-"+id;
     toggle.setAttribute("aria-controls",child.id);
     toggle.setAttribute("aria-expanded","false");
-    if(groups<4){
+    if(groups<3){
       child.append(mark(groups+1,items));
     }else{
       const list=document.createElement("div");list.className="leaf-list";
@@ -117,7 +117,7 @@ async function start(){
   const count=lessons.filter(x=>x.completed).length;
   $("summary").textContent="332 микроурока · 4 секции · "+count+" пройдено. Разверни раздел, затем навык и микроурок.";
   $("modules").replaceChildren();
-  const groups=mark(2,lessons);
+  const groups=mark(1,lessons);
   // make top-level groups (A.1...A.4) first, then nested branches.
   $("modules").append(groups);
   const first=lessons.find(x=>!x.completed);
