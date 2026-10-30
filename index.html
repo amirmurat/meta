@@ -53,7 +53,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-dashboard">
-<header id="heading" hidden><h1>Мои программы</h1><div class="nav-links"><a class="profile" href="./statistics.html">Статистика</a><a class="profile" href="./admin-statistics.html" id="admin-nav" hidden>Админ-панель</a><a class="profile" href="./profile.html">Профиль</a></div></header>
+<header id="heading" hidden><h1>Мои программы</h1><div class="nav-links"><a class="profile" href="./statistics.html">Статистика</a><a class="profile" href="./support.html">Сообщения</a><a class="profile" href="./welcome.html">О Meta</a><a class="profile" href="./admin-statistics.html" id="admin-nav" hidden>Админ-панель</a><a class="profile" href="./admin-operations.html" id="admin-ops-nav" hidden>Управление</a><a class="profile" href="./profile.html">Профиль</a></div></header>
 <p class="small" id="loading">Проверяю вход…</p>
 <section class="resume-section" id="resume-section" aria-labelledby="resume-heading" hidden>
 <h2 class="resume-heading" id="resume-heading">Продолжить обучение</h2>
@@ -62,8 +62,8 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </section>
 <div class="courses" id="courses" hidden></div>
 <div class="empty" id="empty" hidden>
-<p>Пока у тебя нет назначенных программ. Укажи свою цель в профиле. После этого можно будет подобрать или создать учебный маршрут.</p>
-<a href="./profile.html">Указать цель</a>
+<p>Аккаунт создан, но программа пока не назначена. Напиши администратору, какой курс тебе нужен (например, IELTS). После назначения он появится здесь.</p>
+<a href="./support.html">Запросить доступ к курсу →</a> · <a href="./profile.html">Заполнить профиль</a>
 </div>
 <p class="small" id="notice" hidden></p>
 </main>
@@ -147,8 +147,8 @@ async function renderResume(user,visible,completedIds,positions){
 async function main(){
  try{
   const user=await authenticatedUser();
-  if(!user){location.replace("./account.html?next="+encodeURIComponent("./"));return;}
-  void supabase.rpc("meta_admin_access").then(({data,error})=>{if(!error&&data===true)$("admin-nav").hidden=false;}).catch(()=>{});
+  if(!user){location.replace("./welcome.html");return;}
+  void supabase.rpc("meta_admin_access").then(({data,error})=>{if(!error&&data===true){$("admin-nav").hidden=false;$("admin-ops-nav").hidden=false;}}).catch(()=>{});
   const {data:assigned,error:assignedError}=await supabase.from("course_enrollments")
     .select("course_slug").eq("user_id",user.id);
   if(assignedError)throw assignedError;

@@ -39,6 +39,19 @@ p{color:#6b7280;line-height:1.55;margin:0}
 .next strong{font-size:14px;margin-right:7px}
 .next a{font-weight:600;line-height:1.65}
 @media(max-width:600px){.next{margin-top:0}}
+.ielts-guide{border:1px solid #ddd;padding:19px 17px;margin:0 0 28px}
+.ielts-guide h2{font-size:20px;margin:0 0 8px}
+.ielts-guide p{color:#555;font-size:14px;line-height:1.65;margin:0 0 15px}
+.ielts-guide .meta-assessment-link{margin:17px 0}
+.ielts-guide-label{font-weight:500}
+.ielts-report{display:inline-block;font-weight:600;font-size:14px;margin:3px 0 20px}
+.ielts-extra{border-top:1px solid #e2e2e2;padding-top:16px;margin-top:5px}
+.ielts-extra summary{cursor:pointer;font-size:15px;font-weight:600}
+.ielts-extra p{margin:12px 0;color:#666}
+.ielts-extra-links{display:flex;flex-direction:column;gap:12px;padding:6px 0}
+.ielts-extra-links a{padding:10px;border:1px solid #e4e4e4;text-decoration:none;font-size:14px;line-height:1.5}
+.ielts-extra-links a:hover{text-decoration:underline}
+
 [hidden]{display:none!important}
 @media(max-width:600px){main{padding:26px 16px 60px}.heading{padding-left:4px;padding-right:4px}.subgroups{padding-left:10px}.leaf-list{grid-template-columns:1fr}.track{margin:0 4px}}
 </style>
@@ -46,24 +59,26 @@ p{color:#6b7280;line-height:1.55;margin:0}
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-lesson">
-<nav class="top"><a class="back" href="./">← Мои программы</a><a class="back" href="./profile.html">Профиль</a></nav>
+<nav class="top"><a class="back" href="./">← Мои программы</a><a class="back" href="./support.html">Сообщения</a><a class="back" href="./profile.html">Профиль</a></nav>
 <header class="intro"><h1>IELTS Academic</h1><p id="summary">Проверяю учебный план…</p></header>
 <p class="next" id="next" hidden aria-live="polite"></p>
-<a class="meta-assessment-link" href="./assessment.html" id="diagnostic-link" aria-label="IELTS Reading skills diagnostic">
-<div><strong id="diagnostic-title">Начни с диагностики Reading</strong>
-<span id="diagnostic-description">12 вопросов внутри Meta → анализ ошибок → подходящие микроуроки</span></div>
-<span id="diagnostic-cta" style="font-weight:650;white-space:nowrap">Пройти →</span>
-</a>
-<a class="meta-assessment-link" href="./reading-mock.html"><div><strong>IELTS Reading Mock · 40 вопросов / questions</strong><span>3 текста / passages · 60 min · анализ навыков / skills · план на 7 дней</span></div><span>Start / Начать →</span></a>
-<a class="meta-assessment-link" href="./ielts-dashboard.html">
-<div><strong>IELTS Analytics / Аналитика</strong><span>Результаты · слабые навыки · план на 7 дней</span></div><span>Open / Открыть →</span>
-</a>
-<a class="meta-assessment-link" href="./listening-practice.html">
-<div><strong>Listening · 40 questions / вопросов</strong><span>4 части · синтез речи · тренировка, не официальный IELTS mock</span></div><span>Start / Начать →</span>
-</a>
-<a class="meta-assessment-link" href="./writing-mock.html">
-<div><strong>Academic Writing · Task 1 + Task 2</strong><span>60 минут · авторские задания · сохранение ответов</span></div><span>Start / Начать →</span>
-</a>
+<section class="ielts-guide" aria-labelledby="ielts-path-title">
+<h2 id="ielts-path-title">С чего начать</h2>
+<p id="ielts-path-intro">Если ты здесь впервые, начни с короткой диагностики. Она покажет слабые навыки Reading, после чего можно перейти к урокам. Полный Reading-тест необязателен на старте.</p>
+<a class="meta-assessment-link" href="./assessment.html" id="diagnostic-link">
+<div><strong id="diagnostic-title">1. Диагностика Reading · 12 вопросов</strong>
+<span id="diagnostic-description">Быстрая проверка навыков и рекомендации по урокам</span></div>
+<span id="diagnostic-cta">Начать →</span></a>
+<p class="ielts-guide-label" id="ielts-guide-label">2. Изучай микроуроки ниже. Отмечай пройденные темы и возвращайся к слабым навыкам.</p>
+<a class="ielts-report" href="./ielts-dashboard.html" id="ielts-report">Мои результаты и план занятий →</a>
+<details class="ielts-extra"><summary id="extra-heading">Дополнительные тренировки (необязательно)</summary>
+<p id="extra-note">Эти задания нужны для самостоятельной практики после уроков. Они не являются официальным экзаменом IELTS и не дают сертифицированный band.</p>
+<div class="ielts-extra-links">
+<a href="./reading-mock.html" id="extra-reading">Reading · 40 вопросов, 60 минут — длинный тренировочный вариант</a>
+<a href="./listening-practice.html" id="extra-listening">Listening · 40 вопросов — синтетический голос браузера, не настоящая экзаменационная запись</a>
+<a href="./writing-mock.html" id="extra-writing">Writing · 2 задания, 60 минут — без автоматической оценки качества</a>
+</div></details>
+</section>
 <div class="modules" id="modules" aria-live="polite"><p class="status">Загрузка…</p></div>
 </main>
 <script type="module">
@@ -72,12 +87,18 @@ import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 const isEnglish=language()==="en";
 if(isEnglish){
- $("diagnostic-title").textContent="Start with a Reading skills check";
- $("diagnostic-description").textContent="12 in-site questions → analyse mistakes → targeted micro-lessons";
+ $("ielts-path-title").textContent="Where to start";
+ $("ielts-path-intro").textContent="New to Meta? Begin with a quick Reading diagnostic. It identifies skills to practise and links to lessons. A full mock is optional.";
+ $("diagnostic-title").textContent="1. Reading diagnostic · 12 questions";
+ $("diagnostic-description").textContent="Quick skills check and suggested lessons";
  $("diagnostic-cta").textContent="Start →";
- $("diagnostic-link").setAttribute("aria-label","IELTS Reading skills check");
-}else{
- $("diagnostic-link").setAttribute("aria-label","Диагностика навыков IELTS Reading");
+ $("ielts-guide-label").textContent="2. Study the micro-lessons below. Mark completed work and focus on weaker skills.";
+ $("ielts-report").textContent="My results and learning plan →";
+ $("extra-heading").textContent="Extra practice (optional)";
+ $("extra-note").textContent="These original practice exercises are not a certified IELTS exam and do not provide an official band score.";
+ $("extra-reading").textContent="Reading · 40 questions, 60 min — longer practice set";
+ $("extra-listening").textContent="Listening · 40 questions — synthetic browser voice, not real exam audio";
+ $("extra-writing").textContent="Writing · 2 tasks, 60 min — no automated quality grading";
 }
 const labels={"A.1":"Listening","A.2":"Academic Reading","A.3":"Academic Writing","A.4":"Speaking"};
 function mark(groups,records){
