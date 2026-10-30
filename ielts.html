@@ -44,6 +44,11 @@ p{color:#6b7280;line-height:1.55;margin:0}
 <main class="meta-shell meta-lesson">
 <nav class="top"><a class="back" href="./">← Мои программы</a><a class="back" href="./profile.html">Профиль</a></nav>
 <header class="intro"><h1>IELTS Academic</h1><p id="summary">Проверяю учебный план…</p></header>
+<a class="meta-assessment-link" href="./assessment.html" id="diagnostic-link" aria-label="IELTS Reading skills diagnostic">
+<div><strong id="diagnostic-title">Начни с диагностики Reading</strong>
+<span id="diagnostic-description">12 вопросов внутри Meta → анализ ошибок → подходящие микроуроки</span></div>
+<span id="diagnostic-cta" style="font-weight:650;white-space:nowrap">Пройти →</span>
+</a>
 <div class="modules" id="modules" aria-live="polite"><p class="status">Загрузка…</p></div>
 <p class="next" id="next" hidden></p>
 </main>
@@ -51,6 +56,15 @@ p{color:#6b7280;line-height:1.55;margin:0}
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
+const isEnglish=language()==="en";
+if(isEnglish){
+ $("diagnostic-title").textContent="Start with a Reading skills check";
+ $("diagnostic-description").textContent="12 in-site questions → analyse mistakes → targeted micro-lessons";
+ $("diagnostic-cta").textContent="Start →";
+ $("diagnostic-link").setAttribute("aria-label","IELTS Reading skills check");
+}else{
+ $("diagnostic-link").setAttribute("aria-label","Диагностика навыков IELTS Reading");
+}
 const labels={"A.1":"Listening","A.2":"Academic Reading","A.3":"Academic Writing","A.4":"Speaking"};
 function mark(groups,records){
   const container=document.createElement("div");container.className="subgroups";
