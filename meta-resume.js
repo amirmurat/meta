@@ -15,7 +15,7 @@ export function rememberCoursePosition(userId, courseSlug, lessonId) {
     if (error) console.warn("Meta resume position could not be saved:", error.message);
   });
   pendingByCourse.set(courseSlug,pending);
-  void pending.finally(() => {
+  void pending.catch(error => console.warn("Meta resume write failed:", error)).finally(() => {
     if (pendingByCourse.get(courseSlug) === pending) pendingByCourse.delete(courseSlug);
   });
 }
