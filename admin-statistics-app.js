@@ -63,6 +63,44 @@ function trend(){
  root.setAttribute("aria-label","Тренд: "+fLabel[field]+". За период суммарно "+total);
  $("trend-note").textContent="Всего "+integer(total)+" "+fLabel[field]+". "+(days===365?"Группировка по месяцам.":days===90?"Группировка по 7 дням.":"Группировка по дням.")+(field==="active_learners"&&days>30?" Сумма активности по дням не равна количеству уникальных пользователей.":"");
 }
+function statBar(label,value,denominator,note=""){
+ const item=el("div","analytics-progress");
+ const header=el("div","analytics-progress-header");
+ header.append(el("strong","",label),el("span","",integer(value)+" · "+percent(value,denominator)));
+ item.append(header);
+ const track=el("div","analytics-track"),fill=el("div","analytics-fill");
+ fill.style.width=(denominator?Math.max(0,Math.min(100,value/denominator*100)):0)+"%";
+ track.append(fill);item.append(track);
+ if(note)item.append(el("p","analytics-note",note));
+ return item;
+}
+function funnel(){
+ const users=report.learners||[],total=users.length;
+ const enrolled=users.filter(u=>u.confirmed&&(u.courses||[]).length);
+ const studied=enrolled.filter(u=>Number(u.completed)+Number(u.submissions)+Number(u.assessments)+Number(u.writing)>0);
+ const tested=studied.filter(u=>Number(u.assessments)>0);
+ const root=$("funnel");root.replaceChildren();
+ for(const [label,count,hint]of [
+  ["Зарегистрированы",total,"все аккаунты"],
+  ["Подтвердили email",users.filter(u=>u.confirmed).length,"доля от всех"],
+  ["Подтвердили и получили курс",enrolled.length,"доля от всех"],
+  ["Получили курс и имеют учебные события",studied.length,"за всё время"],
+  ["Проходили диагностические тесты",tested.length,"из изучавших"]
+ ])root.append(statBar(label,count,total,hint));
+}
+function engagement(){
+ const users=report.learners||[],total=users.length;
+ const groups=[
+  ["Без датированных учебных событий",u=>Number(u.active_days)===0],
+  ["1 активный день",u=>Number(u.active_days)===1],
+  ["2–3 активных дня",u=>Number(u.active_days)>=2&&Number(u.active_days)<=3],
+  ["4–7 активных дней",u=>Number(u.active_days)>=4&&Number(u.active_days)<=7],
+  ["8+ активных дней",u=>Number(u.active_days)>=8]
+ ];
+ const root=$("engagement");root.replaceChildren();
+ for(const [label,condition]of groups)root.append(statBar(label,users.filter(condition).length,total));
+ root.append(el("p","analytics-note","Активный день определяется сохранёнными учебными событиями, а не посещением страниц."));
+}
 function courses(){
  const root=$("courses"),filter=$("course-filter");root.replaceChildren();
  filter.replaceChildren(new Option("Все курсы",""));
@@ -153,7 +191,7 @@ async function reload(){
  report=data;showDashboard(true);status("");
  $("report-date").textContent=(report.start_date||"")+" — "+(report.end_date||"")+" · Asia/Almaty";
  document.querySelectorAll("[data-days]").forEach(b=>b.setAttribute("aria-pressed",String(Number(b.dataset.days)===days)));
- overview(report.overview);courses();assessments();trend();roster();integrity();
+ overview(report.overview);funnel();engagement();courses();assessments();trend();roster();integrity();
 }
 function showDashboard(visible){$("admin").hidden=!visible}
 async function boot(){
