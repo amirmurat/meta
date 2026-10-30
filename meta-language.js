@@ -78,10 +78,12 @@ Object.assign(translationsRUtoEN,{
  "Административная аналитика":"Admin analytics",
  "Доступ только подтверждённому администратору.":"Only authorized administrators may access this area."
 });
+// Build the reverse dictionary once, instead of per DOM text node.
+const translationsENtoRU=Object.fromEntries(Object.entries(translationsRUtoEN).map(([ru,en])=>[en,ru]));
 function translateNode(node,lang){
  if(node.nodeType===3){
   const original=node.nodeValue||"",word=original.trim();
-  const mapping=lang==="en"?translationsRUtoEN:Object.fromEntries(Object.entries(translationsRUtoEN).map(([ru,en])=>[en,ru]));
+  const mapping=lang==="en"?translationsRUtoEN:translationsENtoRU;
   const translated=mapping[word];
   if(translated&&translated!==word){node.nodeValue=original.replace(word,translated);return;}
   if(lang==="en"&&/[А-ЯЁа-яё]/.test(word)){
@@ -91,7 +93,7 @@ function translateNode(node,lang){
   return;
  }
  if(node.nodeType!==1||["SCRIPT","STYLE","TEXTAREA","CODE"].includes(node.tagName))return;
- const map=lang==="en"?translationsRUtoEN:Object.fromEntries(Object.entries(translationsRUtoEN).map(([ru,en])=>[en,ru]));
+ const map=lang==="en"?translationsRUtoEN:translationsENtoRU;
  for(const a of ["placeholder","title","aria-label"]){const x=node.getAttribute(a);if(x&&map[x])node.setAttribute(a,map[x]);}
  for(const child of [...node.childNodes])translateNode(child,lang);
 }
@@ -102,7 +104,7 @@ function boot(){
  document.head.append(css);
  const nav=document.createElement("nav");nav.className="meta-language-picker";nav.setAttribute("aria-label","Language / Язык");
  for(const code of ["en","ru"]){const b=document.createElement("button");b.textContent=code.toUpperCase();b.type="button";b.className=code===lang?"active":"";b.setAttribute("aria-pressed",String(code===lang));b.onclick=()=>{if(lang===code)return;try{localStorage.setItem(LOCALE_KEY,code)}catch{}location.reload()};nav.append(b)}document.body.append(nav);
- translateNode(document.body,lang);document.title=(lang==="en"?translationsRUtoEN[document.title]:Object.fromEntries(Object.entries(translationsRUtoEN).map(([ru,en])=>[en,ru]))[document.title])||document.title;
+ translateNode(document.body,lang);document.title=(lang==="en"?translationsRUtoEN[document.title]:translationsENtoRU[document.title])||document.title;
  const observer=new MutationObserver(muts=>{for(const m of muts){if(m.type==="childList"){for(const n of m.addedNodes)translateNode(n,lang)}else if(m.type==="characterData")translateNode(m.target,lang)}});
  observer.observe(document.body,{subtree:true,childList:true,characterData:true});
 }
