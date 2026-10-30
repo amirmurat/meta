@@ -35,6 +35,10 @@ p{color:#6b7280;line-height:1.55;margin:0}
 .status{padding:16px 12px;font-size:14px;color:#666}
 .next{margin-top:22px;font-size:14px;line-height:1.6;color:#555}
 .next a{color:#111}
+.next{padding:11px 12px;margin:-8px 0 24px;border-left:2px solid #111;color:#111}
+.next strong{font-size:14px;margin-right:7px}
+.next a{font-weight:600;line-height:1.65}
+@media(max-width:600px){.next{margin-top:0}}
 [hidden]{display:none!important}
 @media(max-width:600px){main{padding:26px 16px 60px}.heading{padding-left:4px;padding-right:4px}.subgroups{padding-left:10px}.leaf-list{grid-template-columns:1fr}.track{margin:0 4px}}
 </style>
@@ -44,13 +48,13 @@ p{color:#6b7280;line-height:1.55;margin:0}
 <main class="meta-shell meta-lesson">
 <nav class="top"><a class="back" href="./">← Мои программы</a><a class="back" href="./profile.html">Профиль</a></nav>
 <header class="intro"><h1>IELTS Academic</h1><p id="summary">Проверяю учебный план…</p></header>
+<p class="next" id="next" hidden aria-live="polite"></p>
 <a class="meta-assessment-link" href="./assessment.html" id="diagnostic-link" aria-label="IELTS Reading skills diagnostic">
 <div><strong id="diagnostic-title">Начни с диагностики Reading</strong>
 <span id="diagnostic-description">12 вопросов внутри Meta → анализ ошибок → подходящие микроуроки</span></div>
 <span id="diagnostic-cta" style="font-weight:650;white-space:nowrap">Пройти →</span>
 </a>
 <div class="modules" id="modules" aria-live="polite"><p class="status">Загрузка…</p></div>
-<p class="next" id="next" hidden></p>
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
@@ -131,18 +135,23 @@ async function start(){
   const ids=new Set((completed.data||[]).map(x=>x.lesson_id));
   const lessons=rows.data.map(x=>({...x,title:language()==="en"?(x.title_en||x.title):x.title,lesson_content:language()==="en"?(x.lesson_content_en||x.lesson_content):x.lesson_content,completed:ids.has(x.id)}));
   const count=lessons.filter(x=>x.completed).length;
-  $("summary").textContent="332 микроурока · 4 секции · "+count+" пройдено. Разверни раздел, затем навык и микроурок.";
+  $("summary").textContent=isEnglish
+    ?"332 micro-lessons · 4 skills · "+count+" completed"
+    :"332 микроурока · 4 секции · "+count+" пройдено";
   $("modules").replaceChildren();
   const groups=mark(1,lessons);
   // make top-level groups (A.1...A.4) first, then nested branches.
   $("modules").append(groups);
   const first=lessons.find(x=>!x.completed);
+  const next=$("next");next.replaceChildren();next.hidden=false;
   if(first){
-    const next=$("next");next.hidden=false;
-    next.append("Первый незакрытый по порядку справочника: ");
+    const lead=document.createElement("strong");
+    lead.textContent=isEnglish?"Continue learning: ":"Продолжить обучение: ";
     const link=document.createElement("a");link.href="./ielts-lesson.html?id="+encodeURIComponent(first.external_id);
-    link.textContent=first.external_id+" — "+first.title;
-    next.append(link);
+    link.textContent=first.title+" →";
+    next.append(lead,link);
+  }else{
+    next.textContent=isEnglish?"All IELTS micro-lessons completed.":"Все микроуроки IELTS пройдены.";
   }
   const requested=decodeURIComponent(location.hash.slice(1));
   if(requested.startsWith("group-A.")){
