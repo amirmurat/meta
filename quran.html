@@ -95,7 +95,7 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <p class="big-arabic" id="arabic" lang="ar" dir="rtl"></p>
 <p class="translation" id="translation"></p><p class="footnotes" id="footnotes"></p>
 <p class="source" id="translation-source"></p>
-<div class="link-list"><a id="qurancom" href="https://quran.com/2/40" target="_blank" rel="noopener">Quran.com</a><a id="corpus" href="https://corpus.quran.com/wordbyword.jsp?chapter=2&verse=40" target="_blank" rel="noopener">Quranic Arabic Corpus</a></div>
+
 <div class="row" style="margin:17px 0"><button type="button" id="mark" class="button-primary">Mark studied</button><button type="button" id="unmark" hidden>Undo completion</button></div><p class="source" id="completion-help"></p>
 <div class="segment" id="simple-notes">
 <h2 id="quick-heading">My notes <span class="muted" id="quick-optional">(optional)</span></h2>
@@ -109,9 +109,12 @@ dl{display:grid;grid-template-columns:minmax(105px,145px) 1fr;gap:5px 10px;margi
 <div id="quick-entries" class="tag-results"></div>
 </div>
 <div class="segment"><h2 id="word-heading">Word-by-word research</h2><p class="help" id="word-help">Select an Arabic word to inspect its root, lemma and morphological segments. Dictionary glosses are not a contextual tafsir.</p><div class="words" id="words"></div><div id="morph" class="morph" hidden></div></div>
-<div class="segment"><h2 id="sources-heading">Classical tafsir and dictionaries</h2>
+<details class="segment" id="source-details">
+<summary id="sources-heading" style="cursor:pointer;font-size:19px;font-weight:600">Classical tafsir and dictionaries</summary>
 <p class="help" id="sources-help">Open the original source; the app does not invent interpretations or present AI paraphrases as scholarly quotes.</p>
-<div class="link-list" id="source-links"></div></div>
+<div class="link-list"><a id="qurancom" href="https://quran.com/2/40" target="_blank" rel="noopener">Quran.com</a><a id="corpus" href="https://corpus.quran.com/wordbyword.jsp?chapter=2&verse=40" target="_blank" rel="noopener">Quranic Arabic Corpus</a></div>
+<div class="link-list" id="source-links"></div>
+</details>
 <details class="segment" id="historical-study">
 <summary id="archive-heading" style="cursor:pointer;font-size:17px;font-weight:600">Previous research and journal</summary>
 <p class="help" id="archive-help" style="margin-top:9px">Older notes remain available. You do not need to copy them, select dates or classify them.</p>
