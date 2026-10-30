@@ -74,7 +74,7 @@ data-en="Course access is normally assigned by an administrator. Registration do
  data-en="IELTS is available to all existing accounts. New users who register before November 6, 2026 at 20:33 (Almaty) receive the full course automatically. Granted access remains afterwards.">IELTS открыт для всех существующих аккаунтов. Новые пользователи получают полный курс автоматически до 6 ноября, 20:33 (Алматы).</p>
 <div class="cards">
 <article class="card"><span class="tag" id="ielts-tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3>IELTS Academic</h3><p data-ru="Микроуроки по Listening, Reading, Writing и Speaking. Диагностика, отдельные тренировочные тесты и рекомендации. Пробные результаты не являются официальным IELTS band."
-data-en="Micro-lessons across IELTS skills, diagnostic checks and optional practice tests. Results are unofficial, not certified IELTS bands.">Микроуроки по Listening, Reading, Writing и Speaking. Диагностика, отдельные тренировочные тесты и рекомендации. Пробные результаты не являются официальным IELTS band.</p><a href="#contact" data-ru="Запросить IELTS →" data-en="Ask about IELTS →">Запросить IELTS →</a></article>
+data-en="Micro-lessons across IELTS skills, diagnostic checks and optional practice tests. Results are unofficial, not certified IELTS bands.">Микроуроки по Listening, Reading, Writing и Speaking. Диагностика, отдельные тренировочные тесты и рекомендации. Пробные результаты не являются официальным IELTS band.</p><a id="ielts-cta" href="#contact" data-ru="Запросить IELTS →" data-en="Ask about IELTS →">Запросить IELTS →</a></article>
 <article class="card"><span class="tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3 data-ru="Изучение Корана" data-en="Quran Study">Изучение Корана</h3><p data-ru="Чтение аятов, пословное исследование, ссылки на источники, личные заметки и отметки изученного. Не является курсом преподавания арабского языка."
 data-en="Verses, word-by-word exploration, referenced sources, private notes and progress tracking. Not an Arabic language course.">Чтение аятов, пословное исследование, ссылки на источники, личные заметки и отметки изученного. Не является курсом преподавания арабского языка.</p><a href="#contact" data-ru="Узнать о доступе →" data-en="Ask about access →">Узнать о доступе →</a></article>
 <article class="card"><span class="tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3>Flutter</h3><p data-ru="Пошаговые микроуроки по Dart и Flutter, практические задания, собственные ответы и отслеживание выполненного."
@@ -116,7 +116,7 @@ data-en="Not signed up yet? Leave your question and course of interest. We may r
 <small data-ru="Не отправляй пароли и чувствительные данные. Контакты используются только для ответа по Meta. Форма защищена ограничением частоты заявок."
 data-en="Do not send passwords or sensitive data. Contact details are used to respond about Meta. Requests are rate-limited.">Не отправляй пароли и чувствительные данные. Контакты используются только для ответа по Meta. Форма защищена ограничением частоты заявок.</small>
 </form></div></section>
-<footer><span>Meta · Independent learning platform</span><span data-ru="Вопросы по курсу? Используй форму или сообщения после входа." data-en="Questions? Use the form or Messages after sign-in.">Вопросы по курсу? Используй форму или сообщения после входа.</span></footer>
+<footer><span>Meta · Independent learning platform</span><span data-ru="Вопросы по курсу? Используй форму или сообщения после входа." data-en="Questions? Use the form or Messages after sign-in.">Вопросы по курсу? Используй форму или сообщения после входа.</span><a href="./privacy.html" data-ru="Данные и приватность" data-en="Privacy and data">Данные и приватность</a></footer>
 </main>
 <script type="module">
 import {supabase,authenticatedUser} from "./meta-supabase.js";
@@ -129,6 +129,11 @@ if(offerActive)document.getElementById("ielts-promo").hidden=false;
 document.documentElement.lang=en?"en":"ru";
 document.querySelectorAll("[data-ru][data-en]").forEach(node=>node.textContent=node.getAttribute(en?"data-en":"data-ru"));
 if(offerActive)document.getElementById("ielts-tag").textContent=en?"Automatic for new accounts until November 6":"Автоматически при регистрации до 6 ноября";
+if(offerActive){
+ const cta=document.getElementById("ielts-cta");
+ cta.href="./account.html?mode=signup";
+ cta.textContent=en?"Start IELTS →":"Начать IELTS →";
+}
 (async()=>{const user=await authenticatedUser();if(!user)return;
 const nav=document.querySelector(".top nav a[href^='./account.html?mode=login']");
 if(nav){nav.href="./";nav.textContent=en?"My programs":"Мои программы"}
