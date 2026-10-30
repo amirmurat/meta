@@ -197,3 +197,4 @@ PASS ru 1440 about.html no horizontal overflow
 PASS ru 1440 about.html shared navigation
 
 197 checks; 0 failures.
+31 October 2026 follow-up: signup password confirmation and mismatch blocking added; rerun passed 198 checks, 0 failures.

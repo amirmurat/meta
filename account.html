@@ -56,6 +56,8 @@ h1{margin-top:18px}
 <div><label for="signup-name">Имя</label><input id="signup-name" type="text" maxlength="80" autocomplete="name" required></div>
 <div><label for="signup-email">Email</label><input id="signup-email" type="email" autocomplete="username" required></div>
 <div><label for="signup-password">Пароль (не менее 8 символов)</label><input id="signup-password" type="password" autocomplete="new-password" minlength="8" required></div>
+<div><label for="signup-confirm">Повтори пароль</label><input id="signup-confirm" type="password" autocomplete="new-password" minlength="8" required></div>
+<p class="small" id="signup-match" role="status" aria-live="polite"></p>
 <button class="primary" type="submit">Создать аккаунт</button>
 <p class="small">Подтверждение email может потребоваться. Каждый пользователь видит только собственные ответы и заметки. <a href="./privacy.html" id="privacy-link">Данные и приватность →</a></p>
 </form>
@@ -84,6 +86,7 @@ h1{margin-top:18px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 let mode="login",recovering=false;
 import {safeDestination as safeNext} from "./meta-routing.js";
@@ -104,6 +107,15 @@ function safeDestination(){
  try{raw ||= sessionStorage.getItem("meta-auth-next");sessionStorage.removeItem("meta-auth-next");}catch{}
  return safeNext(raw,location.href);
 }
+function verifySignupPasswords(){
+ const first=$("signup-password"),second=$("signup-confirm");
+ const mismatch=!!second.value&&first.value!==second.value;
+ const message=language()==="en"?"Passwords do not match.":"Пароли не совпадают.";
+ second.setCustomValidity(mismatch?message:"");
+ $("signup-match").textContent=mismatch?message:"";
+ return !mismatch;
+}
+for(const id of ["signup-password","signup-confirm"])$(id).addEventListener("input",verifySignupPasswords);
 function busy(form,value){form.querySelector("button.primary").disabled=value}
 function errorText(err){
   const msg=String(err?.message||err||"Ошибка сервера");
@@ -154,7 +166,7 @@ $("login-form").onsubmit=async e=>{
  }catch(e){say(errorText(e),true);busy(form,false)}
 };
 $("signup-form").onsubmit=async e=>{
- e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ e.preventDefault();const form=e.currentTarget;if(!verifySignupPasswords()){$("signup-confirm").reportValidity();return;}busy(form,true);say("");
  try{
   const next=new URLSearchParams(location.search).get("next");
   if(next)try{sessionStorage.setItem("meta-auth-next",safeNext(next,location.href))}catch{}

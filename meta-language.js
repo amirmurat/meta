@@ -79,7 +79,7 @@ Object.assign(translationsRUtoEN,{
  "Доступ только подтверждённому администратору.":"Only authorized administrators may access this area."
 });
 Object.assign(translationsRUtoEN,{
- "Главная":"Home","Курсы":"Courses","Твои курсы":"Your courses","Meta — Главная":"Meta — Home","Meta — Курсы":"Meta — Courses",
+ "Повтори пароль":"Confirm password","Пароли не совпадают.":"Passwords do not match.","Главная":"Home","Курсы":"Courses","Твои курсы":"Your courses","Meta — Главная":"Meta — Home","Meta — Курсы":"Meta — Courses",
  "Проверь почту (включая «Спам») и открой ссылку подтверждения. Вход ещё не выполнен. После подтверждения ты попадёшь на главную или сможешь войти здесь.":"Check your inbox (including spam) and open the confirmation link. You are not signed in yet. After confirmation, you will reach Home or can sign in here.",
  "Сравни ответ с каждым критерием. Отмечай только выполненные пункты. Затем запроси обратную связь ИИ и исправь ошибки.":"Compare your answer with each criterion. Check only the items you have met. Then ask AI for feedback and correct any errors.",
  "Аккаунт создан, но программа пока не назначена. Напиши администратору, какой курс тебе нужен (например, IELTS). После назначения он появится здесь.":"Your account is ready, but no course is assigned yet. Message the administrator with the course you need (for example, IELTS). It will appear here once assigned."

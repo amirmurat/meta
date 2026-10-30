@@ -82,3 +82,8 @@ Before merging, complete a controlled real-account signup/email callback and fir
 
 ## Recorded QA result
 On 31 October 2026, browser access was restored after restarting the desktop application. The full suite was rerun against implementation commit e9bf8bc, including the final SVG actions, focus spacing and dirty-state protection: **197 checks, 0 failures**. Static checks also passed: 21 HTML routes and 34 JS blocks/modules. Screenshots cover 375, 390, 768 and 1440px. The browser-access blocker is resolved; the real-account/email and full Quran/admin verification limits above remain.
+
+After adding signup password confirmation, the isolated browser suite was rerun: **198 checks, 0 failures**. Static checks again passed for 21 HTML routes and 34 JS blocks/modules. The signed-in production account was used for read-only Quran reader and administrator statistics checks; a real signup/email callback and first-lesson write flow remain untested.
+
+## Account form follow-up
+Signup now asks for password confirmation and shows a live mismatch error before submission. Existing login, recovery, email confirmation and session routing stay in place. The additional field prevents a mistyped password from locking a new learner out; optional profile fields remain optional.
