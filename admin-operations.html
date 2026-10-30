@@ -111,7 +111,7 @@ async function loadThreads(){
  const root=$("threads");root.replaceChildren();
  for(const t of threads){
   const item=el("button","thread"+(t.user_id===selectedThread?" selected":""),userLabel(t.user_id)+" · "+stamp(t.updated_at));
-  item.onclick=()=>{selectedThread=t.user_id;void loadThreads().then(loadConversation)};
+  item.onclick=()=>{selectedThread=t.user_id;lastThreadSig="";void loadThreads().then(()=>loadConversation())};
   root.append(item);
  }
  if(!threads.length)root.append(el("p","status","Переписок пока нет."));
