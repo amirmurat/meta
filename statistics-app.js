@@ -129,21 +129,21 @@ function overview(d){
  const root=$("summary");root.replaceChildren();
  const rows=[
  ["Пройдено единиц всего",[...d.countCourse.values()].reduce((a,b)=>a+b,0),"включая исторические отметки"],
- ["Завершения за период",d.completed,days+" дней · реальные даты"],
+ ["Завершения за период",d.completed,days+(en?" days · exact dates":" дней · реальные даты")],
  ["Учебных дней",new Set(e.map(x=>x.day)).size,"дни с зафиксированными событиями"],
  ["Текущая серия",d.currentStreak,"дней подряд по событиям"],
  ["Лучшая серия",d.bestStreak,"дней за всё время"],
  ["Сдано заданий",e.filter(x=>x.type==="Сдано задание").length,"с отметкой сдачи"],
  ["Сдано тестов",scores,"за выбранный период"],
  ["Writing-попытки",written,"сохранённые работы"],
- ["Минут зафиксировано",totalMinutes,measured+" сессий с длительностью"],
+ ["Минут зафиксировано",totalMinutes,measured+(en?" sessions with duration":" сессий с длительностью")],
  ["Учебных событий",e.length,"завершения, сдачи, тесты и сессии"],
  ["Назначено программ",d.enrolled.size,"в личном аккаунте"],
  ["Сохранено заметок",data.notesCount,"личные заметки по курсам"],
  ["Подтверждённых разборов",e.filter(x=>x.type==="Подтверждён разбор").length,"отмечено пользователем"]
  ];
  for(const [label,val,hint]of rows)root.append(metric(label,fmt(val),hint));
- $("period-label").textContent=dayText(d.dateFrom)+" — "+dayText(d.now)+" · Алматы";
+ $("period-label").textContent=dayText(d.dateFrom)+" — "+dayText(d.now)+(en?" · Almaty":" · Алматы");
 }
 function progress(d){
  const root=$("course-progress");root.replaceChildren();
@@ -156,7 +156,7 @@ function progress(d){
   const track=node("div","analytics-track"),fill=node("div","analytics-fill");
   fill.style.width=Math.min(100,Math.max(0,total?100*done/total:0))+"%";track.append(fill);box.append(track);
   const relevant=d.periodEvents.filter(e=>e.course===slug);
-  box.append(node("p","analytics-note",fmt(relevant.length)+" учебных событий за "+days+" дней"));
+  box.append(node("p","analytics-note",fmt(relevant.length)+(en?" learning events in ":" учебных событий за ")+days+(en?" days":" дней")));
   const a=node("a","",slug==="quran"?"Открыть Коран →":slug==="ielts"?"Открыть IELTS →":"Открыть Flutter →");
   a.href=slug==="quran"?"./quran.html":slug==="ielts"?"./ielts.html":"./flutter.html";box.append(a);root.append(box);
  }
@@ -228,7 +228,7 @@ function activity(d){
   const cell=node("span","analytics-day"+(n>=4?" lv3":n>=2?" lv2":n>=1?" lv1":""));
   cell.title=dayText(iso)+": "+n+" событий";heat.append(cell);
  }
- set("calendar-meta","91 день · "+d.activeDays.filter(day=>day>=new Date(base.getTime()-90*DAY_MS).toISOString().slice(0,10)).length+" учебных дней.");
+ set("calendar-meta",(en?"91 days · ":"91 день · ")+d.activeDays.filter(day=>day>=new Date(base.getTime()-90*DAY_MS).toISOString().slice(0,10)).length+(en?" learning days.":" учебных дней."));
 }
 function testing(d){
  const root=$("testing-kpis");root.replaceChildren();
