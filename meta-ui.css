@@ -62,6 +62,26 @@ body.meta-ui .meta-assessment-link{
 body.meta-ui .meta-assessment-link:hover{text-decoration:underline}
 body.meta-ui .meta-assessment-link strong{font-size:15px;font-weight:600;display:block}
 body.meta-ui .meta-assessment-link span{display:block;margin-top:4px;color:#666;font-size:13px}
+/* Align course catalogues without changing their original visual language.
+   Top-level IELTS sections now match Flutter module headings and progress tracks.
+   Nested IELTS subskills keep their smaller sizes and indentation. */
+body.meta-ui .modules>.subgroups{padding:0}
+body.meta-ui .modules>.subgroups>.skill>button>.heading{
+ padding:20px 24px;font-size:18px
+}
+body.meta-ui .modules>.subgroups>.skill>button>.track{
+ height:18px;margin:0 24px
+}
+body.meta-ui .modules>.subgroups>.skill{margin:0}
+body.meta-ui .modules>.subgroups>.skill+.skill{margin-top:18px}
+body.meta-ui .page-top .back,
+body.meta-ui nav.top .back{font-size:15px}
+@media(max-width:600px){
+ body.meta-ui .modules>.subgroups>.skill>button>.heading{padding:16px 12px}
+ body.meta-ui .modules>.subgroups>.skill>button>.track{margin:0 12px}
+ body.meta-ui .module-heading{padding:16px 12px}
+ body.meta-ui .module-track{margin:0 12px}
+}
 /* Testing UI: reproduce the sharp, neutral existing Meta lesson styling. */
 body.meta-assessment main.meta-shell{
  width:auto;
