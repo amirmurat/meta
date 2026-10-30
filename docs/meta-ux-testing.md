@@ -29,3 +29,12 @@ Existing IELTS, Flutter and **free** Quran Study remain distinct learning domain
 - DB migration succeeded. Authenticated enrolled-user INSERT/SELECT test succeeded inside a rolled-back transaction. Anonymous SELECT has no table privilege; RLS is on.
 - No historical Flutter/IELTS/Quran lesson progress was rewritten. No artificial assessment attempts were persisted.
 - Supabase project security advisor notes leaked-password protection is not enabled. This issue predates the new assessment feature and must be considered before external public rollout.
+
+## Classic UX consistency pass — 2026-10-30
+
+- Retained the original minimalist black/white Meta visual language and existing page widths. **No new visual redesign, rounded cards, blue palette or shadows.**
+- IELTS course overview: moved the first not-yet-completed micro-lesson link to just below the heading, before the long hierarchy; changed label to simple "Continue learning" (EN/RU). The hierarchy and original test entry remain.
+- Flutter course overview: added the same first not-yet-completed lesson shortcut in the same position. Both use existing enrolled-user `lesson_progress` without marking anything completed.
+- Harmonised back-navigation wording for Flutter with IELTS, and English/Russian labels for course summary/module headings where available.
+- Shared `meta-ui.css?v=3` changes only top-level IELTS module spacing/track to align with the Flutter module controls. Nested IELTS skills retain their smaller density; original course/page visual identity is preserved.
+- Checked JS syntax of both course listings and checked that both next-lesson links resolve through the existing lesson route. Full signed-in device/browser visual QA still pending.
