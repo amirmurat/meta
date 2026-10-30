@@ -168,3 +168,44 @@ body.meta-assessment .result-details details{border-color:#e5e7eb}
  body.meta-assessment main.meta-shell{padding:26px 16px 60px}
  body.meta-assessment .meta-card{padding:16px}
 }
+
+
+/* Shared navigation and interactive baseline. Keep Meta's original square, monochrome look. */
+body.meta-ui{overflow-wrap:break-word}
+body.meta-ui a{color:inherit}
+body.meta-ui a:hover{text-decoration-color:#111}
+body.meta-ui .meta-page-nav{
+ display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;
+ column-gap:20px;row-gap:12px;margin-bottom:28px;min-width:0
+}
+body.meta-ui .meta-page-nav>a{
+ display:inline-flex;align-items:center;min-height:35px;
+ color:#555;font-size:14px;line-height:1.45;text-decoration:none;
+ overflow-wrap:anywhere
+}
+body.meta-ui .meta-page-nav>a:hover{text-decoration:underline;color:#111}
+body.meta-ui .meta-page-nav>a:first-child{margin-right:auto}
+body.meta-ui .meta-page-nav .meta-nav-group{
+ display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap
+}
+body.meta-ui .meta-page-nav .meta-nav-group a{font-size:14px;text-decoration:none;color:#555}
+body.meta-ui .meta-page-nav .meta-nav-group a:hover{text-decoration:underline}
+body.meta-ui button:not(:disabled),body.meta-ui summary{touch-action:manipulation}
+body.meta-ui button:disabled{cursor:not-allowed}
+body.meta-ui input,body.meta-ui textarea,body.meta-ui select{max-width:100%}
+body.meta-ui .meta-action-links{display:grid;gap:0;margin-top:22px}
+body.meta-ui .meta-action-links>a{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:14px 0;border-bottom:1px solid #e5e7eb;
+ text-decoration:none;font-weight:600;font-size:15px;line-height:1.5;color:#111
+}
+body.meta-ui .meta-action-links>a:hover{text-decoration:underline}
+body.meta-ui .meta-action-links>a::after{content:"→";font-weight:400;color:#777;margin-left:12px}
+body.meta-ui .meta-action-links>button{margin-top:18px;justify-self:start}
+body.meta-ui .meta-inline-state{font-size:13px;color:#666;line-height:1.5}
+@media(max-width:600px){
+ body.meta-ui .meta-page-nav{gap:8px 14px;margin-bottom:22px}
+ body.meta-ui .meta-page-nav>a{min-height:40px}
+ body.meta-ui .meta-page-nav .meta-nav-group{gap:8px 14px}
+ body.meta-ui .meta-page-nav .meta-nav-group a{min-height:40px;display:inline-flex;align-items:center}
+}

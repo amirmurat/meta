@@ -22,14 +22,21 @@ button.primary:disabled{opacity:.5;cursor:wait}
 .message.error{color:#a10f1c}
 h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 .actions{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.meta-action-links{display:grid!important;gap:0!important}
+#sign-out{font-weight:500;color:#555;margin-top:8px}
+#identity{overflow-wrap:anywhere;font-size:15px;color:#444}
+.meta-page-nav{margin-bottom:22px}
+h1{margin-top:18px}
 [hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=3">
+<link rel="stylesheet" href="./meta-ui.css?v=4">
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-narrow">
-<a href="./welcome.html" class="back">← Что такое Meta</a>
+<nav class="meta-page-nav" aria-label="Навигация аккаунта">
+<a href="./welcome.html" class="back" id="account-about">← О платформе</a>
 <a class="back" id="account-back" href="./" hidden>← Мои программы</a>
+</nav>
 <h1 id="heading">Аккаунт</h1>
 <p class="subtitle" id="subtitle">Создай аккаунт, подтверди email и открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».</p>
 
@@ -49,7 +56,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <div><label for="signup-email">Email</label><input id="signup-email" type="email" autocomplete="username" required></div>
 <div><label for="signup-password">Пароль (не менее 8 символов)</label><input id="signup-password" type="password" autocomplete="new-password" minlength="8" required></div>
 <button class="primary" type="submit">Создать аккаунт</button>
-<p class="small">Подтверждение email может потребоваться. Каждый пользователь видит только собственные ответы и заметки.</p>
+<p class="small">Подтверждение email может потребоваться. Каждый пользователь видит только собственные ответы и заметки. <a href="./privacy.html" id="privacy-link">Данные и приватность →</a></p>
 </form>
 <form id="recover-form" hidden>
 <div><label for="recover-email">Твой Email</label><input id="recover-email" type="email" required></div>
@@ -60,7 +67,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 
 <div id="signed-in" hidden>
 <p id="identity"></p>
-<div class="actions">
+<div class="actions meta-action-links">
 <a href="./profile.html">Открыть профиль</a>
 <a href="./">Мои программы</a>
 <a href="./support.html">Сообщения — запросить курс</a>
@@ -108,8 +115,8 @@ function errorText(err){
   if(/email not confirmed/i.test(msg))return "Сначала подтверди email по ссылке в письме.";
   if(code==="email_address_not_authorized"||/email address not authorized/i.test(msg))
     return "Отправка писем на этот адрес пока не настроена. Попробуй позже.";
-  if(code==="over_email_send_rate_limit"||/email rate limit exceeded/i.test(msg))
-    return "Лимит отправки писем исчерпан. Попробуй позже.";
+  if(code==="over_email_send_rate_limit"||/email rate limit exceeded|you can only request this after/i.test(msg))
+    return "Запросов слишком много. Подожди около минуты перед повторной попыткой; письмо может уже быть отправлено.";
   if(/email link is invalid|expired|one-time token not found/i.test(msg))
     return "Ссылка недействительна или устарела. Запроси новую через «Забыли пароль?».";
   if(/error sending (confirmation|recovery) email|failed to send email/i.test(msg))
@@ -119,7 +126,7 @@ function errorText(err){
   return msg;
 }
 async function showSignedIn(user){
- $("account-back").hidden=false;
+ $("account-back").hidden=false;$("account-about").hidden=true;
  $("guest").hidden=true;$("signed-in").hidden=false;
  $("identity").textContent="Вход выполнен: "+user.email;
  $("heading").textContent="Ты в Meta";
@@ -131,7 +138,7 @@ async function current(){
  try{
   const user=await authenticatedUser();
   if(user)await showSignedIn(user);
-  else{$("account-back").hidden=true;$("guest").hidden=false;$("signed-in").hidden=true;}
+  else{$("account-back").hidden=true;$("account-about").hidden=false;$("guest").hidden=false;$("signed-in").hidden=true;}
  }catch(e){say(errorText(e),true)}
 }
 const initialMode=new URLSearchParams(location.search).get("mode");

@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Управление Meta — курсы и сообщения</title><link rel="stylesheet" href="./meta-ui.css?v=3"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+<title>Управление Meta — курсы и сообщения</title><link rel="stylesheet" href="./meta-ui.css?v=4"><link rel="stylesheet" href="./analytics-ui.css?v=1">
 <style>
 body{background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif}
 main{max-width:1150px;margin:auto;padding:28px 20px 90px}
@@ -27,7 +27,7 @@ textarea{min-height:95px;resize:vertical;width:100%;margin:10px 0}
 [hidden]{display:none!important}
 @media(max-width:850px){.columns{grid-template-columns:1fr}.chat{height:300px}.panel{padding:15px}}
 </style></head><body class="meta-ui"><main>
-<nav><a href="./admin-statistics.html">← Административная аналитика</a><a href="./">Мои программы</a></nav>
+<nav class="meta-page-nav" aria-label="Навигация администратора"><a href="./admin-statistics.html">← Административная аналитика</a><a href="./">Мои программы</a></nav>
 <h1>Управление Meta</h1>
 <p class="status">Запросы клиентов, личная переписка и управление доступом к курсам. Действия защищены на стороне Supabase.</p>
 <p id="status" class="status" role="status">Проверяю доступ администратора…</p>
@@ -184,4 +184,4 @@ async function boot(){
  window.setInterval(()=>{if(!document.hidden)void refreshMessages()},15000);
 }
 void boot().catch(err=>status("Не удалось загрузить управление Meta: "+err.message));
-</script></body></html>
+</script><script type="module" src="./meta-language.js"></script></body></html>
