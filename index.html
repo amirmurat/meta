@@ -12,6 +12,18 @@ main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align
 header{width:min(100%,640px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px}
 h1{margin:0;font-size:24px;letter-spacing:-.4px}
 .nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.profile{font-size:14px;text-decoration:none;color:#555}.profile:hover{text-decoration:underline}
+.resume-section{width:min(100%,640px);padding:0 24px}
+.resume-heading{font-size:17px;letter-spacing:-.2px;margin:0 0 12px}
+.resume-links{display:flex;flex-direction:column;gap:8px}
+.resume-link{display:flex;justify-content:space-between;gap:14px;align-items:center;
+ text-decoration:none;border:1px solid #dedede;padding:14px 16px;min-width:0;color:#111}
+.resume-link:hover{border-color:#777;background:#fafafa}
+.resume-link:focus-visible{outline:2px solid #111;outline-offset:2px}
+.resume-link:first-child[data-last="true"]{border-color:#111}
+.resume-label{font-size:12px;line-height:1.4;color:#666;display:block;margin-bottom:4px}
+.resume-title{font-size:15px;font-weight:600;line-height:1.4;display:block;overflow-wrap:anywhere}
+.resume-action{font-size:14px;white-space:nowrap;flex:none}
+.resume-help{color:#777;font-size:12px;margin:11px 0 0;line-height:1.55}
 .courses{width:min(100%,640px);display:flex;flex-direction:column;gap:24px}
 .course{display:block;text-decoration:none;color:inherit;width:100%;background:transparent}
 .course:not([href]){cursor:default}
@@ -32,7 +44,9 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
  .nav-links{gap:12px}
  .course-top{padding:16px 12px;gap:12px;font-size:16px}
  .track{margin:0 12px}
- .small,.empty{padding-left:12px;padding-right:12px}
+ .small,.empty,.resume-section{padding-left:12px;padding-right:12px}
+ .resume-link{padding:12px;align-items:flex-start}
+ .resume-action{font-size:12px}
 }
 </style>
 <link rel="stylesheet" href="./meta-ui.css?v=3">
@@ -41,6 +55,11 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 <main class="meta-shell meta-dashboard">
 <header id="heading" hidden><h1>Мои программы</h1><div class="nav-links"><a class="profile" href="./statistics.html">Статистика</a><a class="profile" href="./admin-statistics.html" id="admin-nav" hidden>Админ-панель</a><a class="profile" href="./profile.html">Профиль</a></div></header>
 <p class="small" id="loading">Проверяю вход…</p>
+<section class="resume-section" id="resume-section" aria-labelledby="resume-heading" hidden>
+<h2 class="resume-heading" id="resume-heading">Продолжить обучение</h2>
+<div class="resume-links" id="resume-links"></div>
+<p class="resume-help" id="resume-help">Ссылки сохраняются в твоём аккаунте и доступны после входа с другого устройства.</p>
+</section>
 <div class="courses" id="courses" hidden></div>
 <div class="empty" id="empty" hidden>
 <p>Пока у тебя нет назначенных программ. Укажи свою цель в профиле. После этого можно будет подобрать или создать учебный маршрут.</p>
@@ -52,6 +71,79 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 import {supabase,authenticatedUser} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
+const readable=record=>language()==="en"?(record.title_en||record.title):(record.title||record.title_en);
+function lessonLink(course,lesson){
+ const code=lesson.external_id;
+ if(course==="flutter")return "./flutter-lesson.html?id="+encodeURIComponent(code);
+ if(course==="ielts")return "./ielts-lesson.html?id="+encodeURIComponent(code);
+ if(course==="quran"){
+  const match=/^(\d+):(\d+)$/.exec(code);
+  if(match)return "./quran.html?s="+Number(match[1])+"&a="+Number(match[2]);
+ }
+ return null;
+}
+async function renderResume(user,visible,completedIds,positions){
+ const available=visible.filter(c=>["flutter","ielts","quran"].includes(c.slug));
+ if(!available.length)return;
+ const known=new Map();
+ const keys=(positions||[]).filter(p=>available.some(c=>c.slug===p.course_slug)).map(p=>p.lesson_id);
+ if(keys.length){
+  const {data,error}=await supabase.from("lessons")
+   .select("id,course_slug,external_id,title,title_en").in("id",[...new Set(keys)]);
+  if(error)console.warn("Resume lesson lookup:",error.message);
+  else for(const row of data||[])known.set(row.id,row);
+ }
+ const seen=new Map((positions||[]).map(p=>[p.course_slug,p]));
+ const completed=new Set(completedIds);
+ const items=[];
+ for(const course of available){
+  const stored=seen.get(course.slug);
+  let lesson=stored&&known.get(stored.lesson_id);
+  if(lesson?.course_slug!==course.slug)lesson=null;
+  let kind=lesson?"last":"next";
+  if(!lesson){
+   // The first unmarked unit is a fallback, not a claim about where the user stopped.
+   const {data:units,error}=await supabase.from("lessons")
+    .select("id,course_slug,external_id,title,title_en")
+    .eq("course_slug",course.slug).order("sort_order",{ascending:true}).limit(course.slug==="quran"?400:500);
+   if(error){console.warn("Resume fallback:",error.message)}
+   else lesson=(units||[]).find(x=>!completed.has(x.id))||null;
+  }
+  let href=lesson&&lessonLink(course.slug,lesson);
+  if(!href){
+   href=course.slug==="quran"?"./quran.html?s=1&a=1":"./"+course.slug+".html";
+   kind="course";
+  }
+  const short=course.slug==="quran"&&lesson
+   ?(language()==="en"?"Surah ":"Сура ")+lesson.external_id.split(":")[0]+", "+(language()==="en"?"ayah ":"аят ")+lesson.external_id.split(":")[1]
+   :lesson?(lesson.external_id+" · "+readable(lesson)):readable(course);
+  items.push({course,href,title:short,kind,visited:kind==="last"?Date.parse(stored.visited_at)||0:0});
+ }
+ items.sort((a,b)=>b.visited-a.visited);
+ const list=$("resume-links");list.replaceChildren();
+ for(const item of items){
+  const a=document.createElement("a");a.className="resume-link";a.href=item.href;
+  a.dataset.last=String(item.kind==="last");
+  const left=document.createElement("span");left.style.minWidth="0";
+  const label=document.createElement("span");label.className="resume-label";
+  const title=readable(item.course);
+  const suffix=item.kind==="last"
+   ?(language()==="en"?" · Last opened":" · Последняя открытая тема")
+   :item.kind==="next"?(language()==="en"?" · Next unmarked":" · Следующий неотмеченный")
+   :(language()==="en"?" · Open course":" · Открыть курс");
+  label.textContent=title+suffix;
+  const name=document.createElement("span");name.className="resume-title";name.textContent=item.title;
+  left.append(label,name);
+  const arrow=document.createElement("span");arrow.className="resume-action";
+  arrow.textContent=language()==="en"?"Continue →":"Перейти →";
+  a.append(left,arrow);list.append(a);
+ }
+ $("resume-heading").textContent=language()==="en"?"Continue learning":"Продолжить обучение";
+ $("resume-help").textContent=language()==="en"
+  ?"Last opened topics sync with your account across devices. Without history, a next unmarked lesson is suggested."
+  :"Последняя открытая тема синхронизируется между устройствами. Пока истории нет, предлагается следующий неотмеченный урок.";
+ $("resume-section").hidden=false;
+}
 async function main(){
  try{
   const user=await authenticatedUser();
@@ -62,11 +154,13 @@ async function main(){
   if(assignedError)throw assignedError;
   $("loading").hidden=true;$("heading").hidden=false;
   if(!assigned?.length){$("empty").hidden=false;return;}
-  const [catalog,progress]=await Promise.all([
+  const [catalog,progress,positions]=await Promise.all([
    supabase.from("courses").select("slug,title,title_en,total_units"),
-      supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id)
+   supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id),
+   supabase.from("course_resume_positions").select("course_slug,lesson_id,visited_at").eq("user_id",user.id)
   ]);
   for(const result of [catalog,progress])if(result.error)throw result.error;
+  if(positions.error)console.warn("Resume positions unavailable:",positions.error.message);
   const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
   const visible=(catalog.data||[]).filter(c=>assignedSlugs.has(c.slug));
   const completedIds=(progress.data||[]).map(x=>x.lesson_id);
@@ -104,6 +198,9 @@ async function main(){
   }
   if(!root.children.length){$("empty").hidden=false;return;}
   root.hidden=false;
+  // Suggestions never prevent the main course list from loading.
+  try{await renderResume(user,visible,completedIds,positions.error?[]:positions.data||[]);}
+  catch(error){console.warn("Resume shortcuts:",error.message);}
  }catch(e){
   console.error("Meta dashboard:",e);
   $("loading").textContent="Не удалось загрузить твои программы. Обнови страницу или проверь вход в аккаунт.";

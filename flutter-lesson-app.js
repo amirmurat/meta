@@ -1,5 +1,6 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language,localizeRecord,tr} from "./meta-language.js";
+import {rememberCoursePosition} from "./meta-resume.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
@@ -364,6 +365,7 @@ async function load() {
     });
     await loadPersonalState();
     $("lesson").hidden = false;
+    rememberCoursePosition(currentUser.id,"flutter",row.id);
   } catch (err) {
     console.error("Flutter lesson:",err);
     showError("Не удалось загрузить страницу. Проверь интернет и повтори.");
