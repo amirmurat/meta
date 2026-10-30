@@ -1,5 +1,6 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
+import {rememberCoursePosition} from "./meta-resume.js";
 
 "use strict";
 const $=id=>document.getElementById(id);
@@ -196,6 +197,7 @@ async function openVerse(s,a,addHistory=true){
   const data=await apiVerse(s,a);
   if(id!==sequence)return;
   verse=data.verse;
+  rememberCoursePosition(user.id,"quran",lessonId);
   set("arabic",verse.text.uthmani);
   status("");
   renderWordButtons();
