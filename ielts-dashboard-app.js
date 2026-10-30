@@ -5,7 +5,7 @@ import {LISTENING} from "./listening-practice-bank.js";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
 const sections=[
  {key:MOCK.key,version:MOCK.version,name:"Reading",questions:MOCK.questions,skills:MOCK.skills,href:"./reading-mock.html",
-  good:(q,a)=>q.type==="short"?q.answers.some(x=>String(x).trim().toLowerCase().replace(/[.,!?;:]+$/g,"").replace(/\\s+/g," ")===String(a[q.id]||"").trim().toLowerCase().replace(/[.,!?;:]+$/g,"").replace(/\\s+/g," ")):a[q.id]===q.answer},
+  good:(q,a)=>q.type==="short"?q.answers.some(x=>String(x).trim().toLowerCase().replace(/[.,!?;:]+$/g,"").replace(/\s+/g," ")===String(a[q.id]||"").trim().toLowerCase().replace(/[.,!?;:]+$/g,"").replace(/\s+/g," ")):a[q.id]===q.answer},
  {key:LISTENING.key,version:LISTENING.version,name:"Listening",questions:LISTENING.parts.flatMap(p=>p.questions),skills:LISTENING.skills,href:"./listening-practice.html",
   good:(q,a)=>a[q.id]===q.answer}
 ];
