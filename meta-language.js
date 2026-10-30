@@ -34,6 +34,50 @@ Object.assign(translationsRUtoEN,{
   "Ссылка недействительна или устарела. Запроси новую через «Забыли пароль?».":"This link is invalid or expired. Request a new one using “Forgot password?”.",
   "Не удалось отправить письмо. Попробуй позже.":"Could not send the email. Try again later."
 });
+// Customer onboarding, support and admin screens introduced after the original localization map.
+Object.assign(translationsRUtoEN,{
+ "← О платформе":"← About Meta",
+ "← О Meta":"← About Meta",
+ "Данные и приватность":"Data and privacy",
+ "Регистрация":"Sign up",
+ "Аккаунт создан, но программа пока не назначена. Напиши администратору, какой курс тебе нужен (например, IELTS). После назначения он появится здесь.":"Your account is ready, but no course has been assigned. Message the administrator to request access.",
+ "Запросить доступ к курсу →":"Request a course →",
+ "Заполнить профиль":"Complete your profile",
+ "Сообщения":"Messages",
+ "О Meta":"About Meta",
+ "Управление":"Management",
+ "Админ-панель":"Admin dashboard",
+ "Создай аккаунт, подтверди email и открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».":"Create an account, confirm your email and open My Courses. Request access to missing courses through Messages.",
+ "Проверь почту (включая «Спам») и подтверди регистрацию. После входа открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».":"Check your inbox and spam folder, then confirm your account. Sign in and open My Courses. Request any missing course in Messages.",
+ "Сообщения — запросить курс":"Messages — request a course",
+ "Проверка аккаунта…":"Checking account…",
+ "Связь с администратором":"Contact the administrator",
+ "О платформе":"About the platform",
+ "Твоё сообщение":"Your message",
+ "Отправить":"Send",
+ "Сообщений пока нет. Напиши ниже, чтобы связаться с администратором.":"No messages yet. Write below to contact the administrator.",
+ "Максимум 3000 символов · обновление сообщений каждые 15 секунд":"Maximum 3,000 characters · messages refresh every 15 seconds",
+ "Запросов слишком много. Подожди около минуты перед повторной попыткой; письмо может уже быть отправлено.":"Too many requests. Wait about a minute before trying again; the email may already have been sent.",
+ "Управление Meta":"Meta management",
+ "Запросы клиентов, личная переписка и управление доступом к курсам. Действия защищены на стороне Supabase.":"Customer enquiries, private support and course access controls. All actions are authorized on the server.",
+ "Проверяю доступ администратора…":"Checking administrator access…",
+ "Права доступа к программам":"Course access",
+ "Назначение и снятие курса не удаляют ответы, историю уроков или результаты тестов. Изменения записываются в журнал на сервере.":"Granting or revoking course access does not delete saved work or test results. Changes are audited on the server.",
+ "Поиск":"Search",
+ "Пользователь":"User",
+ "Сообщения учеников":"Student messages",
+ "Обновить":"Refresh",
+ "Переписки":"Conversations",
+ "Выбери переписку":"Select a conversation",
+ "Ответ ученику":"Reply to the student",
+ "Ответить":"Reply",
+ "Сообщения обновляются при открытой странице каждые 15 секунд. Это не круглосуточный онлайн-чат и не автоматические уведомления.":"Messages refresh every 15 seconds while this page is open. This is not real-time staffed chat or push notification.",
+ "Заявки с лендинга":"Landing page enquiries",
+ "Заявки посетителей, включая интерес к арабскому языку. Ответ на email пока отправляется вручную — автоматическая почтовая рассылка здесь не подключена.":"Visitor enquiries, including interest in Arabic. Email replies are sent manually; automated email notifications are not configured.",
+ "Курсы, сообщения и заявки →":"Courses, messages and enquiries →",
+ "Административная аналитика":"Admin analytics",
+ "Доступ только подтверждённому администратору.":"Only authorized administrators may access this area."
+});
 function translateNode(node,lang){
  if(node.nodeType===3){
   const original=node.nodeValue||"",word=original.trim();
