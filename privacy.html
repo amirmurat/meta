@@ -2,7 +2,7 @@
 <html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Данные и приватность — Meta</title>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font:15px/1.7 Arial,Helvetica,sans-serif}
 main{max-width:760px;margin:auto;padding:28px 22px 90px}
@@ -36,4 +36,5 @@ import {language} from "./meta-language.js";
 const en=language()==="en";
 document.querySelectorAll("[data-ru][data-en]").forEach(node=>node.textContent=node.getAttribute(en?"data-en":"data-ru"));
 </script>
+<script type="module" src="./meta-shell.js"></script>
 </body></html>

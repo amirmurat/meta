@@ -55,16 +55,17 @@ p{color:#6b7280;line-height:1.55;margin:0}
 [hidden]{display:none!important}
 @media(max-width:600px){main{padding:26px 16px 60px}.heading{padding-left:4px;padding-right:4px}.subgroups{padding-left:10px}.leaf-list{grid-template-columns:1fr}.track{margin:0 4px}}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 </head>
 <body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-lesson">
 <nav class="top meta-page-nav" aria-label="Навигация IELTS"><a class="back" href="./">← Мои программы</a><a class="back" href="./support.html">Сообщения</a><a class="back" href="./profile.html">Профиль</a></nav>
 <header class="intro"><h1>IELTS Academic</h1><p id="summary">Проверяю учебный план…</p></header>
 <p class="next" id="next" hidden aria-live="polite"></p>
-<section class="ielts-guide" aria-labelledby="ielts-path-title">
-<h2 id="ielts-path-title">С чего начать</h2>
-<p id="ielts-path-intro">Если ты здесь впервые, начни с короткой диагностики. Она покажет слабые навыки Reading, после чего можно перейти к урокам. Полный Reading-тест необязателен на старте.</p>
+<details class="ielts-guide" aria-labelledby="ielts-path-title">
+<summary id="ielts-path-title">Диагностика и дополнительные тренировки</summary>
+<p id="ielts-path-intro">Начни с урока по кнопке выше. Диагностика Reading необязательна: она поможет выбрать темы для повторения.</p>
 <a class="meta-assessment-link" href="./assessment.html" id="diagnostic-link">
 <div><strong id="diagnostic-title">1. Диагностика Reading · 12 вопросов</strong>
 <span id="diagnostic-description">Быстрая проверка навыков и рекомендации по урокам</span></div>
@@ -78,17 +79,19 @@ p{color:#6b7280;line-height:1.55;margin:0}
 <a href="./listening-practice.html" id="extra-listening">Listening · 40 вопросов — синтетический голос браузера, не настоящая экзаменационная запись</a>
 <a href="./writing-mock.html" id="extra-writing">Writing · 2 задания, 60 минут — без автоматической оценки качества</a>
 </div></details>
-</section>
+</details>
 <div class="modules" id="modules" aria-live="polite"><p class="status">Загрузка…</p></div>
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
+import {loadAttemptedLessons,lessonStatus} from "./meta-course-state.js";
+let attempted=null;
 const $=id=>document.getElementById(id);
 const isEnglish=language()==="en";
 if(isEnglish){
- $("ielts-path-title").textContent="Where to start";
- $("ielts-path-intro").textContent="New to Meta? Begin with a quick Reading diagnostic. It identifies skills to practise and links to lessons. A full mock is optional.";
+ $("ielts-path-title").textContent="Diagnostics and extra practice";
+ $("ielts-path-intro").textContent="Start with the lesson above. The optional Reading diagnostic helps choose skills to revisit.";
  $("diagnostic-title").textContent="1. Reading diagnostic · 12 questions";
  $("diagnostic-description").textContent="Quick skills check and suggested lessons";
  $("diagnostic-cta").textContent="Start →";
@@ -137,7 +140,7 @@ function mark(groups,records){
         a.href="./ielts-lesson.html?id="+encodeURIComponent(lesson.external_id);
         const code=document.createElement("span");code.className="id";code.textContent=lesson.external_id;
         const text=document.createElement("span");text.textContent=lesson.title;
-        a.append(code,text);list.append(a);
+        const status=document.createElement("span");status.className="meta-lesson-status";status.textContent=lessonStatus(lesson.completed,attempted,lesson.id);a.append(code,text,status);list.append(a);
       }
       child.append(list);
     }
@@ -163,6 +166,7 @@ async function start(){
     $("summary").textContent="Нет доступа к программе";return;
   }
   if(rows.data.length!==332)throw Error("Неполный список IELTS ("+rows.data.length+")");
+  attempted=await loadAttemptedLessons(user.id);
   const ids=new Set((completed.data||[]).map(x=>x.lesson_id));
   const lessons=rows.data.map(x=>({...x,title:language()==="en"?(x.title_en||x.title):x.title,lesson_content:language()==="en"?(x.lesson_content_en||x.lesson_content):x.lesson_content,completed:ids.has(x.id)}));
   const count=lessons.filter(x=>x.completed).length;
@@ -177,7 +181,7 @@ async function start(){
   const next=$("next");next.replaceChildren();next.hidden=false;
   if(first){
     const lead=document.createElement("strong");
-    lead.textContent=isEnglish?"Continue learning: ":"Продолжить обучение: ";
+    lead.textContent=count ? (isEnglish?"Continue learning: ":"Продолжить обучение: ") : (isEnglish?"Start first lesson: ":"Начать первый урок: ");
     const link=document.createElement("a");link.href="./ielts-lesson.html?id="+encodeURIComponent(first.external_id);
     link.textContent=first.title+" →";
     next.append(lead,link);
@@ -207,5 +211,6 @@ async function start(){
 void start();
 </script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body>
 </html>

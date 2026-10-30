@@ -15,6 +15,7 @@ export const supabase = createClient(
 
 export async function authenticatedUser() {
   const { data, error } = await supabase.auth.getUser();
+  if (error && error.name !== "AuthSessionMissingError" && error.status !== 401 && error.status !== 403) throw error;
   if (error || !data?.user) return null;
   return data.user;
 }

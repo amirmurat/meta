@@ -1,5 +1,7 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language,localizeRecord,tr} from "./meta-language.js";
+import {icon} from "./meta-icons.js";
+import {completionRequirements} from "./meta-routing.js";
 import {rememberCoursePosition} from "./meta-resume.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
@@ -16,6 +18,8 @@ let attemptTimer = null;
 let notesTimer = null;
 let attemptQueue = Promise.resolve();
 let notesQueue = Promise.resolve();
+let answerDirty=false,notesDirty=false;
+window.addEventListener("beforeunload",event=>{if(answerDirty||notesDirty){event.preventDefault();event.returnValue="";}});
 
 function setText(id, text) { $(id).textContent = text; }
 function showError(text) {
@@ -48,9 +52,11 @@ function showTaskMode(type) {
    :sec==="2"?"Укажи конкретный английский текст, абзац и доказательство ответа."
    :sec==="3"?"Напиши английский фрагмент самостоятельно. Проверь смысл, структуру и язык."
    :"Сначала произнеси ответ вслух и по возможности запиши аудио отдельно. Сюда внеси текст/наблюдения; одна расшифровка не доказывает беглость и произношение.";
-  $("editor-toolbar").hidden=true;
+  $("editor-toolbar").hidden=false;$("dartpad").hidden=true;
 }
 function updateButton() {
+  const missing=completionRequirements({signedIn:!!currentUser,answer:$("answer").value,criteria:[...document.querySelectorAll("#criteria input")].map(x=>x.checked),aiReviewed:$("ai-reviewed").checked,selfPassed:$("self-passed").checked},language()==="en");
+  $("completion-help").textContent=missing.length?(language()==="en"?"To finish: ":"Чтобы завершить: ")+missing.join("; ")+".":(language()==="en"?"Ready. Save your confirmed completion below.":"Всё готово. Сохрани подтверждение выполнения ниже.");
   const answer = $("answer").value.trim();
   $("check-button").disabled = !answer;
   const allCriteriaChecked = [...document.querySelectorAll("#criteria input[type=checkbox]")].every(x => x.checked);
@@ -76,12 +82,14 @@ async function saveAttemptNow() {
   attemptQueue = attemptQueue.catch(() => {}).then(async () => {
     const {error} = await supabase.from("lesson_attempts").upsert(payload, {onConflict:"user_id,lesson_id"});
     if (error) throw error;
+    if($("answer").value===payload.answer_text && $("ai-reviewed").checked===payload.ai_reviewed && $("self-passed").checked===payload.self_passed)answerDirty=false;
     setText("save-state", "Ответ сохранён в твоём аккаунте.");
   });
   try { await attemptQueue; }
   catch (err) { setText("save-state", "Ошибка сохранения ответа: " + err.message); throw err; }
 }
 function scheduleAttempt() {
+  answerDirty=true;
   if (attemptTimer) clearTimeout(attemptTimer);
   if (!currentUser) {
     saveLocal(guestKeys.answer, $("answer").value);
@@ -140,12 +148,14 @@ async function saveNotesNow() {
       if (error) throw error;
       noteId = data.id;
     }
+    if($("notes").value===body)notesDirty=false;
     setText("notes-state", "Заметки сохранены в аккаунте.");
   });
   try { await notesQueue; }
   catch (err) { setText("notes-state","Ошибка сохранения заметок: " + err.message); }
 }
 function scheduleNotes() {
+  notesDirty=true;
   if (notesTimer) clearTimeout(notesTimer);
   if (!currentUser) {
     saveLocal(guestKeys.notes, $("notes").value);
@@ -222,11 +232,11 @@ function initNav(nav) {
   ]) {
     const item = nav[index+offset], link = $(linkId);
     link.href = item ? "./ielts-lesson.html?id=" + encodeURIComponent(item.external_id) : "./ielts.html";
-    link.textContent = item ? (offset<0?"← ":"") + item.external_id + (offset>0?" →":"") : fallback;
+    link.textContent = item ? (offset<0?(language()==="en"?"← Previous · ":"← Предыдущий · "):(language()==="en"?"Next lesson · ":"Следующий урок · ")) + item.external_id + (offset>0?" →":"") : fallback;
   }
 }
 async function completeLesson() {
-  if (!currentUser || !row) return;
+  if (!currentUser || !row || $("confirm-completion").disabled) return;
   const button = $("confirm-completion"); button.disabled = true;
   setText("completion-result", "Сохраняю подтверждение…");
   try {
@@ -249,12 +259,15 @@ async function completeLesson() {
     setText("completion-status", "Отмечено выполненным. Проверку с ИИ подтвердил ты сам; автоматической оценки нет.");
     $("unmark-completion").hidden = false;
     setText("completion-result", "Сохранено в твоём аккаунте.");
+    $("next").classList.add("meta-primary-action");
+    const onward=$("next").cloneNode(true);onward.removeAttribute("id");$("completion-result").append(document.createElement("br"),onward);
   } catch(err) {
     setText("completion-result", "Не удалось засчитать: " + String(err.message || err));
   } finally {updateButton();}
 }
 async function unmarkLesson() {
   if (!currentUser || !row) return;
+  if(!confirm(language()==="en"?"Remove completion? Your answer and notes will remain.":"Снять отметку выполнения? Ответ и заметки сохранятся."))return;
   const {error} = await supabase.from("lesson_progress").delete()
     .eq("user_id",currentUser.id).eq("lesson_id",row.id);
   if (error) {
@@ -363,6 +376,7 @@ async function load() {
       await saveNotesNow();
     });
     await loadPersonalState();
+    $("save-now").prepend(icon("check"));$("confirm-completion").prepend(icon("check"));
     $("lesson").hidden = false;
     rememberCoursePosition(currentUser.id,"ielts",row.id);
   } catch (err) {

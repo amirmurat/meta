@@ -23,9 +23,10 @@ section h2{font-size:19px}
 a{color:inherit}
 [hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 </head>
 <body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-narrow">
 <nav class="top meta-page-nav" aria-label="Навигация профиля"><a class="back" href="./">← Мои программы</a><a class="back" href="./statistics.html">Статистика</a><a class="back" href="./support.html">Сообщения</a><a class="back" href="./account.html">Аккаунт</a></nav>
 <h1>Мой профиль</h1>
@@ -128,5 +129,6 @@ $("profile-form").onsubmit=async event=>{
 await init();
 </script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body>
 </html>

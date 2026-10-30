@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Сообщения — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=4">
+<title>Сообщения — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=5">
 <style>*{box-sizing:border-box}body{background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif;margin:0}
 main{max-width:780px;margin:0 auto;padding:29px 20px 80px}
 nav{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}nav a{font-size:14px;color:#555;text-decoration:none}
@@ -16,7 +16,8 @@ button:disabled{opacity:.55}
 .actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:11px}
 a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:3px}
 [hidden]{display:none!important}
-</style></head><body class="meta-ui"><main>
+</style></head><body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div><main>
 <nav class="meta-page-nav" aria-label="Навигация сообщений"><a href="./">← Мои программы</a><a href="./welcome.html">О Meta</a></nav>
 <h1 id="heading">Связь с администратором</h1>
 <p class="muted" id="subtitle">Задай вопрос о программе, доступе, упражнениях или технической проблеме. Сообщения видны тебе и администратору Meta. Ответы появляются здесь; мгновенный ответ не гарантируется.</p>
@@ -31,7 +32,7 @@ a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #1
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
-let user=null,lastSignature="",loading=false;
+let user=null,lastSignature=null,loading=false;
 const formatTime=s=>new Intl.DateTimeFormat(en?"en-GB":"ru-RU",{dateStyle:"short",timeStyle:"short",timeZone:"Asia/Almaty"}).format(new Date(s));
 async function refresh(){
  if(loading||!user||document.hidden)return;loading=true;
@@ -78,4 +79,5 @@ async function boot(){
  window.addEventListener("focus",()=>void refresh());
 }
 void boot().catch(err=>{$("status").textContent=err.message});
-</script><script type="module" src="./meta-language.js"></script></body></html>
+</script><script type="module" src="./meta-language.js"></script><script type="module" src="./meta-shell.js"></script>
+</body></html>
