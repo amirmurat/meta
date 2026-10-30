@@ -32,7 +32,8 @@ function rangeStart(){
 async function getAll(table,fields){
  const all=[],page=1000;
  for(let offset=0;offset<20000;offset+=page){
-  const {data:rows,error}=await supabase.from(table).select(fields).eq("user_id",user.id).range(offset,offset+page-1);
+  const orderBy={lesson_progress:"lesson_id",lesson_attempts:"lesson_id",learning_sessions:"id",assessment_attempts:"id",ielts_writing_attempts:"id"}[table];
+  const {data:rows,error}=await supabase.from(table).select(fields).eq("user_id",user.id).order(orderBy,{ascending:true}).range(offset,offset+page-1);
   if(error)throw error;
   all.push(...(rows||[]));if(!rows||rows.length<page)return all;
  }
@@ -322,6 +323,15 @@ async function boot(){
  if(requests[1].error)throw requests[1].error;
  const [e,c,p,a,s,ass,w]=requests.map((r,i)=>i<=1?r.data||[]:r);
  const details=await mapLessons([...p.map(x=>x.lesson_id),...a.map(x=>x.lesson_id)]);
+ // IELTS (332) and Flutter (56): load full course catalogues for accurate section denominators.
+ const assigned=new Set(e.map(x=>x.course_slug));
+ for(const slug of ["ielts","flutter"]){
+  if(!assigned.has(slug))continue;
+  const {data:allLessons,error:lessonError}=await supabase.from("lessons")
+   .select("id,course_slug,external_id,title,title_en,task_type").eq("course_slug",slug).order("sort_order",{ascending:true}).range(0,999);
+  if(lessonError)throw lessonError;
+  for(const lesson of allLessons||[])details.set(lesson.id,lesson);
+ }
  data={enrollments:e,courses:c,progress:p,attempts:a,sessions:s,assessments:ass,writing:w,lessons:details};
  document.querySelectorAll("[data-days]").forEach(b=>b.addEventListener("click",()=>{days=Number(b.dataset.days);render()}));
  $("export").onclick=exportCSV;
