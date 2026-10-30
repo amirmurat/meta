@@ -101,9 +101,19 @@ function safeDestination(){
 function busy(form,value){form.querySelector("button.primary").disabled=value}
 function errorText(err){
   const msg=String(err?.message||err||"Ошибка сервера");
+  const code=String(err?.code||"");
   if(/invalid login credentials/i.test(msg))return "Неверный email или пароль.";
   if(/email not confirmed/i.test(msg))return "Сначала подтверди email по ссылке в письме.";
-  if(/rate limit|too many/i.test(msg))return "Слишком много попыток. Повтори позже.";
+  if(code==="email_address_not_authorized"||/email address not authorized/i.test(msg))
+    return "Отправка писем на этот адрес пока не настроена. Попробуй позже.";
+  if(code==="over_email_send_rate_limit"||/email rate limit exceeded/i.test(msg))
+    return "Лимит отправки писем исчерпан. Попробуй позже.";
+  if(/email link is invalid|expired|one-time token not found/i.test(msg))
+    return "Ссылка недействительна или устарела. Запроси новую через «Забыли пароль?».";
+  if(/error sending (confirmation|recovery) email|failed to send email/i.test(msg))
+    return "Не удалось отправить письмо. Попробуй позже.";
+  if(/rate limit|too many|for security purposes/i.test(msg))
+    return "Слишком много попыток. Повтори позже.";
   return msg;
 }
 async function showSignedIn(user){
