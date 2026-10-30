@@ -1,0 +1,149 @@
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Meta — личная платформа для самостоятельного обучения. IELTS, изучение Корана, Flutter. Регистрация, прогресс, обратная связь и планы занятий.">
+<title>Meta — Учись по понятному маршруту</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:#111;font:16px/1.65 Arial,Helvetica,sans-serif}
+a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #111;outline-offset:3px}
+main{max-width:1140px;margin:auto;padding:0 24px 96px}
+.top{height:84px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #e8e8e8}
+.brand{font-size:25px;letter-spacing:-1px;font-weight:750;text-decoration:none}
+.top nav{display:flex;gap:23px;align-items:center;flex-wrap:wrap}.top nav a{text-decoration:none;font-size:14px}
+.button{display:inline-flex;justify-content:center;align-items:center;background:#111;border:1px solid #111;color:#fff;padding:12px 18px;min-height:47px;font:600 14px Arial,Helvetica,sans-serif;text-decoration:none;cursor:pointer}
+.button.outline{background:#fff;color:#111}
+.button:hover{background:#333;color:#fff}
+.hero{padding:91px 0 83px;display:grid;grid-template-columns:1.4fr .6fr;gap:48px;align-items:center;border-bottom:1px solid #e9e9e9}
+.eyebrow{text-transform:uppercase;letter-spacing:2px;color:#777;font-size:12px;font-weight:700}
+.hero h1{font-size:clamp(37px,6vw,66px);line-height:1.08;letter-spacing:-2.3px;max-width:710px;margin:15px 0 23px}
+.hero p{font-size:18px;line-height:1.7;color:#555;max-width:600px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:27px}
+.hero-aside{border:1px solid #d9d9d9;padding:30px;min-width:0}
+.hero-aside h2{margin:0 0 18px;font-size:18px}
+.fact{padding:14px 0;border-top:1px solid #e6e6e6}.fact strong{display:block;font-size:16px}.fact span{font-size:13px;color:#666}
+section.section{padding:70px 0;border-bottom:1px solid #eaeaea}
+section.section h2{font-size:clamp(26px,3vw,36px);line-height:1.23;letter-spacing:-.8px;margin:0 0 14px}
+.intro{color:#666;max-width:780px;margin:0 0 32px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{border:1px solid #ddd;padding:25px;min-width:0}.card h3{font-size:20px;margin:5px 0 12px}.card p{color:#666;font-size:14px;margin:0 0 17px}
+.tag{font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.6px}
+.card a{font-weight:600;text-decoration:underline;text-underline-offset:4px;font-size:14px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;counter-reset:steps}
+.step{border-top:2px solid #111;padding:17px 0}.step:before{counter-increment:steps;content:"0" counter(steps);display:block;font-weight:700;color:#555;font-size:14px;margin-bottom:17px}
+.step h3{font-size:18px;margin:0 0 9px}.step p{font-size:14px;color:#666;margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:50px}
+.questions details{border-bottom:1px solid #ddd;padding:16px 0}
+.questions summary{cursor:pointer;font-weight:600;line-height:1.5}.questions p{font-size:14px;color:#555;margin:11px 0 0}
+.form{display:flex;flex-direction:column;gap:14px}
+.form label{font-size:14px;font-weight:600;display:block}
+.form input,.form select,.form textarea{display:block;background:#fff;border:1px solid #999;color:#111;border-radius:0;padding:12px;width:100%;font:inherit;margin-top:7px}
+.form textarea{min-height:110px;resize:vertical}
+.form small{color:#777;line-height:1.6}
+#request-result{font-size:14px;min-height:22px}
+footer{padding:29px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:#777;font-size:13px}
+[hidden]{display:none!important}
+@media(max-width:850px){.hero{grid-template-columns:1fr;padding:60px 0;gap:20px}.cards{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media(max-width:530px){main{padding:0 17px 70px}.top{height:auto;padding:17px 0;align-items:flex-start;flex-wrap:wrap}.top nav{gap:13px}.hero{padding:50px 0}.hero h1{letter-spacing:-1.4px}.cards,.steps{grid-template-columns:1fr}section.section{padding:50px 0}.hero-aside{padding:20px}}
+</style>
+</head><body><main>
+<header class="top"><a href="./welcome.html" class="brand">Meta.</a><nav>
+<a href="#programs" data-ru="Программы" data-en="Programs">Программы</a>
+<a href="#how" data-ru="Как начать" data-en="How it works">Как начать</a>
+<a href="#faq">FAQ</a>
+<a href="./account.html?mode=login" data-ru="Войти" data-en="Sign in">Войти</a>
+</nav></header>
+<section class="hero"><div>
+<div class="eyebrow" data-ru="Личная образовательная платформа" data-en="Personal learning platform">Личная образовательная платформа</div>
+<h1 data-ru="Учись не хаотично, а шаг за шагом." data-en="Learn with a clear next step.">Учись не хаотично, а шаг за шагом.</h1>
+<p data-ru="Meta — платформа для самостоятельного обучения: уроки, упражнения, отметки прогресса и понятные рекомендации. Ты видишь, где остановился и что делать дальше."
+data-en="Meta helps you learn independently with structured lessons, practice, progress tracking and next-step recommendations. Pick up where you left off.">Meta — платформа для самостоятельного обучения: уроки, упражнения, отметки прогресса и понятные рекомендации. Ты видишь, где остановился и что делать дальше.</p>
+<div class="actions">
+<a class="button" href="./account.html?mode=signup" data-ru="Создать аккаунт" data-en="Create account">Создать аккаунт</a>
+<a class="button outline" href="#how" data-ru="Как это работает" data-en="How it works">Как это работает</a>
+</div></div>
+<aside class="hero-aside" aria-label="Что есть в Meta">
+<h2 data-ru="Внутри Meta" data-en="Inside Meta">Внутри Meta</h2>
+<div class="fact"><strong data-ru="Структурированные уроки" data-en="Structured lessons">Структурированные уроки</strong><span data-ru="Продолжай с последней темы" data-en="Resume your last topic">Продолжай с последней темы</span></div>
+<div class="fact"><strong data-ru="Практика и пробные тесты" data-en="Practice and mock exercises">Практика и пробные тесты</strong><span data-ru="Результаты и разбор слабых навыков" data-en="Results and weak-skill insights">Результаты и разбор слабых навыков</span></div>
+<div class="fact"><strong data-ru="Связь с администратором" data-en="Contact the administrator">Связь с администратором</strong><span data-ru="Вопросы по доступу и обучению" data-en="Questions about access and study">Вопросы по доступу и обучению</span></div>
+</aside></section>
+<section class="section" id="programs"><h2 data-ru="Что можно изучать" data-en="Explore learning paths">Что можно изучать</h2>
+<p class="intro" data-ru="Программы назначаются администратором после регистрации. Регистрация сама по себе не открывает все курсы."
+data-en="Courses are assigned by an administrator after registration. Creating an account does not unlock every program automatically.">Программы назначаются администратором после регистрации. Регистрация сама по себе не открывает все курсы.</p>
+<div class="cards">
+<article class="card"><span class="tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3>IELTS Academic</h3><p data-ru="Микроуроки по Listening, Reading, Writing и Speaking. Диагностика, отдельные тренировочные тесты и рекомендации. Пробные результаты не являются официальным IELTS band."
+data-en="Micro-lessons across IELTS skills, diagnostic checks and optional practice tests. Results are unofficial, not certified IELTS bands.">Микроуроки по Listening, Reading, Writing и Speaking. Диагностика, отдельные тренировочные тесты и рекомендации. Пробные результаты не являются официальным IELTS band.</p><a href="#contact" data-ru="Запросить IELTS →" data-en="Ask about IELTS →">Запросить IELTS →</a></article>
+<article class="card"><span class="tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3 data-ru="Изучение Корана" data-en="Quran Study">Изучение Корана</h3><p data-ru="Чтение аятов, пословное исследование, ссылки на источники, личные заметки и отметки изученного. Не является курсом преподавания арабского языка."
+data-en="Verses, word-by-word exploration, referenced sources, private notes and progress tracking. Not an Arabic language course.">Чтение аятов, пословное исследование, ссылки на источники, личные заметки и отметки изученного. Не является курсом преподавания арабского языка.</p><a href="#contact" data-ru="Узнать о доступе →" data-en="Ask about access →">Узнать о доступе →</a></article>
+<article class="card"><span class="tag" data-ru="Доступна по назначению" data-en="Available by assignment">Доступна по назначению</span><h3>Flutter</h3><p data-ru="Пошаговые микроуроки по Dart и Flutter, практические задания, собственные ответы и отслеживание выполненного."
+data-en="Progressive Dart and Flutter lessons, practice tasks, personal answers and completion tracking.">Пошаговые микроуроки по Dart и Flutter, практические задания, собственные ответы и отслеживание выполненного.</p><a href="#contact" data-ru="Узнать о Flutter →" data-en="Ask about Flutter →">Узнать о Flutter →</a></article>
+</div>
+<p class="intro" style="margin-top:23px" data-ru="Интересуешься отдельным курсом арабского языка? Он ещё не запущен. Оставь заявку — мы оценим спрос и сообщим о возможном запуске."
+data-en="Interested in an Arabic language course? It has not launched yet. Send your interest so we can gauge demand.">Интересуешься отдельным курсом арабского языка? Он ещё не запущен. Оставь заявку — мы оценим спрос и сообщим о возможном запуске.</p>
+</section>
+<section class="section" id="how"><h2 data-ru="Как зарегистрироваться и начать" data-en="How to sign up and start">Как зарегистрироваться и начать</h2>
+<div class="steps">
+<div class="step"><h3 data-ru="Создай аккаунт" data-en="Create your account">Создай аккаунт</h3><p data-ru="Нажми «Создать аккаунт» и введи имя, email и надёжный пароль." data-en="Choose Create account, enter your name, email and a strong password.">Нажми «Создать аккаунт» и введи имя, email и надёжный пароль.</p></div>
+<div class="step"><h3 data-ru="Подтверди почту" data-en="Confirm your email">Подтверди почту</h3><p data-ru="Открой письмо и перейди по ссылке. Если письма нет, проверь «Спам»." data-en="Open the email confirmation link. Check spam if needed.">Открой письмо и перейди по ссылке. Если письма нет, проверь «Спам».</p></div>
+<div class="step"><h3 data-ru="Запроси программу" data-en="Request a course">Запроси программу</h3><p data-ru="Войди и напиши администратору во внутреннем чате, какой курс нужен. Он назначит доступ." data-en="Sign in and message the administrator from your account to request the course you need.">Войди и напиши администратору во внутреннем чате, какой курс нужен. Он назначит доступ.</p></div>
+<div class="step"><h3 data-ru="Начни обучение" data-en="Start learning">Начни обучение</h3><p data-ru="Открой «Мои программы», изучай темы и сохраняй прогресс. Потом продолжай с последней открытой темы." data-en="Open My programs, learn at your pace and track progress. Resume from the last opened lesson.">Открой «Мои программы», изучай темы и сохраняй прогресс. Потом продолжай с последней открытой темы.</p></div>
+</div><div class="actions"><a class="button" href="./account.html?mode=signup" data-ru="Зарегистрироваться" data-en="Sign up">Зарегистрироваться</a><a class="button outline" href="./account.html?mode=login" data-ru="Уже есть аккаунт" data-en="I have an account">Уже есть аккаунт</a></div>
+</section>
+<section class="section two" id="faq"><div><h2 data-ru="Частые вопросы" data-en="Frequently asked questions">Частые вопросы</h2>
+<div class="questions">
+<details><summary data-ru="Почему после регистрации пусто?" data-en="Why is my account empty after sign-up?">Почему после регистрации пусто?</summary><p data-ru="Сначала подтвердить email, затем войти и запросить нужную программу через чат. Курсы не назначаются автоматически."
+data-en="Confirm your email, sign in, and request a program in the support chat. Course access is not automatic.">Сначала подтверди email, войди и запроси программу в чате. Курсы не назначаются автоматически.</p></details>
+<details><summary data-ru="Как общаться с администратором?" data-en="How can I contact the administrator?">Как общаться с администратором?</summary><p data-ru="До регистрации оставь заявку ниже. После входа открой «Сообщения»: там можно задавать вопросы и читать ответы."
+data-en="Before signing up, use the form below. After signing in, open Messages for your private conversation.">До регистрации оставь заявку ниже. После входа открой «Сообщения»: там можно задавать вопросы и читать ответы.</p></details>
+<details><summary data-ru="Это официальный IELTS и официальный band?" data-en="Is it official IELTS and does it award a certified band?">Это официальный IELTS и официальный band?</summary><p data-ru="Нет. В Meta — самостоятельные авторские тренировки и учебная аналитика, без официальной сертификации IELTS."
+data-en="No. Meta offers original independent learning exercises and provisional analytics, not certified IELTS grading.">Нет. В Meta — авторские тренировочные задания без официальной сертификации.</p></details>
+<details><summary data-ru="Что будет с данными после обновления сайта?" data-en="Will updates delete my learning history?">Что будет с данными после обновления сайта?</summary><p data-ru="Сохранённый прогресс и сообщения находятся в Supabase отдельно от файлов сайта. Обычная публикация нового дизайна их не удаляет. Незавершённые локальные черновики зависят от браузера."
+data-en="Saved progress and messages are stored in Supabase separately from website files. Publishing a redesign does not delete them. Unsubmitted local drafts depend on your browser.">Сохранённый прогресс и сообщения находятся в Supabase отдельно от файлов сайта. Обычная публикация дизайна их не удаляет.</p></details>
+</div></div>
+<div id="contact"><h2 data-ru="Есть вопрос? Напиши нам" data-en="Have a question? Contact us">Есть вопрос? Напиши нам</h2><p class="intro" data-ru="Если ещё не зарегистрировался, оставь контакт и интересующий курс. Ответ будет на указанный email; срок ответа не гарантирован."
+data-en="Not signed up yet? Leave your question and course of interest. We may reply to your email; response times are not guaranteed.">Если ещё не зарегистрировался, оставь контакт и интересующий курс. Ответ будет на указанный email; срок ответа не гарантирован.</p>
+<form class="form" id="interest-form">
+<label><span data-ru="Имя" data-en="Name">Имя</span><input id="interest-name" autocomplete="name" maxlength="100" minlength="2" required></label>
+<label>Email<input id="interest-email" type="email" autocomplete="email" maxlength="200" required></label>
+<label><span data-ru="Какая программа интересует?" data-en="Which program interests you?">Какая программа интересует?</span>
+<select id="interest-course"><option value="ielts">IELTS Academic</option><option value="arabic" data-ru="Арабский язык (заявка)" data-en="Arabic language (interest only)">Арабский язык (заявка)</option><option value="quran" data-ru="Изучение Корана" data-en="Quran Study">Изучение Корана</option><option value="flutter">Flutter</option><option value="other" data-ru="Другое" data-en="Other">Другое</option></select></label>
+<label><span data-ru="Сообщение" data-en="Message">Сообщение</span><textarea id="interest-message" maxlength="2000" minlength="3" required placeholder="Например: хочу готовиться к IELTS, как получить доступ?"></textarea></label>
+<input id="interest-website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px" aria-hidden="true">
+<button class="button" type="submit" id="interest-send" data-ru="Отправить запрос" data-en="Send request">Отправить запрос</button>
+<p id="request-result" role="status" aria-live="polite"></p>
+<small data-ru="Не отправляй пароли и чувствительные данные. Контакты используются только для ответа по Meta. Форма защищена ограничением частоты заявок."
+data-en="Do not send passwords or sensitive data. Contact details are used to respond about Meta. Requests are rate-limited.">Не отправляй пароли и чувствительные данные. Контакты используются только для ответа по Meta. Форма защищена ограничением частоты заявок.</small>
+</form></div></section>
+<footer><span>Meta · Independent learning platform</span><span data-ru="Вопросы по курсу? Используй форму или сообщения после входа." data-en="Questions? Use the form or Messages after sign-in.">Вопросы по курсу? Используй форму или сообщения после входа.</span></footer>
+</main>
+<script type="module">
+import {supabase,authenticatedUser} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
+const en=language()==="en";
+document.documentElement.lang=en?"en":"ru";
+document.querySelectorAll("[data-ru][data-en]").forEach(node=>node.textContent=node.getAttribute(en?"data-en":"data-ru"));
+(async()=>{const user=await authenticatedUser();if(!user)return;
+const nav=document.querySelector(".top nav a[href^='./account.html?mode=login']");
+if(nav){nav.href="./";nav.textContent=en?"My programs":"Мои программы"}
+})().catch(()=>{});
+const form=document.getElementById("interest-form");
+form.onsubmit=async event=>{
+ event.preventDefault();
+ const target=document.getElementById("request-result");
+ const submit=document.getElementById("interest-send");
+ if(document.getElementById("interest-website").value)return;
+ submit.disabled=true;target.textContent=en?"Sending request…":"Отправка запроса…";
+ try{
+  const {error}=await supabase.rpc("meta_submit_interest",{
+   p_name:document.getElementById("interest-name").value.trim(),
+   p_email:document.getElementById("interest-email").value.trim(),
+   p_course:document.getElementById("interest-course").value,
+   p_message:document.getElementById("interest-message").value.trim()
+  });
+  if(error)throw error;
+  target.textContent=en?"Your request was received. You can also register and message us inside Meta.":"Заявка получена. Можешь также зарегистрироваться и написать внутри Meta.";
+  form.reset();
+ }catch(err){target.textContent=en?"Could not submit. Please retry later or sign up.":"Не удалось отправить заявку. Попробуй позже или зарегистрируйся.";console.warn(err)}
+ finally{submit.disabled=false}
+};
+</script>
+</body></html>
