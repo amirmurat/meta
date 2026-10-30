@@ -1,85 +1,150 @@
-/* Meta UI foundation v1
-   Shared visual tokens, spacing, controls and responsive layouts.
-   Existing course data and learning logic remain unchanged. */
+/*
+ Meta visual consistency layer — classic edition.
+ Respect the original minimal, square-corner black-and-white UI.
+ Do not override legacy page widths, page layout, vertical rhythms,
+ headings or progress-bar sizes. Each existing page owns its geometry.
+ New components below share the same original visual vocabulary.
+*/
 :root{
-  --meta-ink:#17212c;--meta-muted:#667483;--meta-border:#dce4ec;
-  --meta-soft:#f3f6f9;--meta-white:#fff;--meta-accent:#245b79;
-  --meta-radius:14px;--meta-radius-sm:10px;--meta-space:16px;
-  --meta-shadow:0 4px 19px rgba(15,37,51,.045);
+ --meta-ink:#111;
+ --meta-muted:#666;
+ --meta-border:#e5e7eb;
+ --meta-control-border:#d1d5db;
+ --meta-white:#fff;
 }
-html{scroll-behavior:smooth}
 body.meta-ui{
-  background:#f8fafc;color:var(--meta-ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  font-size:15px;line-height:1.55;
+ background:#fff;
+ color:#111;
+ font-family:Arial,Helvetica,sans-serif;
 }
-body.meta-ui main.meta-shell{width:min(100%,960px);max-width:none;margin:0 auto;padding:36px 24px 90px;min-height:auto}
-body.meta-ui main.meta-dashboard{max-width:930px;display:block;min-height:100svh;padding-top:clamp(32px,8vh,85px)}
-body.meta-ui main.meta-dashboard header,body.meta-ui main.meta-dashboard .courses,body.meta-ui main.meta-dashboard .small,body.meta-ui main.meta-dashboard .empty{width:100%;max-width:none}
-body.meta-ui main.meta-dashboard header{padding:0 0 21px;border-bottom:1px solid var(--meta-border);margin-bottom:18px}
-body.meta-ui main.meta-narrow{max-width:760px}
-body.meta-ui main.meta-lesson{max-width:830px}
-body.meta-ui main.meta-reader{max-width:1160px}
-body.meta-ui h1{font-size:clamp(27px,3.5vw,36px);letter-spacing:-.035em;line-height:1.2;font-weight:720}
-body.meta-ui h2{letter-spacing:-.018em}
-body.meta-ui .muted,body.meta-ui .help,body.meta-ui .subtitle,body.meta-ui .status,body.meta-ui .instructions{color:var(--meta-muted)}
-body.meta-ui a{color:inherit}
-body.meta-ui nav.top,body.meta-ui nav.topbar,body.meta-ui .top{align-items:center;flex-wrap:wrap}
-body.meta-ui .back,body.meta-ui .profile,body.meta-ui nav a{font-size:14px}
-body.meta-ui a:focus-visible,body.meta-ui button:focus-visible,body.meta-ui input:focus-visible,body.meta-ui textarea:focus-visible,body.meta-ui select:focus-visible,body.meta-ui summary:focus-visible{
-  outline:3px solid rgba(36,91,121,.46);outline-offset:3px
+body.meta-ui button,
+body.meta-ui input:not([type="checkbox"]),
+body.meta-ui textarea,
+body.meta-ui select,
+body.meta-ui .tool-link{
+ border-radius:0;
+ box-shadow:none;
 }
-body.meta-ui button,body.meta-ui .tool-link,body.meta-ui select,body.meta-ui input:not([type=checkbox]),body.meta-ui textarea{
-  border:1px solid var(--meta-border);border-radius:var(--meta-radius-sm);font:inherit;transition:border-color .12s ease,background-color .12s ease;
-}
-body.meta-ui button,body.meta-ui .tool-link{min-height:42px;padding:9px 14px;background:var(--meta-white);color:var(--meta-ink);font-size:14px;font-weight:600;cursor:pointer}
-body.meta-ui button:hover:not(:disabled),body.meta-ui .tool-link:hover{background:#eaf0f5;border-color:#bfd0df}
-body.meta-ui button:disabled{cursor:not-allowed;opacity:.55}
-body.meta-ui input:not([type=checkbox]),body.meta-ui select,body.meta-ui textarea{background:var(--meta-white);padding:11px 12px;max-width:100%}
-body.meta-ui input:not([type=checkbox]):focus,body.meta-ui select:focus,body.meta-ui textarea:focus{border-color:var(--meta-accent)}
-body.meta-ui .button-primary,body.meta-ui button.button-primary,body.meta-ui button#save,body.meta-ui button#quick-save{background:var(--meta-ink);border-color:var(--meta-ink);color:#fff}
-body.meta-ui .button-primary:hover:not(:disabled),body.meta-ui button.button-primary:hover:not(:disabled),body.meta-ui button#save:hover:not(:disabled),body.meta-ui button#quick-save:hover:not(:disabled){background:#314250;color:#fff}
-body.meta-ui .track,body.meta-ui .progress-track{height:8px;background:#e2e8ee;border-radius:99px;overflow:hidden}
-body.meta-ui .fill,body.meta-ui .progress-fill,body.meta-ui .bar{background:var(--meta-accent);border-radius:99px}
-body.meta-ui .courses{gap:12px}
-body.meta-ui .course{
-  border:1px solid var(--meta-border);border-radius:var(--meta-radius);background:var(--meta-white);
-  box-shadow:var(--meta-shadow);padding-bottom:20px;overflow:hidden;
-}
-body.meta-ui .course-top{padding:20px 22px 14px}
-body.meta-ui .course .track{margin:0 22px}
-body.meta-ui .course:hover[href]{border-color:#b7c8d6;box-shadow:0 9px 26px rgba(15,37,51,.075)}
-body.meta-ui .skill>button{border:0;background:transparent;min-height:0}
-body.meta-ui .modules>.subgroups>.skill{border:1px solid var(--meta-border);background:#fff;border-radius:var(--meta-radius);padding:10px 8px;box-shadow:var(--meta-shadow)}
-body.meta-ui .leaf,body.meta-ui .lesson,body.meta-ui .metric{border:1px solid var(--meta-border);border-radius:var(--meta-radius-sm);background:var(--meta-white)}
-body.meta-ui .leaf.completed,body.meta-ui .lesson.completed{background:#eaf7f1;border-color:#b6dfcc;color:#14543a}
-body.meta-ui .codebox,body.meta-ui .morph{background:var(--meta-soft);border-radius:var(--meta-radius-sm)}
-body.meta-ui .part,body.meta-ui .word{border-radius:var(--meta-radius-sm)}
-body.meta-ui .word.selected{background:var(--meta-ink);color:#fff}
-body.meta-ui .tag-item,body.meta-ui .link-list a{border-radius:8px;border-color:var(--meta-border)}
-body.meta-ui .task{border-color:var(--meta-accent)}
-body.meta-ui details.segment>summary,body.meta-ui details.panel>summary{padding:8px 0}
-body.meta-ui .metric{box-shadow:var(--meta-shadow)}
-body.meta-ui .table th,body.meta-ui .table td{border-color:var(--meta-border)}
+body.meta-ui .track,
+body.meta-ui .progress-track,
+body.meta-ui .bar,
+body.meta-ui .fill,
+body.meta-ui .progress-fill{border-radius:0}
+body.meta-ui a:focus-visible,
+body.meta-ui button:focus-visible,
+body.meta-ui input:focus-visible,
+body.meta-ui select:focus-visible,
+body.meta-ui textarea:focus-visible,
+body.meta-ui summary:focus-visible{outline:2px solid #111;outline-offset:3px}
+/* Original course catalogue never had cards, rounded corners or tinted fills. */
+body.meta-ui .course,
+body.meta-ui .skill,
+body.meta-ui .leaf,
+body.meta-ui .lesson,
+body.meta-ui .metric,
+body.meta-ui .codebox,
+body.meta-ui .morph{border-radius:0;box-shadow:none}
+/* Small inline addition to IELTS; not a branded banner/card. */
 body.meta-ui .meta-assessment-link{
-  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;
-  border:1px solid #c8d8e6;background:#edf5fa;padding:16px 18px;border-radius:var(--meta-radius);text-decoration:none;margin:0 0 26px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ flex-wrap:wrap;
+ gap:14px;
+ padding:15px 12px;
+ margin:0 0 24px;
+ text-decoration:none;
+ border-top:1px solid #e5e7eb;
+ border-bottom:1px solid #e5e7eb;
+ background:#fff;
+ color:#111;
 }
-body.meta-ui .meta-assessment-link strong{display:block;font-size:16px}
-body.meta-ui .meta-assessment-link span{display:block;color:#526b7a;font-size:13px;margin-top:3px}
-body.meta-ui .meta-assessment-link:hover{border-color:#96b2c7;background:#e3eff6}
-body.meta-ui .meta-card{background:#fff;border:1px solid var(--meta-border);padding:22px;border-radius:var(--meta-radius);box-shadow:var(--meta-shadow)}
-body.meta-ui .meta-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-body.meta-ui .meta-pill{font-size:12px;background:var(--meta-soft);border:1px solid var(--meta-border);border-radius:999px;padding:5px 10px}
-@media(max-width:760px){
- body.meta-ui main.meta-shell{padding:24px 16px 70px}
- body.meta-ui main.meta-dashboard{padding-top:35px}
- body.meta-ui .layout{grid-template-columns:1fr;gap:16px}
- body.meta-ui aside{position:static}
- body.meta-ui .course-top{padding:17px 16px 12px}
- body.meta-ui .course .track{margin:0 16px}
- body.meta-ui .meta-card{padding:16px}
+body.meta-ui .meta-assessment-link:hover{text-decoration:underline}
+body.meta-ui .meta-assessment-link strong{font-size:15px;font-weight:600;display:block}
+body.meta-ui .meta-assessment-link span{display:block;margin-top:4px;color:#666;font-size:13px}
+/* Testing UI: reproduce the sharp, neutral existing Meta lesson styling. */
+body.meta-assessment main.meta-shell{
+ width:auto;
+ max-width:830px;
+ margin:0 auto;
+ padding:28px 24px 72px;
 }
-@media(prefers-reduced-motion:reduce){
- html{scroll-behavior:auto}
- body.meta-ui button,body.meta-ui .tool-link{transition:none}
+body.meta-assessment .meta-card{
+ background:#fff;
+ border:1px solid #e5e7eb;
+ border-radius:0;
+ box-shadow:none;
+ padding:22px;
+}
+body.meta-assessment .meta-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+body.meta-assessment .meta-pill{
+ background:transparent;
+ color:#777;
+ font-size:13px;
+ border:0;
+ border-radius:0;
+ padding:0;
+}
+body.meta-assessment .assess-hint{
+ background:#f5f5f5;
+ color:#555;
+ border-radius:0;
+}
+body.meta-assessment .passage{
+ background:#f5f5f5;
+ border:1px solid #e5e7eb;
+ border-radius:0;
+ color:#222;
+}
+body.meta-assessment .option{
+ border:1px solid #e5e7eb;
+ border-radius:0;
+ background:#fff;
+ color:#111;
+}
+body.meta-assessment .option:hover{background:#f7f7f7;border-color:#aaa}
+body.meta-assessment .option:has(input:checked){background:#f2f2f2;border-color:#111}
+body.meta-assessment .option input{accent-color:#111}
+body.meta-assessment .test-progress{background:#e5e7eb;border-radius:0}
+body.meta-assessment .test-progress>div{background:#111}
+body.meta-assessment .assess-feedback{border-color:#666}
+body.meta-assessment .assess-feedback.good{background:#f3faf6;border-color:#86d6a0}
+body.meta-assessment .assess-feedback.review{background:#faf8f5;border-color:#d1aa7a}
+body.meta-assessment button{
+ background:#fff;
+ color:#111;
+ border:1px solid #d1d5db;
+ border-radius:0;
+ font:inherit;
+ padding:9px 13px;
+ cursor:pointer;
+}
+body.meta-assessment button:hover:not(:disabled){background:#f5f5f5}
+body.meta-assessment button#submit-test,
+body.meta-assessment button#start-test,
+body.meta-assessment button#retry-test{
+ background:#111;
+ color:#fff;
+ border-color:#111;
+}
+body.meta-assessment button#submit-test:hover:not(:disabled),
+body.meta-assessment button#start-test:hover:not(:disabled),
+body.meta-assessment button#retry-test:hover:not(:disabled){background:#333}
+body.meta-assessment .tool-link{
+ display:inline-flex;
+ align-items:center;
+ border:1px solid #d1d5db;
+ padding:9px 13px;
+ font-size:14px;
+ color:#111;
+ text-decoration:none;
+ background:#fff;
+}
+body.meta-assessment .skill-score a{color:#111}
+body.meta-assessment .history-row,
+body.meta-assessment .skill-score,
+body.meta-assessment .result-details details{border-color:#e5e7eb}
+@media(max-width:600px){
+ body.meta-assessment main.meta-shell{padding:26px 16px 60px}
+ body.meta-assessment .meta-card{padding:16px}
 }
