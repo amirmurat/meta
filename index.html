@@ -77,7 +77,7 @@ function lessonLink(course,lesson){
  if(course==="flutter")return "./flutter-lesson.html?id="+encodeURIComponent(code);
  if(course==="ielts")return "./ielts-lesson.html?id="+encodeURIComponent(code);
  if(course==="quran"){
-  const match=/^(\\d+):(\\d+)$/.exec(code);
+  const match=/^(\d+):(\d+)$/.exec(code);
   if(match)return "./quran.html?s="+Number(match[1])+"&a="+Number(match[2]);
  }
  return null;
