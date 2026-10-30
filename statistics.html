@@ -31,6 +31,15 @@ h2{font-size:20px;margin:0 0 18px}
 .table{width:100%;border-collapse:collapse;font-size:14px}
 .table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid #eee;vertical-align:top}
 .table th{font-weight:600;color:#666}
+.table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+.table-scroll:focus-visible{outline:2px solid #111;outline-offset:2px}
+@media(max-width:600px){
+ .table-scroll .table{min-width:580px}
+ .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .metric{padding:13px;min-width:0}
+ .progress-top{flex-wrap:wrap}
+}
+
 .note{color:#666;font-size:13px;line-height:1.6;margin:16px 0}
 .empty{color:#777;font-size:15px;line-height:1.7}
 [hidden]{display:none!important}
@@ -65,7 +74,9 @@ h2{font-size:20px;margin:0 0 18px}
 </section>
 <section>
 <h2>Последние датированные результаты</h2>
+<div class="table-scroll" role="region" aria-label="История учебных результатов" tabindex="0">
 <table class="table"><thead><tr><th>Дата</th><th>Программа</th><th>Результат</th><th>Точность</th></tr></thead><tbody id="timeline"></tbody></table>
+</div>
 <p class="note">Автоматически сохранённый черновик — не сданное задание. Для новой работы время сдачи фиксируется отдельной кнопкой на странице микроурока.</p>
 </section>
 </div>
