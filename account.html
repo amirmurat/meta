@@ -28,7 +28,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-narrow">
-<a class="back" href="./">← Meta</a>
+<a class="back" id="account-back" href="./" hidden>← Мои программы</a>
 <h1 id="heading">Аккаунт</h1>
 <p class="subtitle" id="subtitle">Сначала войди, чтобы открыть свои программы и прогресс.</p>
 
@@ -107,6 +107,7 @@ function errorText(err){
   return msg;
 }
 async function showSignedIn(user){
+ $("account-back").hidden=false;
  $("guest").hidden=true;$("signed-in").hidden=false;
  $("identity").textContent="Вход выполнен: "+user.email;
  $("heading").textContent="Ты в Meta";
@@ -118,7 +119,7 @@ async function current(){
  try{
   const user=await authenticatedUser();
   if(user)await showSignedIn(user);
-  else{$("guest").hidden=false;$("signed-in").hidden=true;}
+  else{$("account-back").hidden=true;$("guest").hidden=false;$("signed-in").hidden=true;}
  }catch(e){say(errorText(e),true)}
 }
 $("login-tab").onclick=()=>showMode("login");
@@ -176,7 +177,7 @@ $("sign-out").onclick=async()=>{
 };
 supabase.auth.onAuthStateChange((event)=>{
  if(event==="PASSWORD_RECOVERY"){
-  recovering=true;$("guest").hidden=true;$("signed-in").hidden=true;
+  recovering=true;$("account-back").hidden=true;$("guest").hidden=true;$("signed-in").hidden=true;
   $("reset-form").hidden=false;$("heading").textContent="Новый пароль";
   $("subtitle").textContent="Установи пароль для своего аккаунта.";
  }
