@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>IELTS Reading · Диагностика — Meta</title>
+<link rel="stylesheet" href="./meta-ui.css?v=1">
+<style>
+.assess-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+.assess-top a{text-decoration:none;color:var(--meta-muted);font-size:14px}
+.assess-intro{margin:26px 0 22px}
+.assess-intro h1{margin:7px 0 11px}
+.assess-intro p{color:var(--meta-muted);max-width:65ch;line-height:1.65}
+.assess-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+.assess-hint{font-size:13px;line-height:1.6;color:var(--meta-muted);padding:11px 13px;background:#f0f5f8;border-radius:10px}
+.passage{background:#f2f5f7;border:1px solid var(--meta-border);padding:19px;border-radius:12px;line-height:1.76;color:#2d3b48;white-space:pre-wrap;font-size:15px}
+.passage-title{font-weight:650;margin:0 0 12px;font-size:16px}
+.question{padding:21px 0;border-top:1px solid var(--meta-border)}
+.question-title{font-size:15px;font-weight:650;line-height:1.6;margin-bottom:13px}
+.options{display:grid;gap:8px}
+.option{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid var(--meta-border);border-radius:10px;background:#fff;cursor:pointer}
+.option:hover{background:#f7fafc;border-color:#acbdcd}
+.option:has(input:checked){background:#edf5fa;border-color:#8caabe}
+.option input{accent-color:#245b79;margin-top:4px;width:17px;height:17px;flex:none}
+.option span{line-height:1.5}
+.quiz-group{margin:24px 0 28px}
+.quiz-group h2{margin:0 0 11px;font-size:20px}
+.test-progress{margin:14px 0 24px;height:8px;border-radius:30px;background:#e0e7ed;overflow:hidden}
+.test-progress>div{height:100%;background:#245b79;width:0;transition:width .16s ease}
+.assess-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:25px}
+.assess-feedback{border-left:3px solid #bfcedc;padding:11px 13px;margin:8px 0 0;font-size:14px;line-height:1.7}
+.assess-feedback.good{border-color:#64a98c;background:#edf8f3}
+.assess-feedback.review{border-color:#e5a55f;background:#fff7ed}
+.result-lead{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.result-score{font-size:40px;font-weight:740;letter-spacing:-.035em}
+.skill-score{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--meta-border)}
+.skill-score a{color:#245b79}
+.result-summary{margin:20px 0;color:var(--meta-muted)}
+.result-details details{border-bottom:1px solid var(--meta-border);padding:12px 0}
+.result-details summary{cursor:pointer}
+.history-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--meta-border);font-size:14px}
+button#submit-test,button#start-test,button#retry-test{background:var(--meta-ink);color:#fff;border-color:var(--meta-ink)}
+[hidden]{display:none!important}
+@media(max-width:640px){.passage{padding:14px}.assess-intro{margin-top:20px}.result-score{font-size:33px}}
+</style>
+</head>
+<body class="meta-ui">
+<main class="meta-shell meta-lesson">
+<nav class="assess-top" aria-label="Back to courses">
+<a href="./ielts.html" id="back-link">← IELTS · Все уроки</a>
+<a href="./" id="courses-link">Мои программы</a>
+</nav>
+<header class="assess-intro">
+<p class="meta-pill" style="display:inline-block" id="eyebrow">Встроенная диагностика · Meta</p>
+<h1 id="title">IELTS Reading · Проверка навыков</h1>
+<p id="subtitle">Проверим базовые навыки чтения, определим типичные ошибки и предложим упражнения прямо внутри Meta.</p>
+</header>
+<p id="status" role="status" class="assess-hint">Проверяю доступ к программе…</p>
+<section id="welcome" class="meta-card" hidden aria-labelledby="welcome-title">
+<h2 id="welcome-title">Как работает диагностика</h2>
+<p id="description">12 оригинальных вопросов по трём коротким текстам. Результат нужен для выбора подходящих уроков.</p>
+<p id="warning" class="assess-hint">Это короткая тренировочная диагностика, не официальный IELTS mock и не экзаменационный band score.</p>
+<div class="assess-actions">
+<button id="start-test" type="button">Начать диагностику</button>
+<span id="history-hint" class="muted">История попыток сохраняется в аккаунте</span>
+</div>
+</section>
+<form id="quiz" hidden>
+<div class="assess-header"><strong id="quiz-heading">Вопросы</strong><span id="answered-count" class="muted">0 / 12</span></div>
+<div class="test-progress" aria-hidden="true"><div id="answer-fill"></div></div>
+<p id="exam-hint" class="assess-hint">Выбирай ответы по тексту. Если информации нет, выбирай Not Given, а не делай предположение.</p>
+<div id="questions"></div>
+<div class="assess-actions">
+<button id="submit-test" type="submit">Проверить ответы</button>
+<button id="discard-test" type="button">Вернуться</button>
+</div>
+<p id="quiz-state" class="muted" role="status"></p>
+</form>
+<section id="results" hidden aria-labelledby="results-title">
+<div class="meta-card">
+<div class="result-lead">
+<div><p class="muted" id="results-label">Твой результат</p><h2 id="results-title">Разбор диагностики</h2></div>
+<strong id="result-score" class="result-score">— / 12</strong>
+</div>
+<p id="result-disclaimer" class="assess-hint">Это процент верных ответов в этой диагностике, не IELTS band.</p>
+<h3 id="next-title">Что улучшить дальше</h3>
+<div id="skill-results"></div>
+<p id="result-summary" class="result-summary"></p>
+<div class="meta-actions">
+<button id="retry-test" type="button">Пройти ещё раз</button>
+<a class="tool-link" href="./ielts.html" id="all-lessons">Все уроки IELTS</a>
+</div>
+<p id="result-save" class="muted" role="status"></p>
+</div>
+<section class="result-details" style="margin-top:24px">
+<h2 id="answers-title">Разбор каждого ответа</h2>
+<div id="review"></div>
+</section>
+</section>
+<section class="meta-card" id="history" hidden style="margin-top:25px" aria-labelledby="history-title">
+<h2 id="history-title">Мои предыдущие попытки</h2>
+<div id="history-list"></div>
+</section>
+</main>
+<script type="module" src="./assessment-app.js?v=1"></script>
+<script type="module" src="./meta-language.js"></script>
+</body>
+</html>
