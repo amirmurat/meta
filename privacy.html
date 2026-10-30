@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Данные и приватность — Meta</title>
+<link rel="stylesheet" href="./meta-ui.css?v=4">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font:15px/1.7 Arial,Helvetica,sans-serif}
+main{max-width:760px;margin:auto;padding:28px 22px 90px}
+h1{font-size:clamp(28px,5vw,36px);letter-spacing:-.6px;margin:30px 0 12px}
+h2{font-size:21px;margin:28px 0 6px}
+p{margin:8px 0;color:#444}
+.small{font-size:13px;color:#777}
+[hidden]{display:none!important}
+</style></head>
+<body class="meta-ui"><main>
+<nav class="meta-page-nav"><a href="./welcome.html" data-ru="← О Meta" data-en="← About Meta">← О Meta</a><a href="./account.html?mode=signup" data-ru="Регистрация" data-en="Sign up">Регистрация</a></nav>
+<h1 data-ru="Данные и приватность" data-en="Data and privacy">Данные и приватность</h1>
+<p class="small" data-ru="Информация о работе платформы по состоянию на 30 октября 2026 года. Это описание фактических функций Meta, а не заявление о юридической сертификации."
+data-en="Information about Meta as of 30 October 2026. This explains how the platform works; it is not a claim of legal certification.">Информация о работе платформы по состоянию на 30 октября 2026 года. Это описание фактических функций Meta, а не заявление о юридической сертификации.</p>
+<section><h2 data-ru="Что мы сохраняем" data-en="What we store">Что мы сохраняем</h2><p data-ru="Регистрационные данные (email, профиль), назначенные программы, отметки уроков, учебные ответы, результаты тренировок, заметки и сообщения. В форме на лендинге сохраняются имя, email, выбранная программа и текст заявки."
+data-en="Account information (email and profile), course assignments, progress, submitted work, practice results, notes and messages. The public contact form records name, email, course interest and request text.">Регистрационные данные (email, профиль), назначенные программы, отметки уроков, учебные ответы, результаты тренировок, заметки и сообщения. В форме на лендинге сохраняются имя, email, выбранная программа и текст заявки.</p></section>
+<section><h2 data-ru="Для чего" data-en="Why we use it">Для чего</h2><p data-ru="Для входа в аккаунт, отображения личного прогресса, назначения программ и ответов на вопросы. Пожалуйста, не отправляйте пароли, банковские реквизиты или чувствительные сведения в сообщения."
+data-en="To manage sign-in, personal progress, course assignment and support replies. Do not send passwords, payment details or sensitive information in messages.">Для входа в аккаунт, отображения личного прогресса, назначения программ и ответов на вопросы. Пожалуйста, не отправляйте пароли, банковские реквизиты или чувствительные сведения в сообщения.</p></section>
+<section><h2 data-ru="Кто видит данные" data-en="Who can access data">Кто видит данные</h2><p data-ru="Ученик имеет доступ к своим личным материалам. Администратор Meta управляет доступом к курсам, заявками и личной перепиской. Для защиты используются права доступа Supabase и политики RLS."
+data-en="Students can access their own information. The Meta administrator manages course access, visitor requests and support messages. Supabase access permissions and row-level security (RLS) protect stored data.">Ученик имеет доступ к своим личным материалам. Администратор Meta управляет доступом к курсам, заявками и личной перепиской. Для защиты используются права доступа Supabase и политики RLS.</p></section>
+<section><h2 data-ru="Хранение и обновления" data-en="Storage and updates">Хранение и обновления</h2><p data-ru="Данные аккаунтов и сохранённый прогресс хранятся в Supabase, а сайт размещён на GitHub Pages. Обновление файлов сайта само по себе не удаляет базу. Незавершённые локальные черновики, сохранённые только в браузере, могут исчезнуть при очистке данных браузера. Обновления сайта не заменяют резервные копии."
+data-en="Accounts and saved progress are stored in Supabase, while the website runs on GitHub Pages. Updating site files does not itself delete the database. Unsubmitted drafts stored only in a browser can be lost when browser data is cleared. Site updates do not replace backups.">Данные аккаунтов и сохранённый прогресс хранятся в Supabase, а сайт размещён на GitHub Pages. Обновление файлов сайта само по себе не удаляет базу. Незавершённые локальные черновики, сохранённые только в браузере, могут исчезнуть при очистке данных браузера. Обновления сайта не заменяют резервные копии.</p></section>
+<section><h2 data-ru="Исправление или удаление" data-en="Correction or deletion">Исправление или удаление</h2><p data-ru="Для запроса на исправление или удаление данных напишите через сообщения после входа либо через форму связи на лендинге. Автоматический единый срок хранения заявок и переписки пока не настроен."
+data-en="To request correction or deletion of your information, use the authenticated support chat or the contact form on the landing page. Automatic retention periods for enquiries and chats are not yet configured.">Для запроса на исправление или удаление данных напишите через сообщения после входа либо через форму связи на лендинге. Автоматический единый срок хранения заявок и переписки пока не настроен.</p>
+<p><a href="./support.html" data-ru="Связаться после входа →" data-en="Contact support after sign-in →">Связаться после входа →</a></p></section>
+<p class="small" data-ru="Meta — независимая учебная платформа, не официальный экзаменационный центр IELTS."
+data-en="Meta is an independent learning platform, not an official IELTS test centre.">Meta — независимая учебная платформа, не официальный экзаменационный центр IELTS.</p>
+</main>
+<script type="module">
+import {language} from "./meta-language.js";
+const en=language()==="en";
+document.querySelectorAll("[data-ru][data-en]").forEach(node=>node.textContent=node.getAttribute(en?"data-en":"data-ru"));
+</script>
+</body></html>
