@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Analytics — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=3">
+<style>
+*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
+main{width:min(100%,980px);margin:auto;padding:30px 20px 85px}
+nav{display:flex;justify-content:space-between;margin-bottom:25px;gap:12px}a{color:inherit}
+h1{font-size:32px}h2{font-size:22px}p{line-height:1.6}
+.muted{color:#666;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:14px}
+.panel{border:1px solid #ddd;padding:20px;margin:17px 0}
+.score{font-size:30px;font-weight:700;margin:12px 0}
+li{line-height:1.6;margin:12px 0}li p{margin:5px 0;font-size:14px}
+#priority-list{padding-left:22px}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:20px 14px 80px}.panel{padding:14px}}
+</style></head>
+<body class="meta-ui"><main>
+<nav><a href="./ielts.html">← IELTS</a><a href="./" data-en="My courses" data-ru="Мои программы">My courses</a></nav>
+<header><h1 data-en="IELTS · Your learning priorities" data-ru="IELTS · Приоритеты обучения">IELTS · Your learning priorities</h1>
+<p class="muted" data-en="Based on your saved practice results. We never invent an official band score or treat one test as proof of mastery." data-ru="На основе сохранённых тренировок. Мы не придумываем официальный band и не считаем один тест доказательством освоения.">Based on your saved practice results. We never invent an official band score or treat one test as proof of mastery.</p></header>
+<p id="status" role="status" class="muted">Checking your account…</p>
+<div id="summaries" class="grid"></div>
+<section class="panel">
+<h2 data-en="Weak skills in priority order" data-ru="Слабые навыки в порядке приоритета">Weak skills in priority order</h2>
+<ol id="priority-list"></ol>
+<p class="muted" data-en="Priorities are ranked by error rate on the latest compatible practice form. Sample sizes, question difficulty and independent repetitions matter. Writing word counts are not a measure of essay quality." data-ru="Приоритеты отсортированы по доле ошибок на последней совместимой тренировке. Важны размер выборки, сложность и независимые повторы. Количество слов в Writing не оценивает качество эссе.">Priorities are ranked by error rate on the latest compatible practice form. Sample sizes, question difficulty and independent repetitions matter. Writing word counts are not a measure of essay quality.</p>
+</section>
+<section class="panel">
+<h2 data-en="Suggested next 7 days" data-ru="Рекомендуемые следующие 7 дней">Suggested next 7 days</h2>
+<ol id="plan"></ol>
+<p class="muted" data-en="The plan is guidance, not an automatic calendar change. For proof of improvement, complete new independent questions or audio rather than repeating the same form." data-ru="Это рекомендации, а не изменение календаря. Для проверки улучшений нужны новые независимые вопросы или аудио, а не повтор того же варианта.">The plan is guidance, not an automatic calendar change. For proof of improvement, complete new independent questions or audio rather than repeating the same form.</p>
+</section>
+</main>
+<script type="module">import{language}from"./meta-language.js";const lang=language();document.documentElement.lang=lang;document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.getAttribute("data-"+lang));</script>
+<script type="module" src="./ielts-dashboard-app.js?v=1"></script><script type="module" src="./meta-language.js"></script>
+</body></html>
