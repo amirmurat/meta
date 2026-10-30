@@ -38,13 +38,18 @@ section.module{margin-top:0}
 header{margin-bottom:26px}
 .page-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
 .page-top .back{margin-bottom:28px}
+.next{padding:11px 12px;margin:0 0 24px;border-left:2px solid #111;color:#111;font-size:14px;line-height:1.65}
+.next strong{margin-right:7px}
+.next a{color:#111;font-weight:600}
+
 </style>
 <link rel="stylesheet" href="./meta-ui.css?v=2">
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-lesson">
-<div class="page-top"><a class="back" href="./">← На главную</a><a id="user-link" class="back" href="./account.html">Войти</a></div>
+<div class="page-top"><a class="back" id="home-link" href="./">← Мои программы</a><a id="user-link" class="back" href="./account.html">Войти</a></div>
 <header><h1>Flutter</h1><p id="catalog-summary">Проверяю доступ к программе…</p></header>
+<p id="next" class="next" hidden aria-live="polite"></p>
 <div id="catalog" aria-live="polite"><p class="status">Загрузка уроков…</p></div>
 </main>
 <script type="module">
@@ -52,6 +57,7 @@ import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
 // Course material is read only with the authenticated user's RLS-protected session.
 const completedLessonIds=new Set();
+const isEnglish=language()==="en";
 const modules=[
 {prefix:"D",title:"Dart и модель данных"},
 {prefix:"U",title:"Flutter UI"},
@@ -66,8 +72,9 @@ const root=document.getElementById("catalog");
 try{
 const user=await authenticatedUser();
 if(!user){location.replace(authPage("./flutter.html"));return;}
-document.getElementById("user-link").textContent="Мой профиль";
+document.getElementById("user-link").textContent=isEnglish?"Profile":"Профиль";
 document.getElementById("user-link").href="./profile.html";
+document.getElementById("home-link").textContent=isEnglish?"← My courses":"← Мои программы";
 const {data:rawLessons,error:catalogError}=await supabase.from("lessons")
   .select("id,external_id,title,title_en,sort_order")
   .eq("course_slug","flutter").order("sort_order",{ascending:true});
@@ -91,14 +98,30 @@ const {data:progress,error}=await supabase.from("lesson_progress")
 if(error)throw error;
 const map=new Map(lessons.map(l=>[l.id,l.external_id]));
 for(const record of progress||[])if(map.has(record.lesson_id))completedLessonIds.add(map.get(record.lesson_id));
-document.getElementById("catalog-summary").textContent="56 микроуроков · 7 модулей · "+completedLessonIds.size+" выполнено в аккаунте";
+document.getElementById("catalog-summary").textContent=isEnglish
+  ?"56 micro-lessons · 7 modules · "+completedLessonIds.size+" completed"
+  :"56 микроуроков · 7 модулей · "+completedLessonIds.size+" выполнено";
+const first=lessons.find(l=>!completedLessonIds.has(l.external_id));
+const next=document.getElementById("next");
+next.replaceChildren();next.hidden=false;
+if(first){
+ const lead=document.createElement("strong");
+ lead.textContent=isEnglish?"Continue learning: ":"Продолжить обучение: ";
+ const a=document.createElement("a");
+ a.href="./flutter-lesson.html?id="+encodeURIComponent(first.external_id);
+ a.textContent=first.title+" →";
+ next.append(lead,a);
+}else{
+ next.textContent=isEnglish?"All Flutter micro-lessons completed.":"Все микроуроки Flutter пройдены.";
+}
+
 for(const mod of modules){
  const group=lessons.filter(x=>x.external_id.startsWith(mod.prefix));
  const done=group.filter(x=>completedLessonIds.has(x.external_id)).length;
  const section=document.createElement("section");section.className="module";
  const toggle=document.createElement("button");toggle.type="button";toggle.className="module-toggle";
  const heading=document.createElement("div");heading.className="module-heading";
- const name=document.createElement("span");name.className="module-name";name.textContent=mod.title;
+ const name=document.createElement("span");name.className="module-name";name.textContent=isEnglish?({D:"Dart & data modelling",U:"Flutter UI",S:"State & actions",N:"Networking & async",P:"Persistent storage",E:"Engineering",C:"Independent application"}[mod.prefix]||mod.title):mod.title;
  const count=document.createElement("span");count.className="module-count";count.textContent=done+" / "+group.length;
  heading.append(name,count);
  const track=document.createElement("div");track.className="module-track";
