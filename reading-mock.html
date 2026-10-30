@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Academic Reading Practice — Meta</title>
+<link rel="stylesheet" href="./meta-ui.css?v=3">
+<style>
+*{box-sizing:border-box}
+body{background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{max-width:960px;margin:auto;padding:26px 20px 90px}
+nav{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:25px}
+nav a{color:#444;text-decoration:none}
+h1{font-size:clamp(27px,4vw,35px);letter-spacing:-.5px}
+h2{font-size:22px;margin:26px 0 15px}
+h3{font-size:19px}
+p{line-height:1.65}
+.muted{color:#666;font-size:14px}
+button{font:inherit;border:1px solid #111;background:#111;color:#fff;padding:12px 18px;cursor:pointer;border-radius:0}
+button:disabled{opacity:.6;cursor:wait}
+button.secondary{background:#fff;color:#111}
+a{color:inherit}
+.panel{border:1px solid #d5d5d5;padding:22px;margin:24px 0}
+.status{font-size:14px;color:#666}
+.assess-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0}
+.clock{font:600 23px/1.3 ui-monospace,Consolas,monospace;letter-spacing:1px}
+.progress{height:8px;background:#e5e5e5;overflow:hidden;margin-bottom:22px}
+.progress div{height:100%;background:#111;width:0}
+.passage-section{padding:14px 0 27px;border-bottom:2px solid #111}
+.reading-passage{border:1px solid #dedede;padding:18px 22px;line-height:1.7;font-size:16px;white-space:normal}
+.reading-passage p{margin:0 0 16px;line-height:1.8}
+.reading-passage p:last-child{margin-bottom:0}
+.question{min-width:0;border:0;border-bottom:1px solid #e5e5e5;margin:0;padding:19px 0}
+.question legend{font-size:15px;font-weight:600;line-height:1.5;padding:0 2px}
+.options{display:grid;gap:8px;margin-top:10px}
+.option{border:1px solid #ddd;padding:10px 12px;display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.option:has(input:checked){border-color:#111;background:#f1f1f1}
+.option input{flex:none;margin-top:3px;accent-color:#111}
+.answer-text{width:min(100%,460px);padding:11px;font:inherit;margin-top:9px;border:1px solid #777}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:15px 0}
+.score{font-size:35px;letter-spacing:-.5px;font-weight:700}
+.skill-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;border-bottom:1px solid #ddd;padding:12px 0}
+.skill-action{flex:1 0 100%;font-size:14px}
+.skill-action a{font-weight:600}
+.week-list{padding-left:24px}
+.week-list li{padding:9px 0;line-height:1.5}
+.week-list p{margin:5px 0;color:#555;font-size:14px}
+.review details{padding:12px 0;border-bottom:1px solid #ddd}
+.review summary{cursor:pointer;line-height:1.5}
+.history-row{display:flex;justify-content:space-between;gap:15px;padding:9px 0;border-bottom:1px solid #ddd;font-size:14px}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:20px 15px 90px}.panel{padding:15px}.reading-passage{padding:14px;font-size:15px}.score{font-size:30px}}
+</style>
+</head>
+<body class="meta-ui">
+<main>
+<nav><a href="./ielts.html" data-en="← IELTS lessons" data-ru="← Уроки IELTS">← IELTS lessons</a><a href="./" data-en="My courses" data-ru="Мои программы">My courses</a></nav>
+<header><p class="muted" data-en="Original practice · Not an official IELTS exam" data-ru="Авторская тренировка · Не официальный экзамен IELTS">Original practice · Not an official IELTS exam</p>
+<h1 id="heading">Academic Reading · Practice Test 1</h1>
+<p class="muted" data-en="3 passages · 40 questions · 60 minutes" data-ru="3 текста · 40 вопросов · 60 минут">3 passages · 40 questions · 60 minutes</p></header>
+<p id="status" class="status" role="status" aria-live="polite">Checking access…</p>
+<section id="intro" class="panel" hidden>
+<h2 data-en="Timed full-length Reading practice" data-ru="Полная тренировка Reading с таймером">Timed full-length Reading practice</h2>
+<p id="notice">Original material; this is not a certified IELTS band score.</p>
+<p class="muted" data-en="The test contains multiple choice, TRUE/FALSE/NOT GIVEN, paragraph headings and short answers. The timer continues if you close the tab. Your draft is stored in this browser; submitted results are stored privately in your account." data-ru="В тесте есть выбор варианта, TRUE/FALSE/NOT GIVEN, заголовки абзацев и короткие ответы. Таймер продолжается, даже если закрыть вкладку. Черновик хранится в браузере, сданные результаты — в личном аккаунте.">The test contains multiple choice, TRUE/FALSE/NOT GIVEN, paragraph headings and short answers. The timer continues if you close the tab. Your draft is stored in this browser; submitted results are stored privately in your account.</p>
+<div class="actions"><button type="button" id="start" data-en="Start 60-minute test" data-ru="Начать тест на 60 минут">Start 60-minute test</button><button type="button" id="resume" class="secondary" hidden data-en="Resume saved attempt" data-ru="Продолжить сохранённую попытку">Resume saved attempt</button></div>
+<p class="muted" data-en="For licensed official samples, see:" data-ru="Официальные образцы заданий доступны здесь:">For licensed official samples, see: <a href="https://ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test" target="_blank" rel="noopener noreferrer">IELTS sample questions</a>.</p>
+</section>
+<form id="exam" hidden>
+<div class="assess-top"><strong data-en="Reading questions" data-ru="Вопросы по чтению">Reading questions</strong><span class="clock" id="clock" role="timer" aria-label="Time remaining">60:00</span><span class="muted" id="answered">0 / 40</span></div>
+<div class="progress" aria-hidden="true"><div id="progress-fill"></div></div>
+<p class="muted" data-en="Unanswered questions are scored as incorrect. You can submit early; the test submits automatically when time expires." data-ru="Неотвеченные вопросы считаются неверными. Можно завершить раньше; по истечении времени результат отправляется автоматически.">Unanswered questions are scored as incorrect. You can submit early; the test submits automatically when time expires.</p>
+<div id="passages"></div>
+<div class="actions"><button id="submit" type="submit" data-en="Submit and analyse" data-ru="Завершить и проанализировать">Submit and analyse</button></div>
+</form>
+<section id="results" class="panel" hidden>
+<h2 data-en="Your Reading result" data-ru="Результат Reading">Your Reading result</h2>
+<div class="score" id="result-score">— / 40</div>
+<p class="muted" data-en="Raw score on this uncalibrated practice set, NOT an official IELTS band estimate." data-ru="Количество верных ответов этого некалиброванного варианта, НЕ официальный IELTS band.">Raw score on this uncalibrated practice set, NOT an official IELTS band estimate.</p>
+<h3 data-en="Priority skills" data-ru="Навыки по приоритету">Priority skills</h3><div id="result-skills"></div>
+<h3 data-en="Suggested 7-day plan" data-ru="Рекомендуемый план на 7 дней">Suggested 7-day plan</h3><ol class="week-list" id="result-week"></ol>
+<p class="muted" id="result-note"></p><p id="result-state" class="muted" role="status"></p>
+<div class="actions"><button type="button" id="restart" data-en="New attempt" data-ru="Новая попытка">New attempt</button><a href="./ielts.html" data-en="All IELTS lessons" data-ru="Все уроки IELTS">All IELTS lessons</a></div>
+<h3 data-en="Question-by-question review" data-ru="Разбор каждого вопроса">Question-by-question review</h3><div class="review" id="review"></div>
+</section>
+<section id="latest" class="panel" hidden>
+<h2 data-en="Recommendations from your latest attempt" data-ru="Рекомендации по последней попытке">Recommendations from your latest attempt</h2>
+<div id="latest-score" class="score"></div>
+<div id="latest-skills"></div><h3 data-en="7-day plan" data-ru="План на 7 дней">7-day plan</h3>
+<ol class="week-list" id="latest-week"></ol><p id="latest-note" class="muted"></p>
+</section>
+<section id="history" class="panel" hidden><h2 data-en="Previous attempts" data-ru="Предыдущие попытки">Previous attempts</h2><div id="history-list"></div></section>
+</main>
+<script type="module">
+import {language} from "./meta-language.js";
+const lang=language();
+document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.getAttribute("data-"+lang));
+</script>
+<script type="module" src="./reading-mock-app.js?v=1"></script>
+<script type="module" src="./meta-language.js"></script>
+</body></html>
