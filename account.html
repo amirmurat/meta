@@ -31,7 +31,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <a href="./welcome.html" class="back">← Что такое Meta</a>
 <a class="back" id="account-back" href="./" hidden>← Мои программы</a>
 <h1 id="heading">Аккаунт</h1>
-<p class="subtitle" id="subtitle">Создай аккаунт, подтверди email и запроси нужный курс. Доступ назначается администратором после регистрации.</p>
+<p class="subtitle" id="subtitle">Создай аккаунт, подтверди email и открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».</p>
 
 <div id="guest">
 <div class="tabs" role="group" aria-label="Режим аккаунта">
@@ -160,7 +160,7 @@ $("signup-form").onsubmit=async e=>{
    const user=data.user;if(user)await ensureProfile(user);
    location.assign(safeDestination());return;
   }
-  say("Проверь почту и подтверди регистрацию. После подтверждения войди в аккаунт, открой «Сообщения» и попроси администратора назначить программу.");
+  say("Проверь почту (включая «Спам») и подтверди регистрацию. После входа открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».");
   busy(form,false);
  }catch(e){say(errorText(e),true);busy(form,false)}
 };
