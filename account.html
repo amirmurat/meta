@@ -33,9 +33,9 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <p class="subtitle" id="subtitle">Сначала войди, чтобы открыть свои программы и прогресс.</p>
 
 <div id="guest">
-<div class="tabs" role="tablist" aria-label="Режим аккаунта">
-<button class="tab active" id="login-tab" type="button">Войти</button>
-<button class="tab" id="signup-tab" type="button">Регистрация</button>
+<div class="tabs" role="group" aria-label="Режим аккаунта">
+<button class="tab active" id="login-tab" type="button" aria-controls="login-form" aria-pressed="true">Войти</button>
+<button class="tab" id="signup-tab" type="button" aria-controls="signup-form" aria-pressed="false">Регистрация</button>
 </div>
 <form id="login-form">
 <div><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="username" required></div>
@@ -84,7 +84,9 @@ function showMode(m){
   $("recover-form").hidden=m!=="recover";
   $("login-tab").classList.toggle("active",m==="login");
   $("signup-tab").classList.toggle("active",m==="signup");
-  if(m==="recover")$("login-tab").classList.remove("active");
+  $("login-tab").setAttribute("aria-pressed",String(m==="login"));
+  $("signup-tab").setAttribute("aria-pressed",String(m==="signup"));
+
 }
 function safeDestination(){
   const raw=new URLSearchParams(location.search).get("next");
