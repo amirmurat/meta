@@ -34,7 +34,8 @@
 .assess-feedback.review{border-color:#e5a55f;background:#fff7ed}
 .result-lead{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .result-score{font-size:40px;font-weight:740;letter-spacing:-.035em}
-.skill-score{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--meta-border)}
+.skill-score{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 14px;padding:12px 0;border-bottom:1px solid var(--meta-border)}
+.skill-score>div{min-width:0}.skill-score>div:first-child{flex:1 1 180px;overflow-wrap:anywhere}.skill-score>div:last-child{flex:0 0 auto}
 .skill-score a{color:#245b79}
 .result-summary{margin:20px 0;color:var(--meta-muted)}
 .result-details details{border-bottom:1px solid var(--meta-border);padding:12px 0}
@@ -42,7 +43,7 @@
 .history-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--meta-border);font-size:14px}
 button#submit-test,button#start-test,button#retry-test{background:var(--meta-ink);color:#fff;border-color:var(--meta-ink)}
 [hidden]{display:none!important}
-@media(max-width:640px){.passage{padding:14px}.assess-intro{margin-top:20px}.result-score{font-size:33px}}
+@media(max-width:640px){.passage{padding:14px}.assess-intro{margin-top:20px}.result-score{font-size:33px}.question-title{overflow-wrap:anywhere}.assess-actions{align-items:stretch}}
 </style>
 </head>
 <body class="meta-ui meta-assessment">
