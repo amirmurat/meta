@@ -139,6 +139,7 @@ function overview(d){
  ["Минут зафиксировано",totalMinutes,measured+" сессий с длительностью"],
  ["Учебных событий",e.length,"завершения, сдачи, тесты и сессии"],
  ["Назначено программ",d.enrolled.size,"в личном аккаунте"],
+ ["Сохранено заметок",data.notesCount,"личные заметки по курсам"],
  ["Подтверждённых разборов",e.filter(x=>x.type==="Подтверждён разбор").length,"отмечено пользователем"]
  ];
  for(const [label,val,hint]of rows)root.append(metric(label,fmt(val),hint));
@@ -317,11 +318,14 @@ async function boot(){
   getAll("lesson_attempts","lesson_id,submitted_at,ai_review_confirmed_at"),
   getAll("learning_sessions","course_slug,session_date,minutes,started_at"),
   getAll("assessment_attempts","assessment_key,course_slug,version,responses,submitted_at"),
-  getAll("ielts_writing_attempts","version,word_count_1,word_count_2,submitted_at")
+  getAll("ielts_writing_attempts","version,word_count_1,word_count_2,submitted_at"),
+  supabase.from("notes").select("id",{count:"exact",head:true}).eq("user_id",user.id)
  ]);
  if(requests[0].error)throw requests[0].error;
  if(requests[1].error)throw requests[1].error;
- const [e,c,p,a,s,ass,w]=requests.map((r,i)=>i<=1?r.data||[]:r);
+ const [e,c,p,a,s,ass,w]=requests.slice(0,7).map((r,i)=>i<=1?r.data||[]:r);
+ if(requests[7].error)throw requests[7].error;
+ const notesCount=requests[7].count||0;
  const details=await mapLessons([...p.map(x=>x.lesson_id),...a.map(x=>x.lesson_id)]);
  // IELTS (332) and Flutter (56): load full course catalogues for accurate section denominators.
  const assigned=new Set(e.map(x=>x.course_slug));
@@ -332,7 +336,7 @@ async function boot(){
   if(lessonError)throw lessonError;
   for(const lesson of allLessons||[])details.set(lesson.id,lesson);
  }
- data={enrollments:e,courses:c,progress:p,attempts:a,sessions:s,assessments:ass,writing:w,lessons:details};
+ data={enrollments:e,courses:c,progress:p,attempts:a,sessions:s,assessments:ass,writing:w,lessons:details,notesCount};
  document.querySelectorAll("[data-days]").forEach(b=>b.addEventListener("click",()=>{days=Number(b.dataset.days);render()}));
  $("export").onclick=exportCSV;
  const grant=await supabase.rpc("meta_admin_access");
