@@ -1,6 +1,7 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
 import {MOCK} from "./reading-mock-bank.js";
+import {PASSAGE_CONTEXT} from "./reading-mock-context.js";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
 let user,answers={},startTime=0,ticking=null,active=false,busy=false;
 const questionNumber=Object.fromEntries(MOCK.questions.map((q,i)=>[q.id,i+1]));
@@ -37,7 +38,7 @@ function renderExam(){
   const section=document.createElement("section");section.className="passage-section";
   const h=document.createElement("h2");h.textContent=passage.title;section.append(h);
   const reading=document.createElement("div");reading.className="reading-passage";reading.lang="en";
-  for(const par of passage.paragraphs){const p=document.createElement("p");p.textContent=par.id+". "+par.text;reading.append(p)}
+  for(const par of passage.paragraphs){const p=document.createElement("p");p.textContent=par.id+". "+par.text+" "+(PASSAGE_CONTEXT[passage.id]?.[par.id]||"");reading.append(p)}
   section.append(reading);
   for(const q of MOCK.questions.filter(q=>q.passage===passage.id)){
    const fs=document.createElement("fieldset");fs.className="question";
