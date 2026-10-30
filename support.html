@@ -1,0 +1,81 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сообщения — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=3">
+<style>*{box-sizing:border-box}body{background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif;margin:0}
+main{max-width:780px;margin:0 auto;padding:29px 20px 80px}
+nav{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}nav a{font-size:14px;color:#555;text-decoration:none}
+h1{font-size:32px;letter-spacing:-.7px;margin:30px 0 10px}h2{font-size:18px}
+.muted{color:#666;font-size:13px}
+.chat{margin:23px 0;border:1px solid #ddd;padding:18px;min-height:250px;max-height:58vh;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.bubble{padding:12px 15px;max-width:88%;line-height:1.65;word-break:break-word;white-space:pre-wrap;border:1px solid #ddd;align-self:flex-start}
+.bubble.self{border-color:#111;background:#f7f7f7;align-self:flex-end}
+.bubble small{display:block;font-size:11px;color:#777;margin-bottom:5px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:8px}
+textarea{width:100%;min-height:105px;resize:vertical;border:1px solid #888;background:#fff;color:#111;font:inherit;padding:12px;line-height:1.5}
+button{background:#111;color:#fff;border:1px solid #111;font:inherit;font-weight:600;padding:11px 16px;cursor:pointer}
+button:disabled{opacity:.55}
+.actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:11px}
+a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:3px}
+[hidden]{display:none!important}
+</style></head><body class="meta-ui"><main>
+<nav><a href="./">← Мои программы</a><a href="./welcome.html">О Meta</a></nav>
+<h1 id="heading">Связь с администратором</h1>
+<p class="muted" id="subtitle">Задай вопрос о программе, доступе, упражнениях или технической проблеме. Сообщения видны тебе и администратору Meta. Ответы появляются здесь; мгновенный ответ не гарантируется.</p>
+<p id="status" class="muted" role="status">Проверка аккаунта…</p>
+<div id="area" hidden>
+<div id="chat" class="chat" role="log" aria-label="История сообщений" aria-live="polite"></div>
+<form id="send-form"><label for="message">Твоё сообщение</label>
+<textarea id="message" maxlength="3000" minlength="1" required placeholder="Например: хочу получить доступ к IELTS, мой аккаунт уже подтверждён…"></textarea>
+<div class="actions"><span class="muted">Максимум 3000 символов · обновление сообщений каждые 15 секунд</span><button id="send" type="submit">Отправить</button></div></form>
+<p id="send-status" class="muted" role="status"></p></div></main>
+<script type="module">
+import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
+const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
+let user=null,lastSignature="",loading=false;
+const formatTime=s=>new Intl.DateTimeFormat(en?"en-GB":"ru-RU",{dateStyle:"short",timeStyle:"short",timeZone:"Asia/Almaty"}).format(new Date(s));
+async function refresh(){
+ if(loading||!user||document.hidden)return;loading=true;
+ try{
+  const {data,error}=await supabase.from("meta_support_messages").select("id,sender_id,body,created_at").eq("user_id",user.id).order("created_at",{ascending:true}).limit(250);
+  if(error)throw error;
+  const signature=(data||[]).map(m=>m.id).join("|");
+  if(signature!==lastSignature){
+   lastSignature=signature;
+   const list=$("chat");list.replaceChildren();
+   if(!data?.length){const p=document.createElement("p");p.className="muted";p.textContent=t("No messages yet. Write below to contact the administrator.","Сообщений пока нет. Напиши ниже, чтобы связаться с администратором.");list.append(p)}
+   for(const msg of data||[]){
+    const div=document.createElement("div");div.className="bubble"+(msg.sender_id===user.id?" self":"");
+    const small=document.createElement("small");small.textContent=(msg.sender_id===user.id?t("You","Ты"):t("Meta administrator","Администратор Meta"))+" · "+formatTime(msg.created_at);
+    const content=document.createElement("span");content.textContent=msg.body;div.append(small,content);list.append(div);
+   }
+   list.scrollTop=list.scrollHeight;
+  }
+  $("status").textContent="";
+ }catch(err){$("status").textContent=t("Unable to load messages.","Не удалось загрузить сообщения.")+" "+err.message}
+ finally{loading=false}
+}
+async function boot(){
+ if(en){
+  document.documentElement.lang="en";$("heading").textContent="Contact the administrator";
+  $("subtitle").textContent="Ask about courses, access or technical problems. Messages are visible only to you and the Meta administrator. Replies appear here; instant responses are not guaranteed.";
+  document.querySelector("label[for=message]").textContent="Your message";$("send").textContent="Send";
+ }
+ user=await authenticatedUser();if(!user){location.replace(authPage("./support.html"));return}
+ $("area").hidden=false;
+ $("send-form").onsubmit=async ev=>{
+  ev.preventDefault();const body=$("message").value.trim();if(!body)return;
+  $("send").disabled=true;$("send-status").textContent=t("Sending…","Отправляю…");
+  try{
+   const {error}=await supabase.rpc("meta_support_send",{p_body:body});
+   if(error)throw error;
+   $("message").value="";$("send-status").textContent=t("Message sent.","Сообщение отправлено.");
+   await refresh();
+  }catch(err){$("send-status").textContent=t("Could not send. Please try later.","Не удалось отправить. Попробуй позже.")+" "+err.message}
+  finally{$("send").disabled=false}
+ };
+ await refresh();
+ window.setInterval(()=>void refresh(),15000);
+ window.addEventListener("focus",()=>void refresh());
+}
+void boot().catch(err=>{$("status").textContent=err.message});
+</script></body></html>
