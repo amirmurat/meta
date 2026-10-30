@@ -1,205 +1,60 @@
-<!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Статистика — Meta</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
-main{max-width:790px;padding:30px 24px 72px;margin:0 auto}
-nav{display:flex;justify-content:space-between;gap:12px;font-size:14px}
-nav a{color:#555;text-decoration:none}a{color:inherit}
-h1{font-size:32px;margin:42px 0 9px;letter-spacing:-.5px}
-.subtitle{color:#777;line-height:1.6;font-size:15px}
-section{margin-top:40px}
-h2{font-size:20px;margin:0 0 18px}
-.courses{display:flex;flex-direction:column;gap:22px}
-.progress-top{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:0 12px 10px;font-size:16px}
-.progress-top strong{font-weight:600}
-.progress-track{height:14px;margin:0 12px;background:#e5e7eb}
-.progress-fill{height:100%;background:#111;width:0}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(142px,1fr));gap:14px}
-.metric{padding:17px;border:1px solid #e5e5e5}
-.metric-number{font-variant-numeric:tabular-nums;font-size:25px;font-weight:600}
-.metric-label{font-size:13px;line-height:1.45;color:#666;margin-top:9px}
-.chart{display:flex;align-items:flex-end;gap:12px;min-height:165px;padding:20px 10px 0;border-bottom:1px solid #ddd;overflow-x:auto}
-.chart-day{min-width:38px;text-align:center;display:flex;flex-direction:column;justify-content:end;align-items:center;height:165px;gap:8px}
-.chart-column{background:#111;width:28px;min-height:0}
-.chart-count{font-size:12px;color:#555}
-.chart-label{font-size:11px;color:#777;white-space:nowrap}
-.table{width:100%;border-collapse:collapse;font-size:14px}
-.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid #eee;vertical-align:top}
-.table th{font-weight:600;color:#666}
-.table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
-.table-scroll:focus-visible{outline:2px solid #111;outline-offset:2px}
-@media(max-width:600px){
- .table-scroll .table{min-width:580px}
- .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
- .metric{padding:13px;min-width:0}
- .progress-top{flex-wrap:wrap}
-}
-
-.note{color:#666;font-size:13px;line-height:1.6;margin:16px 0}
-.empty{color:#777;font-size:15px;line-height:1.7}
-[hidden]{display:none!important}
-</style>
-<link rel="stylesheet" href="./meta-ui.css?v=3">
-</head>
-<body class="meta-ui">
-<main class="meta-shell meta-lesson">
-<nav><a href="./">← Мои программы</a><a href="./profile.html">Профиль</a></nav>
-<header><h1>Статистика</h1><p class="subtitle">Только твои результаты. Даты из старых журналов отделены от новых фактических отметок.</p></header>
-<p id="loading" class="empty">Проверяю вход и загружаю данные…</p>
+<link rel="stylesheet" href="./meta-ui.css?v=3"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+</head><body class="meta-ui">
+<main class="analytics-shell">
+<nav class="analytics-nav"><a href="./">← Мои программы</a>
+<div class="analytics-controls"><a href="./profile.html">Профиль</a><a id="admin-link" href="./admin-statistics.html" hidden>Административная аналитика</a></div></nav>
+<header class="analytics-head"><h1>Моя статистика</h1>
+<p>Прогресс по программам, реальные учебные события, активность, тесты и подробная история. Каждый пользователь видит только свои данные.</p></header>
+<p id="status" class="analytics-status" role="status" aria-live="polite">Проверяю вход и собираю данные…</p>
 <div id="dashboard" hidden>
-<section>
-<h2>Прогресс программ</h2>
-<div id="courses" class="courses"></div>
-</section>
-<section>
-<h2>Учебная активность</h2>
-<div class="summary">
-<div class="metric"><div class="metric-number" id="total-completed">0</div><div class="metric-label">Пройдено единиц</div></div>
-<div class="metric"><div class="metric-number" id="submitted">0</div><div class="metric-label">Заданий с зафиксированной сдачей</div></div>
-<div class="metric"><div class="metric-number" id="reviewed">0</div><div class="metric-label">Проверок с ИИ, подтверждённых пользователем</div></div>
-<div class="metric"><div class="metric-number" id="study-time">—</div><div class="metric-label">Минут с подтверждённым временем занятий</div></div>
+<div class="analytics-toolbar">
+<div class="analytics-buttons" aria-label="Период">
+<button class="analytics-btn" type="button" data-days="7">7 дней</button>
+<button class="analytics-btn" type="button" data-days="30" aria-pressed="true">30 дней</button>
+<button class="analytics-btn" type="button" data-days="90">90 дней</button>
+<button class="analytics-btn" type="button" data-days="365">Год</button>
 </div>
-</section>
-<section>
-<h2>Точные даты завершений</h2>
-<p class="note">Показаны только даты, явно подтверждённые источником или записанные при выполнении в Meta. Отметки «не позднее даты» не превращаются в события этого дня.</p>
-<div id="chart" class="chart"></div>
-<p id="chart-empty" class="empty" hidden>Пока нет подтверждённых точных дат.</p>
-<p id="uncertain" class="note"></p>
-</section>
-<section>
-<h2>Последние датированные результаты</h2>
-<div class="table-scroll" role="region" aria-label="История учебных результатов" tabindex="0">
-<table class="table"><thead><tr><th>Дата</th><th>Программа</th><th>Результат</th><th>Точность</th></tr></thead><tbody id="timeline"></tbody></table>
+<div class="analytics-controls"><span id="period-label" class="analytics-note">Asia/Almaty</span><button id="export" type="button" class="analytics-btn">Экспорт истории CSV</button></div>
 </div>
-<p class="note">Автоматически сохранённый черновик — не сданное задание. Для новой работы время сдачи фиксируется отдельной кнопкой на странице микроурока.</p>
+<div class="analytics-layout">
+<section class="analytics-section"><h2>Ключевые показатели</h2><div id="summary" class="analytics-grid"></div>
+<p class="analytics-note">Завершение микроурока, сданное задание и тест — разные события. Неотправленные черновики не считаются сданными.</p>
 </section>
-</div>
+<section class="analytics-section"><h2>Прогресс по программам</h2><div id="course-progress" class="analytics-columns"></div>
+</section>
+<section class="analytics-section"><h2>Структура освоенных тем</h2>
+<p class="analytics-note">Для IELTS показаны секции, для Flutter — типы записей, для Корана — суры с отмеченными аятами. Счётчики отражают сохранённые отметки, не оценку знания.</p>
+<div id="topic-groups" class="analytics-columns"></div>
+</section>
+<section class="analytics-section"><h2>Активность и регулярность</h2>
+<div class="analytics-columns">
+<div class="analytics-panel"><h3>Учебные события по дням</h3><div id="activity-chart" class="analytics-bar-chart" role="img" aria-label="События обучения"></div><p id="activity-desc" class="analytics-note"></p></div>
+<div class="analytics-panel"><h3>Календарь 13 недель</h3><p id="calendar-meta" class="analytics-note"></p>
+<div id="heatmap" class="analytics-heatmap" role="img" aria-label="Учебная активность за 13 недель"></div>
+<p class="analytics-note">Заливка показывает число подтверждённых событий в день. Исторические записи без точных дат исключены.</p></div>
+</div></section>
+<section class="analytics-section"><h2>Пробные тесты и диагностика</h2>
+<div class="analytics-grid" id="testing-kpis"></div>
+<div class="analytics-table-scroll" role="region" aria-label="История тестов" tabindex="0">
+<table class="analytics-table"><thead><tr><th>Дата</th><th>Программа</th><th>Тест</th><th class="num">Результат</th><th>Статус оценки</th></tr></thead><tbody id="testing-history"></tbody></table></div>
+<p class="analytics-note">Raw score относится к конкретному варианту и не является официальным IELTS band. Повтор одинаковых заданий не доказывает улучшение.</p>
+<p><a href="./ielts-dashboard.html">Открыть подробную аналитику IELTS →</a></p></section>
+<section class="analytics-section"><h2>Writing, практические задания и время</h2>
+<div id="practice-kpis" class="analytics-grid"></div>
+<div id="writing-history" class="analytics-panel"></div>
+</section>
+<section class="analytics-section"><h2>Хронология учебных событий</h2>
+<div class="analytics-table-scroll" role="region" aria-label="История занятий" tabindex="0"><table class="analytics-table">
+<thead><tr><th>Дата</th><th>Курс</th><th>Тип события</th><th>Подробности</th><th>Источник</th></tr></thead><tbody id="timeline"></tbody></table></div>
+</section>
+<section class="analytics-section"><h2>Качество и полнота данных</h2><div id="integrity" class="analytics-grid"></div>
+<div class="analytics-callout">Мигрированные исторические отметки с датой «не позднее» или неизвестной датой учитываются в общем прогрессе, но не превращаются в события конкретного дня. Минуты отображаются только по фактически зафиксированным сессиям. Открытие страницы не считается учебной сессией.</div>
+</section>
+</div></div>
 </main>
-<script type="module">
-import {supabase,authenticatedUser} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
-const $=id=>document.getElementById(id);
-const fmtDay=s=>s?String(s).split("-").reverse().join("."):"—";
-const todayAlmaty=timestamp=>{
- const parts=new Intl.DateTimeFormat("en-US",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"})
-  .formatToParts(new Date(timestamp));
- const d=Object.fromEntries(parts.map(p=>[p.type,p.value]));
- return d.year+"-"+d.month+"-"+d.day;
-};
-function node(tag,cls="",label=""){
- const el=document.createElement(tag);
- if(cls)el.className=cls;
- if(label)el.textContent=label;
- return el;
-}
-async function load(){
- try{
-  const user=await authenticatedUser();
-  if(!user){location.replace("./account.html?next="+encodeURIComponent("./statistics.html"));return;}
-  const rs=await Promise.all([
-   supabase.from("course_enrollments").select("course_slug").eq("user_id",user.id),
-   supabase.from("courses").select("slug,title,title_en,total_units"),
-   supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method,verified_on")
-    .eq("user_id",user.id),
-   supabase.from("lesson_attempts").select("lesson_id,submitted_at,ai_review_confirmed_at")
-    .eq("user_id",user.id),
-   supabase.from("learning_sessions").select("session_date,minutes")
-    .eq("user_id",user.id)
-  ]);
-  for(const r of rs)if(r.error)throw r.error;
-  const [enrollments,courses,progress,attempts,sessions]=rs.map(r=>r.data||[]);
-  const ids=[...new Set([...progress.map(x=>x.lesson_id),...attempts.map(x=>x.lesson_id)])];
-  const details=ids.length
-   ?await supabase.from("lessons").select("id,external_id,course_slug,title,title_en").in("id",ids)
-   :{data:[],error:null};
-  if(details.error)throw details.error;
-  const lessons=details.data||[];
-  const assigned=new Set(enrollments.map(e=>e.course_slug));
-  const visible=courses.filter(c=>assigned.has(c.slug));
-  const byLesson=new Map(lessons.map(l=>[l.id,l]));
-  const doneByCourse=new Map();
-  const dated=[];
-  const exactDays=new Map();
-  let bounded=0,withoutDate=0;
-  for(const record of progress){
-   const lesson=byLesson.get(record.lesson_id);
-   if(!lesson||!assigned.has(lesson.course_slug))continue;
-   doneByCourse.set(lesson.course_slug,(doneByCourse.get(lesson.course_slug)||0)+1);
-   let date=null,precision="";
-   if(record.date_accuracy==="exact_day" && record.achieved_on){
-     date=record.achieved_on;precision="Точная дата";
-   }else if(record.verification_method!=="historical_import" && record.completed_at){
-     date=todayAlmaty(record.completed_at);precision="Запись Meta";
-   }else if(record.date_accuracy==="on_or_before_day" && record.achieved_on){
-     date=record.achieved_on;precision="Не позднее";bounded++;
-   }else {withoutDate++;}
-   if(date){
-     dated.push({date,precision,lesson,course:visible.find(c=>c.slug===lesson.course_slug)});
-     if(precision!=="Не позднее")exactDays.set(date,(exactDays.get(date)||0)+1);
-   }
-  }
-  const root=$("courses");
-  for(const course of visible){
-   const group=node("div");
-   const heading=node("div","progress-top");
-   const name=node("strong","",language()==="en"?(course.title_en||course.title):course.title);
-   const done=doneByCourse.get(course.slug)||0;
-   const total=node("span","",done+" / "+course.total_units);
-   heading.append(name,total);
-   const track=node("div","progress-track");
-   const fill=node("div","progress-fill");
-   fill.style.width=(100*done/course.total_units)+"%";
-   track.append(fill);group.append(heading,track);root.append(group);
-  }
-  if(!visible.length)root.append(node("p","empty","Учебные программы пока не назначены."));
-  $("total-completed").textContent=[...doneByCourse.values()].reduce((a,b)=>a+b,0);
-  $("submitted").textContent=attempts.filter(a=>a.submitted_at).length;
-  $("reviewed").textContent=attempts.filter(a=>a.ai_review_confirmed_at).length;
-  const knownMinutes=sessions.map(s=>s.minutes).filter(x=>Number.isFinite(x));
-  $("study-time").textContent=knownMinutes.length?knownMinutes.reduce((a,b)=>a+b,0):"—";
-  $("uncertain").textContent="Дат с обозначением «не позднее»: "+bounded+". Без даты: "+withoutDate+".";
-  const dates=[...exactDays].sort(([a],[b])=>a.localeCompare(b));
-  if(!dates.length){$("chart").hidden=true;$("chart-empty").hidden=false;}
-  else{
-   const recent=dates.slice(-18),max=Math.max(...recent.map(x=>x[1]),1);
-   const chart=$("chart");
-   for(const [date,count] of recent){
-    const item=node("div","chart-day");
-    const n=node("div","chart-count",String(count));
-    const bar=node("div","chart-column");
-    bar.style.height=(120*count/max)+"px";
-    bar.title=fmtDay(date)+": "+count;
-    const label=node("div","chart-label",date.slice(5).split("-").reverse().join("."));
-    item.append(n,bar,label);chart.append(item);
-   }
-  }
-  const timeline=$("timeline");
-  for(const item of dated.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20)){
-   const tr=node("tr");
-   for(const txt of [fmtDay(item.date),item.course?.title||item.lesson.course_slug,
-     (language()==="en"?(item.lesson.title_en||item.lesson.title):item.lesson.title)||item.lesson.external_id,item.precision]){
-    tr.append(node("td","",txt));
-   }
-   timeline.append(tr);
-  }
-  if(!dated.length){
-   const tr=node("tr"),td=node("td","empty","Нет датированных результатов.");
-   td.colSpan=4;tr.append(td);timeline.append(tr);
-  }
-  $("loading").hidden=true;$("dashboard").hidden=false;
- }catch(e){
-  console.error("Statistics:",e);
-  $("loading").textContent="Не удалось загрузить статистику. Проверь подключение и повтори.";
- }
-}
-void load();
-</script>
+<script type="module" src="./statistics-app.js?v=1"></script>
 <script type="module" src="./meta-language.js"></script>
-</body>
-</html>
+</body></html>
