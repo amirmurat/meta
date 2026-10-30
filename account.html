@@ -28,9 +28,10 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-narrow">
+<a href="./welcome.html" class="back">← Что такое Meta</a>
 <a class="back" id="account-back" href="./" hidden>← Мои программы</a>
 <h1 id="heading">Аккаунт</h1>
-<p class="subtitle" id="subtitle">Сначала войди, чтобы открыть свои программы и прогресс.</p>
+<p class="subtitle" id="subtitle">Создай аккаунт, подтверди email и запроси нужный курс. Доступ назначается администратором после регистрации.</p>
 
 <div id="guest">
 <div class="tabs" role="group" aria-label="Режим аккаунта">
@@ -62,6 +63,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 <div class="actions">
 <a href="./profile.html">Открыть профиль</a>
 <a href="./">Мои программы</a>
+<a href="./support.html">Сообщения — запросить курс</a>
 <button class="secondary" id="sign-out" type="button">Выйти из аккаунта</button>
 </div>
 </div>
@@ -132,6 +134,8 @@ async function current(){
   else{$("account-back").hidden=true;$("guest").hidden=false;$("signed-in").hidden=true;}
  }catch(e){say(errorText(e),true)}
 }
+const initialMode=new URLSearchParams(location.search).get("mode");
+if(initialMode==="signup")showMode("signup");
 $("login-tab").onclick=()=>showMode("login");
 $("signup-tab").onclick=()=>showMode("signup");
 $("forgot").onclick=()=>showMode("recover");
@@ -156,7 +160,7 @@ $("signup-form").onsubmit=async e=>{
    const user=data.user;if(user)await ensureProfile(user);
    location.assign(safeDestination());return;
   }
-  say("Проверь почту и подтверди регистрацию. После подтверждения войди в аккаунт.");
+  say("Проверь почту и подтверди регистрацию. После подтверждения войди в аккаунт, открой «Сообщения» и попроси администратора назначить программу.");
   busy(form,false);
  }catch(e){say(errorText(e),true);busy(form,false)}
 };
