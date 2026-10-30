@@ -42,13 +42,9 @@ a{color:inherit}
 <section id="course-progress" hidden>
 <h2>Мои программы</h2>
 <div id="assigned-courses"><p class="help">Загрузка программ…</p></div>
-<p class="help">Каждому аккаунту назначаются только его учебные программы. Прежний прогресс из других источников отдельно привязывается к владельцу.</p>
+
 </section>
-<section id="account-actions" hidden>
-<h2>Аккаунт</h2>
-<p><a href="./account.html">Вход и выход</a></p>
-<p class="help">Профиль и результаты доступны только владельцу аккаунта. Для смены пароля используй восстановление доступа на странице входа.</p>
-</section>
+
 </main>
 <script type="module">
 import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
@@ -66,7 +62,7 @@ async function init(){
  $("username").value=profile.username||"";
  $("goal").value=profile.learning_goal||"";
  $("about").value=profile.about||"";
- $("profile-form").hidden=false;$("course-progress").hidden=false;$("account-actions").hidden=false;
+ $("profile-form").hidden=false;$("course-progress").hidden=false;
  const {data:enrollments,error:enrollmentError}=await supabase.from("course_enrollments")
     .select("course_slug").eq("user_id",user.id);
  if(enrollmentError)throw enrollmentError;
