@@ -1,0 +1,73 @@
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meta — Административная аналитика</title>
+<link rel="stylesheet" href="./meta-ui.css?v=3"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+</head><body class="meta-ui">
+<main class="analytics-shell">
+<nav class="analytics-nav"><a href="./">← Мои программы</a><div class="analytics-controls"><a href="./statistics.html">Личная статистика</a><a href="./profile.html">Профиль</a></div></nav>
+<header class="analytics-head"><h1>Административная аналитика Meta</h1>
+<p>Пользователи, вовлечённость, обучение, тестирования, динамика и качество данных. Доступ только подтверждённому администратору.</p></header>
+<p id="status" class="analytics-status" role="status" aria-live="polite">Проверяю права администратора…</p>
+<div id="admin" hidden>
+<div class="analytics-toolbar">
+<div class="analytics-buttons" aria-label="Период отчёта">
+<button type="button" class="analytics-btn" data-days="7">7 дней</button>
+<button type="button" class="analytics-btn" data-days="30" aria-pressed="true">30 дней</button>
+<button type="button" class="analytics-btn" data-days="90">90 дней</button>
+<button type="button" class="analytics-btn" data-days="365">Год</button>
+</div>
+<div class="analytics-controls">
+<span class="analytics-note" id="report-date">Asia/Almaty</span>
+<button type="button" id="refresh" class="analytics-btn">Обновить</button>
+<button type="button" id="export" class="analytics-btn">Экспорт списка CSV</button>
+</div>
+</div>
+<div class="analytics-layout">
+<section class="analytics-section"><h2>Общая картина</h2><div class="analytics-grid" id="overview"></div>
+<p class="analytics-note">Активный учащийся = пользователь с датированным событием обучения: завершение, сдача, тест или сессия. Это не количество открытий сайта. Входы — отдельная метрика Supabase Auth.</p>
+</section>
+<section class="analytics-section"><h2>Воронка обучения и вовлечённость</h2>
+<p class="analytics-note">Доли показывают наблюдаемые переходы в обучении, а не маркетинговую конверсию и не оплаты.</p>
+<div class="analytics-columns"><div class="analytics-panel"><h3>Этапы от регистрации до действий</h3><div id="funnel"></div></div>
+<div class="analytics-panel"><h3>Активность учеников за период</h3><div id="engagement"></div></div></div></section>
+<section class="analytics-section"><h2>Динамика платформы</h2>
+<div class="analytics-toolbar">
+<div class="analytics-buttons" id="chart-modes" aria-label="Показатель графика">
+<button type="button" class="analytics-btn" data-field="signups" aria-pressed="true">Регистрации</button>
+<button type="button" class="analytics-btn" data-field="active_learners">Активные</button>
+<button type="button" class="analytics-btn" data-field="completions">Завершения</button>
+<button type="button" class="analytics-btn" data-field="assessments">Тесты</button>
+<button type="button" class="analytics-btn" data-field="minutes">Минуты</button>
+</div></div>
+<div id="trend" class="analytics-bar-chart" role="img" aria-label="Динамика показателя"></div>
+<p id="trend-note" class="analytics-note"></p>
+</section>
+<section class="analytics-section"><h2>Программы и охват</h2>
+<div id="courses" class="analytics-columns"></div>
+</section>
+<section class="analytics-section"><h2>Диагностика и виды тестирования</h2>
+<div class="analytics-table-scroll"><table class="analytics-table">
+<thead><tr><th>Тип теста</th><th>Курс</th><th class="num">Попыток</th><th class="num">Участников</th><th>Последняя сдача</th></tr></thead>
+<tbody id="assessments"></tbody></table></div>
+<p class="analytics-note">Тестовые попытки считаются отдельно. Оценка IELTS band не выводится: тренировочные варианты не откалиброваны.</p>
+</section>
+<section class="analytics-section"><div class="analytics-toolbar">
+<h2>Пользователи и обучение</h2>
+<div class="analytics-controls">
+<input id="search" class="analytics-input" type="search" autocomplete="off" placeholder="Поиск по имени или email" aria-label="Найти пользователя">
+<select id="course-filter" class="analytics-select" aria-label="Фильтр по курсу"><option value="">Все курсы</option></select>
+<select id="activity-filter" class="analytics-select" aria-label="Фильтр по активности">
+<option value="">Все пользователи</option><option value="active">Активные за период</option><option value="inactive">Без учебных событий</option><option value="unconfirmed">Email не подтверждён</option></select>
+</div></div>
+<p id="roster-count" class="analytics-note"></p>
+<div class="analytics-table-scroll" role="region" aria-label="Таблица учеников" tabindex="0"><table class="analytics-table">
+<thead><tr><th>Пользователь</th><th>Регистрация</th><th>Подтверждение</th><th>Последний вход</th><th>Курсы</th><th class="num">Пройдено</th><th class="num">Сдачи</th><th class="num">Тесты</th><th class="num">Writing</th><th class="num">Активных дней</th></tr></thead><tbody id="roster"></tbody></table></div>
+<p class="analytics-note">Таблица показывает сводные показатели, без текстов эссе, личных заметок и ответов. Данные предназначены только для управления Meta.</p>
+</section>
+<section class="analytics-section"><h2>Полнота и ограничения измерений</h2><div id="integrity" class="analytics-grid"></div>
+<div class="analytics-callout">Даты исторического импорта с неизвестной точностью не считаются фактической активностью дня. Минуты обучения — только завершённые сессии с зафиксированной продолжительностью. Просмотры страниц, доход, конверсия в оплату и реальные часы обучения без событий не измеряются — здесь не используются выдуманные значения.</div>
+</section>
+</div></div>
+<script type="module" src="./admin-statistics-app.js?v=1"></script>
+<script type="module" src="./meta-language.js"></script>
+</main></body></html>
