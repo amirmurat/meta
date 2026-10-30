@@ -465,7 +465,7 @@ function renderSources(){
   ["At-Tabari","https://quran.ksu.edu.sa/tafseer/tabary/sura"+surah+"-aya"+ayah+".html"],
   ["Ibn Kathir","https://quran.ksu.edu.sa/tafseer/katheer/sura"+surah+"-aya"+ayah+".html"],
   ["As-Sa'di","https://quran.ksu.edu.sa/tafseer/saadi/sura"+surah+"-aya"+ayah+".html"],
-  ["Quranic Arabic Corpus","https://corpus.quran.com/wordbyword.jsp?chapter="+surah+"&verse="+ayah]
+
  ]){
   const group=document.createElement("span");
   group.className="row";group.style.gap="4px";
