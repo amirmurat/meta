@@ -7,7 +7,7 @@ Existing IELTS, Flutter and **free** Quran Study remain distinct learning domain
 
 ## Shipped: first UI foundation and diagnostic (2026-10-30)
 
-- \`meta-ui.css\`: common palette, 8px rounded progress tracks, responsive page widths, typography, cards, buttons, focus states, touch targets, reduced-motion handling. Applied to 9 existing HTML pages (dashboard, account, profile, statistics, IELTS list and lesson, Flutter list and lesson, Quran reader). Older page-specific CSS still exists and must be consolidated progressively in a visual QA pass.
+- `meta-ui.css`: **classic design correction**. Amir prefers the original black-and-white, square-corner, minimal Meta UI. A first styling pass imposed blue accents, rounded cards, shadows, new page widths and smaller progress bars, and was rejected. CSS v2 restores the original page geometry and visual hierarchy and only makes unobtrusive consistency changes. The new IELTS diagnostic uses the same old minimal vocabulary. Later UX adjustments should target only inconsistent alignment, spacing, ordering or sizes without changing visual language.
 - \`assessment.html\` is the first on-site testing interface, linked prominently from \`ielts.html\`.
 - \`assessment-bank.js\`: 12 **original** non-copyrighted sample items over 3 short authored passages, four Reading skills (detail, paraphrase, inference, Not Given), each mapped to a real existing IELTS micro-lesson.
 - \`assessment-app.js\`: auth and enrolment guard; accessible question inputs and validation; skill analysis, per-question rationale, internal lesson links, per-account private attempt history; local unsent draft recovery.
