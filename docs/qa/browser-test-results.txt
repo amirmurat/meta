@@ -1,0 +1,200 @@
+PASS New learner has one primary action
+PASS Start first lesson
+PASS Only assigned IELTS
+PASS No fabricated completion
+PASS existing keeps completion
+PASS existing continues uncompleted lesson
+PASS history keeps completion
+PASS history continues uncompleted lesson
+PASS multi keeps completion
+PASS multi continues uncompleted lesson
+PASS Multiple assignments
+PASS Admin menu after positive RPC
+PASS No student admin menu
+PASS No enrollment empty state
+PASS Network error remains visible
+PASS Guest reaches public landing
+PASS Public landing contains no dashboard data
+PASS Signed-in landing redirects home
+PASS Signed-in account redirects home
+PASS External next rejected
+PASS Safe lesson next retained
+PASS Email confirmation does not promise session
+PASS Unconfirmed email explained
+PASS Password recovery preserved
+PASS Lesson loads
+PASS Manual save visible
+PASS Blocked completion explains steps
+PASS Answer saved
+PASS Saving or viewing is not completion
+PASS All original gates unlock completion
+PASS Confirmed completion persisted
+PASS Next lesson immediately after success
+PASS Save failure visible
+PASS Save error does not invent completion
+PASS Empty messages state
+PASS Sign out returns to public landing
+PASS Sign out clears private content
+PASS en 375 index.html no horizontal overflow
+PASS en 375 index.html shared navigation
+PASS en 375 courses.html no horizontal overflow
+PASS en 375 courses.html shared navigation
+PASS en 375 ielts.html no horizontal overflow
+PASS en 375 ielts.html shared navigation
+PASS en 375 flutter.html no horizontal overflow
+PASS en 375 flutter.html shared navigation
+PASS en 375 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS en 375 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS en 375 flutter-lesson.html?id=D01 no horizontal overflow
+PASS en 375 flutter-lesson.html?id=D01 shared navigation
+PASS en 375 statistics.html no horizontal overflow
+PASS en 375 statistics.html shared navigation
+PASS en 375 profile.html no horizontal overflow
+PASS en 375 profile.html shared navigation
+PASS en 375 support.html no horizontal overflow
+PASS en 375 support.html shared navigation
+PASS en 375 about.html no horizontal overflow
+PASS en 375 about.html shared navigation
+PASS en 390 index.html no horizontal overflow
+PASS en 390 index.html shared navigation
+PASS en 390 courses.html no horizontal overflow
+PASS en 390 courses.html shared navigation
+PASS en 390 ielts.html no horizontal overflow
+PASS en 390 ielts.html shared navigation
+PASS en 390 flutter.html no horizontal overflow
+PASS en 390 flutter.html shared navigation
+PASS en 390 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS en 390 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS en 390 flutter-lesson.html?id=D01 no horizontal overflow
+PASS en 390 flutter-lesson.html?id=D01 shared navigation
+PASS en 390 statistics.html no horizontal overflow
+PASS en 390 statistics.html shared navigation
+PASS en 390 profile.html no horizontal overflow
+PASS en 390 profile.html shared navigation
+PASS en 390 support.html no horizontal overflow
+PASS en 390 support.html shared navigation
+PASS en 390 about.html no horizontal overflow
+PASS en 390 about.html shared navigation
+PASS en 768 index.html no horizontal overflow
+PASS en 768 index.html shared navigation
+PASS en 768 courses.html no horizontal overflow
+PASS en 768 courses.html shared navigation
+PASS en 768 ielts.html no horizontal overflow
+PASS en 768 ielts.html shared navigation
+PASS en 768 flutter.html no horizontal overflow
+PASS en 768 flutter.html shared navigation
+PASS en 768 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS en 768 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS en 768 flutter-lesson.html?id=D01 no horizontal overflow
+PASS en 768 flutter-lesson.html?id=D01 shared navigation
+PASS en 768 statistics.html no horizontal overflow
+PASS en 768 statistics.html shared navigation
+PASS en 768 profile.html no horizontal overflow
+PASS en 768 profile.html shared navigation
+PASS en 768 support.html no horizontal overflow
+PASS en 768 support.html shared navigation
+PASS en 768 about.html no horizontal overflow
+PASS en 768 about.html shared navigation
+PASS en 1440 index.html no horizontal overflow
+PASS en 1440 index.html shared navigation
+PASS en 1440 courses.html no horizontal overflow
+PASS en 1440 courses.html shared navigation
+PASS en 1440 ielts.html no horizontal overflow
+PASS en 1440 ielts.html shared navigation
+PASS en 1440 flutter.html no horizontal overflow
+PASS en 1440 flutter.html shared navigation
+PASS en 1440 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS en 1440 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS en 1440 flutter-lesson.html?id=D01 no horizontal overflow
+PASS en 1440 flutter-lesson.html?id=D01 shared navigation
+PASS en 1440 statistics.html no horizontal overflow
+PASS en 1440 statistics.html shared navigation
+PASS en 1440 profile.html no horizontal overflow
+PASS en 1440 profile.html shared navigation
+PASS en 1440 support.html no horizontal overflow
+PASS en 1440 support.html shared navigation
+PASS en 1440 about.html no horizontal overflow
+PASS en 1440 about.html shared navigation
+PASS ru 375 index.html no horizontal overflow
+PASS ru 375 index.html shared navigation
+PASS ru 375 courses.html no horizontal overflow
+PASS ru 375 courses.html shared navigation
+PASS ru 375 ielts.html no horizontal overflow
+PASS ru 375 ielts.html shared navigation
+PASS ru 375 flutter.html no horizontal overflow
+PASS ru 375 flutter.html shared navigation
+PASS ru 375 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS ru 375 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS ru 375 flutter-lesson.html?id=D01 no horizontal overflow
+PASS ru 375 flutter-lesson.html?id=D01 shared navigation
+PASS ru 375 statistics.html no horizontal overflow
+PASS ru 375 statistics.html shared navigation
+PASS ru 375 profile.html no horizontal overflow
+PASS ru 375 profile.html shared navigation
+PASS ru 375 support.html no horizontal overflow
+PASS ru 375 support.html shared navigation
+PASS ru 375 about.html no horizontal overflow
+PASS ru 375 about.html shared navigation
+PASS ru 390 index.html no horizontal overflow
+PASS ru 390 index.html shared navigation
+PASS ru 390 courses.html no horizontal overflow
+PASS ru 390 courses.html shared navigation
+PASS ru 390 ielts.html no horizontal overflow
+PASS ru 390 ielts.html shared navigation
+PASS ru 390 flutter.html no horizontal overflow
+PASS ru 390 flutter.html shared navigation
+PASS ru 390 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS ru 390 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS ru 390 flutter-lesson.html?id=D01 no horizontal overflow
+PASS ru 390 flutter-lesson.html?id=D01 shared navigation
+PASS ru 390 statistics.html no horizontal overflow
+PASS ru 390 statistics.html shared navigation
+PASS ru 390 profile.html no horizontal overflow
+PASS ru 390 profile.html shared navigation
+PASS ru 390 support.html no horizontal overflow
+PASS ru 390 support.html shared navigation
+PASS ru 390 about.html no horizontal overflow
+PASS ru 390 about.html shared navigation
+PASS ru 768 index.html no horizontal overflow
+PASS ru 768 index.html shared navigation
+PASS ru 768 courses.html no horizontal overflow
+PASS ru 768 courses.html shared navigation
+PASS ru 768 ielts.html no horizontal overflow
+PASS ru 768 ielts.html shared navigation
+PASS ru 768 flutter.html no horizontal overflow
+PASS ru 768 flutter.html shared navigation
+PASS ru 768 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS ru 768 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS ru 768 flutter-lesson.html?id=D01 no horizontal overflow
+PASS ru 768 flutter-lesson.html?id=D01 shared navigation
+PASS ru 768 statistics.html no horizontal overflow
+PASS ru 768 statistics.html shared navigation
+PASS ru 768 profile.html no horizontal overflow
+PASS ru 768 profile.html shared navigation
+PASS ru 768 support.html no horizontal overflow
+PASS ru 768 support.html shared navigation
+PASS ru 768 about.html no horizontal overflow
+PASS ru 768 about.html shared navigation
+PASS ru 1440 index.html no horizontal overflow
+PASS ru 1440 index.html shared navigation
+PASS ru 1440 courses.html no horizontal overflow
+PASS ru 1440 courses.html shared navigation
+PASS ru 1440 ielts.html no horizontal overflow
+PASS ru 1440 ielts.html shared navigation
+PASS ru 1440 flutter.html no horizontal overflow
+PASS ru 1440 flutter.html shared navigation
+PASS ru 1440 ielts-lesson.html?id=A.1.1.1.1 no horizontal overflow
+PASS ru 1440 ielts-lesson.html?id=A.1.1.1.1 shared navigation
+PASS ru 1440 flutter-lesson.html?id=D01 no horizontal overflow
+PASS ru 1440 flutter-lesson.html?id=D01 shared navigation
+PASS ru 1440 statistics.html no horizontal overflow
+PASS ru 1440 statistics.html shared navigation
+PASS ru 1440 profile.html no horizontal overflow
+PASS ru 1440 profile.html shared navigation
+PASS ru 1440 support.html no horizontal overflow
+PASS ru 1440 support.html shared navigation
+PASS ru 1440 about.html no horizontal overflow
+PASS ru 1440 about.html shared navigation
+
+197 checks; 0 failures.
+31 October 2026 follow-up: signup password confirmation and mismatch blocking added; rerun passed 198 checks, 0 failures.

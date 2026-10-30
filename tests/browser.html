@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Meta v2 — isolated browser QA</title>
+<style>body{font:15px Arial;margin:20px;background:#eee}button,select{padding:10px;margin:5px}iframe{display:block;height:850px;border:1px solid #999;background:white;margin-top:12px}pre{white-space:pre-wrap;line-height:1.5}.pass{color:#166534}.fail{color:#b91c1c}</style>
+<h1>Meta v2 — isolated browser QA</h1><p>Local test data only. No production API calls. Fixtures are not real learner results.</p>
+<button id="run">Run scenario checks</button><select id="scenario"><option>new</option><option>existing</option><option>history</option><option>multi</option><option>admin</option><option>empty</option><option>network</option><option>guest</option><option>signup</option><option>unconfirmed</option><option>recovery</option><option>save-error</option></select>
+<select id="page"><option>index.html</option><option>courses.html</option><option>ielts.html</option><option>flutter.html</option><option>ielts-lesson.html?id=A.1.1.1.1</option><option>flutter-lesson.html?id=D01</option><option>statistics.html</option><option>profile.html</option><option>support.html</option><option>about.html</option><option>account.html</option><option>welcome.html</option><option>admin-statistics.html</option></select>
+<select id="width"><option>375</option><option>390</option><option>768</option><option selected>1440</option></select><select id="lang"><option>en</option><option>ru</option></select><button id="preview">Preview</button>
+<pre id="results" role="status">Ready</pre><iframe id="view" title="Meta preview"></iframe>
+<script type="module">
+const $=id=>document.getElementById(id),frame=$('view'),out=$('results');
+if(!['127.0.0.1','localhost'].includes(location.hostname))throw new Error('QA is localhost only');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function open(s,p,w=390){frame.style.width=w+'px';frame.src='/qa/'+s+'/'+p;await new Promise(r=>frame.onload=r);await wait(180);return frame.contentDocument;}
+function reset(){for(const k of Object.keys(sessionStorage))if(k.startsWith('meta-qa-'))sessionStorage.removeItem(k);}
+$('preview').onclick=()=>{localStorage.setItem('meta-language',$('lang').value);open($('scenario').value,$('page').value,+$('width').value);};
+$('run').onclick=async()=>{
+ $('run').disabled=true;out.textContent='';reset();localStorage.setItem('meta-language','en');let failures=0,checks=0;
+ function check(ok,name){checks++;if(!ok)failures++;out.textContent+=(ok?'PASS ':'FAIL ')+name+'\n';}
+ try{
+ let d=await open('new','index.html');check(d.querySelectorAll('#resume-links a').length===1,'New learner has one primary action');check(d.querySelector('.resume-action')?.textContent.includes('Start first'),'Start first lesson');check(d.querySelectorAll('#courses .course').length===1,'Only assigned IELTS');check(d.querySelector('.count')?.textContent==='0 / 332','No fabricated completion');
+ for(const s of ['existing','history','multi']){d=await open(s,'index.html');check(d.querySelector('.count')?.textContent==='1 / 332',s+' keeps completion');check(d.querySelector('.resume-link')?.href.includes('A.1.1.1.2'),s+' continues uncompleted lesson');if(s==='multi')check(d.querySelectorAll('#courses .course').length===3,'Multiple assignments');}
+ d=await open('admin','index.html');check([...d.querySelectorAll('.meta-more a')].some(a=>a.textContent==='Administration'),'Admin menu after positive RPC');
+ d=await open('new','index.html');check(![...d.querySelectorAll('.meta-more a')].some(a=>a.textContent==='Administration'),'No student admin menu');
+ d=await open('empty','index.html');check(!d.querySelector('#empty').hidden,'No enrollment empty state');
+ d=await open('network','index.html');check(!d.querySelector('#loading').hidden&&d.querySelector('#loading').getAttribute('role')==='alert','Network error remains visible');
+ d=await open('guest','index.html');check(frame.contentWindow.location.pathname.endsWith('welcome.html'),'Guest reaches public landing');check(!d.querySelector('#courses'),'Public landing contains no dashboard data');
+ d=await open('new','welcome.html');check(frame.contentWindow.location.pathname.endsWith('/qa/new/'),'Signed-in landing redirects home');
+ d=await open('new','account.html');check(frame.contentWindow.location.pathname.endsWith('/qa/new/'),'Signed-in account redirects home');
+ d=await open('new','account.html?next=https://evil.test');check(frame.contentWindow.location.origin===location.origin,'External next rejected');
+ d=await open('new','account.html?next=ielts-lesson.html%3Fid%3DA.1.1.1.1');check(frame.contentWindow.location.pathname.endsWith('ielts-lesson.html'),'Safe lesson next retained');
+ d=await open('signup','account.html?mode=signup');d.querySelector('#signup-name').value='Test';d.querySelector('#signup-email').value='test@example.test';d.querySelector('#signup-password').value='not-a-real-password';d.querySelector('#signup-confirm').value='different-password';d.querySelector('#signup-confirm').dispatchEvent(new Event('input',{bubbles:true}));check(!d.querySelector('#signup-confirm').checkValidity()&&d.querySelector('#signup-match').textContent.includes('match'),'Mismatched signup passwords blocked');d.querySelector('#signup-confirm').value='not-a-real-password';d.querySelector('#signup-confirm').dispatchEvent(new Event('input',{bubbles:true}));d.querySelector('#signup-form').requestSubmit();await wait(80);check(d.querySelector('#message').textContent.includes('not signed in yet'),'Email confirmation does not promise session');
+ d=await open('unconfirmed','account.html');d.querySelector('#login-email').value='test@example.test';d.querySelector('#login-password').value='not-a-real-password';d.querySelector('#login-form').requestSubmit();await wait(80);check(d.querySelector('#message').textContent.includes('confirm your email'),'Unconfirmed email explained');
+ d=await open('recovery','account.html');check(!d.querySelector('#reset-form').hidden&&d.querySelector('#guest').hidden,'Password recovery preserved');
+ d=await open('new','ielts-lesson.html?id=A.1.1.1.1');check(!d.querySelector('#lesson').hidden,'Lesson loads');check(!d.querySelector('#editor-toolbar').hidden&&!d.querySelector('#save-now').hidden,'Manual save visible');check(d.querySelector('#confirm-completion').disabled&&d.querySelector('#completion-help').textContent.includes('Write your answer'),'Blocked completion explains steps');
+ const answer=d.querySelector('#answer');answer.value='I would listen for the departure time.';answer.dispatchEvent(new Event('input',{bubbles:true}));d.querySelector('#save-now').click();await wait(80);check(d.querySelector('#save-state').textContent.includes('saved'),'Answer saved');check(!(JSON.parse(sessionStorage.getItem('meta-qa-new')).lesson_progress||[]).length,'Saving or viewing is not completion');
+ d.querySelector('#check-button').click();for(const c of d.querySelectorAll('#criteria input,#ai-reviewed,#self-passed')){c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}));}check(!d.querySelector('#confirm-completion').disabled,'All original gates unlock completion');d.querySelector('#confirm-completion').click();await wait(100);check(JSON.parse(sessionStorage.getItem('meta-qa-new')).lesson_progress?.length===1,'Confirmed completion persisted');check(!!d.querySelector('#completion-result a'),'Next lesson immediately after success');
+ d=await open('save-error','ielts-lesson.html?id=A.1.1.1.1');d.querySelector('#answer').value='Attempt';d.querySelector('#save-now').click();await wait(80);check(/error/i.test(d.querySelector('#save-state').textContent),'Save failure visible');check(!(JSON.parse(sessionStorage.getItem('meta-qa-save-error')||'{}').lesson_progress||[]).length,'Save error does not invent completion');
+ d=await open('new','support.html');check(d.querySelector('#chat').textContent.includes('No messages'),'Empty messages state');
+ d=await open('new','index.html');d.querySelector('.meta-more button').click();await wait(180);check(frame.contentWindow.location.pathname.endsWith('welcome.html'),'Sign out returns to public landing');check(!frame.contentDocument.querySelector('#courses'),'Sign out clears private content');
+ for(const lang of ['en','ru']){localStorage.setItem('meta-language',lang);for(const w of [375,390,768,1440])for(const p of ['index.html','courses.html','ielts.html','flutter.html','ielts-lesson.html?id=A.1.1.1.1','flutter-lesson.html?id=D01','statistics.html','profile.html','support.html','about.html']){
+  d=await open('multi',p,w);check(d.documentElement.scrollWidth<=w,lang+' '+w+' '+p+' no horizontal overflow');check(d.querySelectorAll('.meta-primary-nav a').length===4,lang+' '+w+' '+p+' shared navigation');
+ }}
+ }catch(e){failures++;out.textContent+='ERROR '+e.stack+'\n';}
+ out.textContent+=`\n${checks} checks; ${failures} failures.`;out.className=failures?'fail':'pass';$('run').disabled=false;
+};
+await open('new','index.html',1440);
+</script></html>

@@ -43,9 +43,10 @@ header{margin-bottom:26px}
 .next a{color:#111;font-weight:600}
 
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 </head>
 <body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-lesson">
 <nav class="page-top meta-page-nav" aria-label="Навигация Flutter"><a class="back" id="home-link" href="./">← Мои программы</a><a class="back" href="./support.html">Сообщения</a><a id="user-link" class="back" href="./account.html">Войти</a></nav>
 <header><h1>Flutter</h1><p id="catalog-summary">Проверяю доступ к программе…</p></header>
@@ -55,6 +56,8 @@ header{margin-bottom:26px}
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 import {language} from "./meta-language.js";
+import {loadAttemptedLessons,lessonStatus} from "./meta-course-state.js";
+let attempted=null;
 // Course material is read only with the authenticated user's RLS-protected session.
 const completedLessonIds=new Set();
 const isEnglish=language()==="en";
@@ -96,6 +99,7 @@ completedLessonIds.clear();
 const {data:progress,error}=await supabase.from("lesson_progress")
  .select("lesson_id").eq("user_id",user.id);
 if(error)throw error;
+attempted=await loadAttemptedLessons(user.id);
 const map=new Map(lessons.map(l=>[l.id,l.external_id]));
 for(const record of progress||[])if(map.has(record.lesson_id))completedLessonIds.add(map.get(record.lesson_id));
 document.getElementById("catalog-summary").textContent=isEnglish
@@ -106,7 +110,7 @@ const next=document.getElementById("next");
 next.replaceChildren();next.hidden=false;
 if(first){
  const lead=document.createElement("strong");
- lead.textContent=isEnglish?"Continue learning: ":"Продолжить обучение: ";
+ lead.textContent=completedLessonIds.size ? (isEnglish?"Continue learning: ":"Продолжить обучение: ") : (isEnglish?"Start first lesson: ":"Начать первый урок: ");
  const a=document.createElement("a");
  a.href="./flutter-lesson.html?id="+encodeURIComponent(first.external_id);
  a.textContent=first.title+" →";
@@ -139,7 +143,7 @@ for(const mod of modules){
   tile.setAttribute("aria-label",lesson.external_id+" — "+lesson.title+(completedLessonIds.has(lesson.external_id)?" (пройден)":""));
   const id=document.createElement("span");id.className="code";id.textContent=lesson.external_id;
   const label=document.createElement("span");label.className="name";label.textContent=lesson.title;
-  tile.append(id,label);list.append(tile);
+  const status=document.createElement("span");status.className="meta-lesson-status";status.textContent=lessonStatus(completedLessonIds.has(lesson.external_id),attempted,lesson.id);tile.append(id,label,status);list.append(tile);
  }
  content.append(list);
  toggle.addEventListener("click",()=>{
@@ -162,5 +166,6 @@ console.error("Flutter catalog:",error);
 loadCatalog();
 </script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Academic Reading Practice — Meta</title>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 <style>
 *{box-sizing:border-box}
 body{background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
@@ -52,6 +52,7 @@ a{color:inherit}
 </style>
 </head>
 <body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main>
 <nav class="meta-page-nav" aria-label="Навигация тренировки Reading"><a href="./ielts.html" data-en="← IELTS lessons" data-ru="← Уроки IELTS">← IELTS lessons</a><a href="./" data-en="My courses" data-ru="Мои программы">My courses</a></nav>
 <header><p class="muted" data-en="Original practice · Not an official IELTS exam" data-ru="Авторская тренировка · Не официальный экзамен IELTS">Original practice · Not an official IELTS exam</p>
@@ -97,4 +98,5 @@ document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.ge
 </script>
 <script type="module" src="./reading-mock-app.js?v=1"></script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body></html>

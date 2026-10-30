@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IELTS Listening practice — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=4">
+<title>IELTS Listening practice — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=5">
 <style>
 *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
 main{max-width:900px;margin:auto;padding:30px 20px 85px}nav{display:flex;gap:20px;justify-content:space-between;margin-bottom:25px}
@@ -24,7 +24,8 @@ button.secondary{background:#fff;color:#111}button:disabled{opacity:.5;cursor:no
 [hidden]{display:none!important}
 @media(max-width:600px){main{padding:18px 14px 80px}.panel{padding:14px}}
 </style>
-</head><body class="meta-ui"><main>
+</head><body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div><main>
 <nav class="meta-page-nav" aria-label="Навигация тренировки Listening"><a href="./ielts.html">← IELTS</a><a href="./ielts-dashboard.html" data-en="Analysis dashboard" data-ru="Аналитика">Analysis dashboard</a></nav>
 <h1 data-en="Listening practice · 40 questions" data-ru="Listening-тренировка · 40 вопросов">Listening practice · 40 questions</h1>
 <p class="muted" data-en="Four original parts, 10 questions each. Synthetic browser audio — not genuine IELTS recordings." data-ru="Четыре авторские части по 10 вопросов. Синтетическая речь браузера — не настоящие записи IELTS.">Four original parts, 10 questions each. Synthetic browser audio — not genuine IELTS recordings.</p>
@@ -55,4 +56,5 @@ button.secondary{background:#fff;color:#111}button:disabled{opacity:.5;cursor:no
 </main>
 <script type="module">import{language}from"./meta-language.js";const lang=language();document.documentElement.lang=lang;document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.getAttribute("data-"+lang));</script>
 <script type="module" src="./listening-practice-app.js?v=1"></script><script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body></html>

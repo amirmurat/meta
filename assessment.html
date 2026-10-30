@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#ffffff">
 <title>IELTS Reading · Диагностика — Meta</title>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 <style>
 .assess-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:30px}
 .assess-top a{text-decoration:none;color:var(--meta-muted);font-size:14px}
@@ -47,6 +47,7 @@ button#submit-test,button#start-test,button#retry-test{background:var(--meta-ink
 </style>
 </head>
 <body class="meta-ui meta-assessment">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-lesson">
 <nav class="assess-top meta-page-nav" aria-label="Back to courses">
 <a href="./ielts.html" id="back-link">← IELTS · Все уроки</a>
@@ -106,5 +107,6 @@ button#submit-test,button#start-test,button#retry-test{background:var(--meta-ink
 </main>
 <script type="module" src="./assessment-app.js?v=1"></script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body>
 </html>

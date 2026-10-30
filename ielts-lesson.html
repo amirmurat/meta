@@ -51,9 +51,10 @@
     [hidden]{display:none!important}
     @media(max-width:540px){main{padding:25px 18px 56px}section{margin-top:29px}pre{font-size:13px}textarea{font-size:14px}}
   </style>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 </head>
 <body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-lesson">
   <nav class="topbar meta-page-nav" aria-label="Навигация">
     <a class="back" id="back" href="./ielts.html">← Все разделы IELTS</a>
@@ -88,7 +89,7 @@
       <textarea id="answer" maxlength="50000" placeholder="Напиши свой ответ здесь…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
       <div class="toolbar" id="editor-toolbar">
         <button type="button" id="copy-answer">Скопировать ответ</button>
-        <button type="button" id="save-now">Сохранить ответ</button>
+        <button type="button" class="meta-primary-action" id="save-now">Сохранить ответ</button>
         <a class="tool-link" href="https://dartpad.dev/" target="_blank" rel="noopener noreferrer" id="dartpad">Открыть DartPad</a>
       </div>
       <div class="toolbar"><button type="button" id="record-submission">Зафиксировать сдачу ответа</button></div>
@@ -100,7 +101,7 @@
       <button type="button" id="check-button" disabled>Показать критерии после попытки</button>
       <div id="check-panel" hidden>
         <ul class="checklist" id="criteria"></ul>
-        <p class="disclaimer">Самопроверка не запускает код. Проверь его в DartPad, IDE или нужной среде. Для обратной связи можно обратиться к ИИ; оцени также реальные результаты и критерии задания.</p>
+        <p class="disclaimer">Сравни ответ с каждым критерием. Отмечай только выполненные пункты. Затем запроси обратную связь ИИ и исправь ошибки.</p>
       </div>
     </section>
     <section aria-labelledby="ai-feedback-title">
@@ -118,7 +119,8 @@
         <label><input id="ai-reviewed" type="checkbox"> Я проверил ответ с ИИ и разобрал ошибки</label>
         <label><input id="self-passed" type="checkbox"> По результатам проверки задание соответствует критериям</label>
       </div>
-      <button type="button" id="confirm-completion" disabled>Отметить выполненным</button>
+      <p id="completion-help" class="meta-next-step" role="status" aria-live="polite"></p>
+      <button type="button" id="confirm-completion" aria-describedby="completion-help" disabled>Отметить выполненным</button>
       <p id="completion-status" class="disclaimer" hidden></p>
       <button type="button" id="unmark-completion" hidden>Снять отметку выполнения</button>
       <p id="completion-result" class="save-state" role="status"></p>
@@ -139,5 +141,6 @@
 </main>
 <script type="module" src="./ielts-lesson-app.js?v=resume-1"></script>
 <script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-shell.js"></script>
 </body>
 </html>

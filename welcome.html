@@ -135,8 +135,7 @@ if(offerActive){
  cta.textContent=en?"Start IELTS →":"Начать IELTS →";
 }
 (async()=>{const user=await authenticatedUser();if(!user)return;
-const nav=document.querySelector(".top nav a[href^='./account.html?mode=login']");
-if(nav){nav.href="./";nav.textContent=en?"My programs":"Мои программы"}
+location.replace("./");
 })().catch(()=>{});
 const form=document.getElementById("interest-form");
 form.onsubmit=async event=>{

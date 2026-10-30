@@ -29,7 +29,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 h1{margin-top:18px}
 [hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=4">
+<link rel="stylesheet" href="./meta-ui.css?v=5">
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-narrow">
@@ -40,7 +40,8 @@ h1{margin-top:18px}
 <h1 id="heading">Аккаунт</h1>
 <p class="subtitle" id="subtitle">Создай аккаунт, подтверди email и открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».</p>
 
-<div id="guest">
+<p id="auth-loading" role="status" data-ru="Проверяю вход…" data-en="Checking sign-in…">Проверяю вход…</p>
+<div id="guest" hidden>
 <div class="tabs" role="group" aria-label="Режим аккаунта">
 <button class="tab active" id="login-tab" type="button" aria-controls="login-form" aria-pressed="true">Войти</button>
 <button class="tab" id="signup-tab" type="button" aria-controls="signup-form" aria-pressed="false">Регистрация</button>
@@ -55,6 +56,8 @@ h1{margin-top:18px}
 <div><label for="signup-name">Имя</label><input id="signup-name" type="text" maxlength="80" autocomplete="name" required></div>
 <div><label for="signup-email">Email</label><input id="signup-email" type="email" autocomplete="username" required></div>
 <div><label for="signup-password">Пароль (не менее 8 символов)</label><input id="signup-password" type="password" autocomplete="new-password" minlength="8" required></div>
+<div><label for="signup-confirm">Повтори пароль</label><input id="signup-confirm" type="password" autocomplete="new-password" minlength="8" required></div>
+<p class="small" id="signup-match" role="status" aria-live="polite"></p>
 <button class="primary" type="submit">Создать аккаунт</button>
 <p class="small">Подтверждение email может потребоваться. Каждый пользователь видит только собственные ответы и заметки. <a href="./privacy.html" id="privacy-link">Данные и приватность →</a></p>
 </form>
@@ -83,8 +86,10 @@ h1{margin-top:18px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
+import {language} from "./meta-language.js";
 const $=id=>document.getElementById(id);
 let mode="login",recovering=false;
+import {safeDestination as safeNext} from "./meta-routing.js";
 function say(s,error=false){$("message").textContent=s;$("message").className=error?"message error":"message"}
 function showMode(m){
   mode=m;say("");
@@ -98,15 +103,19 @@ function showMode(m){
 
 }
 function safeDestination(){
-  const raw=new URLSearchParams(location.search).get("next");
-  if(!raw)return "./";
-  try{
-    const target=new URL(raw,location.href);
-    if(target.origin===location.origin&&target.pathname.startsWith(new URL("./",location.href).pathname))
-      return target.href;
-  }catch{}
-  return "./";
+ let raw=new URLSearchParams(location.search).get("next");
+ try{raw ||= sessionStorage.getItem("meta-auth-next");sessionStorage.removeItem("meta-auth-next");}catch{}
+ return safeNext(raw,location.href);
 }
+function verifySignupPasswords(){
+ const first=$("signup-password"),second=$("signup-confirm");
+ const mismatch=!!second.value&&first.value!==second.value;
+ const message=language()==="en"?"Passwords do not match.":"Пароли не совпадают.";
+ second.setCustomValidity(mismatch?message:"");
+ $("signup-match").textContent=mismatch?message:"";
+ return !mismatch;
+}
+for(const id of ["signup-password","signup-confirm"])$(id).addEventListener("input",verifySignupPasswords);
 function busy(form,value){form.querySelector("button.primary").disabled=value}
 function errorText(err){
   const msg=String(err?.message||err||"Ошибка сервера");
@@ -137,9 +146,10 @@ async function current(){
  if(recovering)return;
  try{
   const user=await authenticatedUser();
-  if(user)await showSignedIn(user);
+  if(recovering)return;
+  if(user && !recovering){location.replace(safeDestination());return;}
   else{$("account-back").hidden=true;$("account-about").hidden=false;$("guest").hidden=false;$("signed-in").hidden=true;}
- }catch(e){say(errorText(e),true)}
+ }catch(e){say(errorText(e),true)}finally{$("auth-loading").hidden=true;}
 }
 const initialMode=new URLSearchParams(location.search).get("mode");
 if(initialMode==="signup")showMode("signup");
@@ -156,18 +166,20 @@ $("login-form").onsubmit=async e=>{
  }catch(e){say(errorText(e),true);busy(form,false)}
 };
 $("signup-form").onsubmit=async e=>{
- e.preventDefault();const form=e.currentTarget;busy(form,true);say("");
+ e.preventDefault();const form=e.currentTarget;if(!verifySignupPasswords()){$("signup-confirm").reportValidity();return;}busy(form,true);say("");
  try{
+  const next=new URLSearchParams(location.search).get("next");
+  if(next)try{sessionStorage.setItem("meta-auth-next",safeNext(next,location.href))}catch{}
   const {data,error}=await supabase.auth.signUp({
    email:$("signup-email").value.trim(),password:$("signup-password").value,
    options:{emailRedirectTo:new URL("./account.html",location.href).href,data:{full_name:$("signup-name").value.trim()}}
   });
   if(error)throw error;
   if(data.session){
-   const user=data.user;if(user)await ensureProfile(user);
+   const user=data.user;if(user)try{await ensureProfile(user)}catch{};
    location.assign(safeDestination());return;
   }
-  say("Проверь почту (включая «Спам») и подтверди регистрацию. После входа открой «Мои программы». Если нужного курса нет, запроси его через «Сообщения».");
+  say("Проверь почту (включая «Спам») и открой ссылку подтверждения. Вход ещё не выполнен. После подтверждения ты попадёшь на главную или сможешь войти здесь.");
   busy(form,false);
  }catch(e){say(errorText(e),true);busy(form,false)}
 };
@@ -194,11 +206,11 @@ $("reset-form").onsubmit=async e=>{
 $("sign-out").onclick=async()=>{
  const {error}=await supabase.auth.signOut();
  if(error){say(errorText(error),true);return}
- location.assign("./account.html");
+ location.assign("./welcome.html");
 };
 supabase.auth.onAuthStateChange((event)=>{
  if(event==="PASSWORD_RECOVERY"){
-  recovering=true;$("account-back").hidden=true;$("guest").hidden=true;$("signed-in").hidden=true;
+  recovering=true;$("auth-loading").hidden=true;$("account-back").hidden=true;$("guest").hidden=true;$("signed-in").hidden=true;
   $("reset-form").hidden=false;$("heading").textContent="Новый пароль";
   $("subtitle").textContent="Установи пароль для своего аккаунта.";
  }
