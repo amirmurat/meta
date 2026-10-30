@@ -14,7 +14,9 @@ button.secondary{color:#111;background:#fff}button:disabled{opacity:.6}
 button+button{margin-left:10px}
 .exam-clock{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;border-bottom:2px solid #111}
 #timer{font:700 24px ui-monospace,Consolas,monospace}
-.data-table{width:100%;border-collapse:collapse;margin:20px 0;font-variant-numeric:tabular-nums}
+.table-scroll{max-width:100%;overflow-x:auto;margin:20px 0}
+.data-table{width:100%;min-width:430px;border-collapse:collapse;margin:0;font-variant-numeric:tabular-nums}
+.data-table caption{text-align:left;font-size:13px;color:#555;padding:0 0 8px}
 .data-table th,.data-table td{border:1px solid #ccc;padding:10px;text-align:right}
 .data-table th:first-child,.data-table td:first-child{text-align:left}
 textarea{display:block;width:100%;min-height:260px;margin:15px 0;border:1px solid #777;padding:14px;resize:vertical;line-height:1.6;font:inherit;color:#111;background:#fff}
@@ -41,10 +43,10 @@ textarea:focus-visible{outline:2px solid #111}
 <section>
 <h2>Task 1 <span class="muted">· 20 min · 150+ words</span></h2>
 <p> The table shows the percentage of commuters using three selected modes of transport in the fictional city of Northport. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
-<table class="data-table">
+<div class="table-scroll" role="region" aria-label="Таблица данных для Writing Task 1" tabindex="0"><table class="data-table">
 <caption>Share of commuters using selected transport modes, Northport (%) — fictional data</caption>
 <thead><tr><th scope="col">Year</th><th scope="col">Bicycle</th><th scope="col">Bus</th><th scope="col">Rail</th></tr></thead>
-<tbody><tr><th scope="row">2010</th><td>8</td><td>34</td><td>20</td></tr><tr><th scope="row">2015</th><td>11</td><td>31</td><td>23</td></tr><tr><th scope="row">2020</th><td>15</td><td>28</td><td>26</td></tr><tr><th scope="row">2025</th><td>19</td><td>25</td><td>29</td></tr></tbody></table>
+<tbody><tr><th scope="row">2010</th><td>8</td><td>34</td><td>20</td></tr><tr><th scope="row">2015</th><td>11</td><td>31</td><td>23</td></tr><tr><th scope="row">2020</th><td>15</td><td>28</td><td>26</td></tr><tr><th scope="row">2025</th><td>19</td><td>25</td><td>29</td></tr></tbody></table></div>
 <p class="muted">Note: Other commuting modes are excluded; columns do not sum to 100%.</p>
 <label for="task1" data-en="Your Task 1 response" data-ru="Твой ответ Task 1">Your Task 1 response</label>
 <textarea id="task1" maxlength="12000" spellcheck="true" aria-describedby="count1"></textarea>
