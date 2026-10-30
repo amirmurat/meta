@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Listening practice — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=3">
+<style>
+*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
+main{max-width:900px;margin:auto;padding:30px 20px 85px}nav{display:flex;gap:20px;justify-content:space-between;margin-bottom:25px}
+a{color:inherit}h1{font-size:32px}h2{font-size:22px}p{line-height:1.65}
+.panel{border:1px solid #ddd;padding:20px;margin:22px 0}
+button{font:inherit;border:1px solid #111;background:#111;color:#fff;padding:12px 16px;cursor:pointer}
+button.secondary{background:#fff;color:#111}button:disabled{opacity:.5;cursor:not-allowed}
+.muted{color:#666;font-size:14px}.clock-row{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;align-items:center}
+#clock{font:700 24px ui-monospace,Consolas,monospace}
+.part{border-bottom:2px solid #111;margin:28px 0;padding:0 0 20px}
+.part h2{margin-bottom:6px}
+.question{min-width:0;border:0;border-top:1px solid #ddd;margin:15px 0 0;padding:15px 0 0}
+.question legend{font-size:15px;font-weight:600;padding:0;line-height:1.5}
+.option{display:flex;gap:12px;align-items:flex-start;border:1px solid #ddd;padding:9px 12px;margin:7px 0;cursor:pointer}
+.option:has(input:checked){border-color:#111;background:#f0f0f0}
+.option input{accent-color:#111;margin-top:3px}
+.score{font-size:34px;font-weight:700}
+.skill-line,.history-line,.review-row{border-bottom:1px solid #ddd;padding:10px 0}
+.week-list li{margin-bottom:10px}
+.review details{border:1px solid #ddd;padding:10px;margin:10px 0}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:18px 14px 80px}.panel{padding:14px}}
+</style>
+</head><body class="meta-ui"><main>
+<nav><a href="./ielts.html">← IELTS</a><a href="./ielts-dashboard.html" data-en="Analysis dashboard" data-ru="Аналитика">Analysis dashboard</a></nav>
+<h1 data-en="Listening practice · 40 questions" data-ru="Listening-тренировка · 40 вопросов">Listening practice · 40 questions</h1>
+<p class="muted" data-en="Four original parts, 10 questions each. Synthetic browser audio — not genuine IELTS recordings." data-ru="Четыре авторские части по 10 вопросов. Синтетическая речь браузера — не настоящие записи IELTS.">Four original parts, 10 questions each. Synthetic browser audio — not genuine IELTS recordings.</p>
+<p id="status" role="status" class="muted">Checking access…</p>
+<section id="intro" class="panel" hidden>
+<h2 data-en="How this listening lab works" data-ru="Как работает Listening-тренировка">How this listening lab works</h2>
+<p id="notice"></p>
+<p class="muted" data-en="Use a browser that supports speech synthesis. Press Play for each part once, listen, and answer the questions. Drafts and playback state are saved locally. Browser voices may be processed by device or third-party voice services, depending on your setup. There is a 30-minute practice timer." data-ru="Нужен браузер с синтезом речи. Воспроизведи каждую часть один раз и ответь на вопросы. Черновик и состояние воспроизведения хранятся локально. Голоса могут обрабатываться устройством или внешним голосовым сервисом в зависимости от настроек. Таймер — 30 минут.">Use a browser that supports speech synthesis. Press Play for each part once, listen, and answer the questions. Drafts and playback state are saved locally. Browser voices may be processed by device or third-party voice services, depending on your setup. There is a 30-minute practice timer.</p>
+<button id="start" type="button" data-en="Start practice" data-ru="Начать тренировку">Start practice</button>
+<button id="resume" type="button" class="secondary" hidden data-en="Resume saved attempt" data-ru="Продолжить попытку">Resume saved attempt</button>
+<p class="muted"><a href="https://ielts.org/take-a-test/preparation-resources/sample-test-questions/academic-test" target="_blank" rel="noopener noreferrer">Official IELTS listening sample resources</a></p>
+</section>
+<form id="exam" hidden>
+<div class="clock-row"><strong data-en="Time remaining" data-ru="Осталось времени">Time remaining</strong><span id="clock">30:00</span><span id="answered">0 / 40</span></div>
+<div id="parts"></div>
+<button id="submit" type="submit" data-en="Submit and analyse" data-ru="Сдать и проанализировать">Submit and analyse</button>
+</form>
+<section id="results" class="panel" hidden>
+<h2 data-en="Your Listening practice result" data-ru="Результат Listening-тренировки">Your Listening practice result</h2>
+<div class="score" id="result-score">— / 40</div>
+<p class="muted" data-en="Not an official IELTS Listening band or equivalent difficulty." data-ru="Не официальный IELTS band и не экзаменационная сложность.">Not an official IELTS Listening band or equivalent difficulty.</p>
+<h3 data-en="Priorities by skill" data-ru="Приоритеты по навыкам">Priorities by skill</h3><div id="result-skills"></div>
+<h3 data-en="Suggested 7-day sequence" data-ru="Рекомендуемый порядок на 7 дней">Suggested 7-day sequence</h3><ol id="result-plan" class="week-list"></ol>
+<p id="result-status" role="status" class="muted"></p>
+<h3 data-en="Answers and transcripts" data-ru="Ответы и тексты записей">Answers and transcripts</h3><div id="review" class="review"></div>
+</section>
+<section id="history" class="panel" hidden><h2 data-en="Previous attempts" data-ru="Предыдущие попытки">Previous attempts</h2><div id="history-list"></div></section>
+</main>
+<script type="module">import{language}from"./meta-language.js";const lang=language();document.documentElement.lang=lang;document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.getAttribute("data-"+lang));</script>
+<script type="module" src="./listening-practice-app.js?v=1"></script><script type="module" src="./meta-language.js"></script>
+</body></html>

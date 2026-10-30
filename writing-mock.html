@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IELTS Academic Writing practice — Meta</title>
+<link rel="stylesheet" href="./meta-ui.css?v=3">
+<style>
+*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
+main{width:min(100%,900px);margin:auto;padding:30px 20px 85px}
+nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:25px}
+a{color:inherit}nav a{text-decoration:none;color:#555}h1{font-size:32px}h2{font-size:22px;margin-top:30px}
+p{line-height:1.6}.muted{color:#666;font-size:14px}
+.panel{border:1px solid #ddd;padding:20px;margin:20px 0}
+button{border:1px solid #111;background:#111;color:#fff;padding:12px 16px;font:inherit;cursor:pointer}
+button.secondary{color:#111;background:#fff}button:disabled{opacity:.6}
+button+button{margin-left:10px}
+.exam-clock{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;border-bottom:2px solid #111}
+#timer{font:700 24px ui-monospace,Consolas,monospace}
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;font-variant-numeric:tabular-nums}
+.data-table th,.data-table td{border:1px solid #ccc;padding:10px;text-align:right}
+.data-table th:first-child,.data-table td:first-child{text-align:left}
+textarea{display:block;width:100%;min-height:260px;margin:15px 0;border:1px solid #777;padding:14px;resize:vertical;line-height:1.6;font:inherit;color:#111;background:#fff}
+textarea:focus-visible{outline:2px solid #111}
+.summary-list{padding-left:22px}.summary-list li{margin:12px 0}
+.history-row{border-bottom:1px solid #ddd;padding:9px 0}
+[hidden]{display:none!important}
+@media(max-width:600px){main{padding:20px 15px 80px}.panel{padding:14px}textarea{min-height:250px}}
+</style></head>
+<body class="meta-ui"><main>
+<nav><a href="./ielts.html">← IELTS</a><a href="./ielts-dashboard.html" data-en="Analysis dashboard" data-ru="Аналитика">Analysis dashboard</a></nav>
+<h1 data-en="Academic Writing · Practice 1" data-ru="Academic Writing · Тренировка 1">Academic Writing · Practice 1</h1>
+<p class="muted" data-en="Original prompts, 60-minute timer. No AI grades or official band scores." data-ru="Авторские задания, таймер на 60 минут. Без автоматических оценок и официальных IELTS band.">Original prompts, 60-minute timer. No AI grades or official band scores.</p>
+<p id="status" role="status" class="muted">Checking access…</p>
+<section id="welcome" class="panel" hidden>
+<h2 data-en="Two writing tasks" data-ru="Два письменных задания">Two writing tasks</h2>
+<p data-en="Task 1: describe the table in 150+ words (about 20 min). Task 2: write an essay of 250+ words (about 40 min). This practice uses an original fictional dataset and topic." data-ru="Task 1: опиши таблицу (от 150 слов, около 20 минут). Task 2: напиши эссе (от 250 слов, около 40 минут). Данные и тема авторские.">Task 1: describe the table in 150+ words (about 20 min). Task 2: write an essay of 250+ words (about 40 min). This practice uses an original fictional dataset and topic.</p>
+<p class="muted" data-en="Drafts are stored in this browser until submitted. Submitted essays are saved privately in your account. Do not write sensitive personal information." data-ru="До сдачи черновики хранятся в браузере, после — в личном аккаунте. Не пиши чувствительные личные данные.">Drafts are stored in this browser until submitted. Submitted essays are saved privately in your account. Do not write sensitive personal information.</p>
+<button id="start" type="button" data-en="Start 60-minute practice" data-ru="Начать 60-минутную тренировку">Start 60-minute practice</button>
+<button id="resume" type="button" class="secondary" hidden data-en="Resume draft" data-ru="Продолжить черновик">Resume draft</button>
+</section>
+<form id="work" hidden>
+<div class="exam-clock"><strong data-en="Time remaining" data-ru="Осталось времени">Time remaining</strong><span id="timer">60:00</span></div>
+<section>
+<h2>Task 1 <span class="muted">· 20 min · 150+ words</span></h2>
+<p> The table shows the percentage of commuters using three selected modes of transport in the fictional city of Northport. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
+<table class="data-table">
+<caption>Share of commuters using selected transport modes, Northport (%) — fictional data</caption>
+<thead><tr><th scope="col">Year</th><th scope="col">Bicycle</th><th scope="col">Bus</th><th scope="col">Rail</th></tr></thead>
+<tbody><tr><th scope="row">2010</th><td>8</td><td>34</td><td>20</td></tr><tr><th scope="row">2015</th><td>11</td><td>31</td><td>23</td></tr><tr><th scope="row">2020</th><td>15</td><td>28</td><td>26</td></tr><tr><th scope="row">2025</th><td>19</td><td>25</td><td>29</td></tr></tbody></table>
+<p class="muted">Note: Other commuting modes are excluded; columns do not sum to 100%.</p>
+<label for="task1" data-en="Your Task 1 response" data-ru="Твой ответ Task 1">Your Task 1 response</label>
+<textarea id="task1" maxlength="12000" spellcheck="true" aria-describedby="count1"></textarea>
+<p id="count1" class="muted" aria-live="polite">0 / 150 words</p>
+</section>
+<section>
+<h2>Task 2 <span class="muted">· 40 min · 250+ words</span></h2>
+<p>Some people believe universities should require every student to complete a short course in digital safety. Others argue that students should be free to choose whether to study this subject. Discuss both views and give your own opinion. Give reasons for your answer and include relevant examples from your own knowledge or experience.</p>
+<label for="task2" data-en="Your Task 2 essay" data-ru="Твоё эссе Task 2">Your Task 2 essay</label>
+<textarea id="task2" maxlength="20000" spellcheck="true" aria-describedby="count2"></textarea>
+<p id="count2" class="muted" aria-live="polite">0 / 250 words</p>
+</section>
+<p class="muted" id="count-note" role="status"></p>
+<button type="submit" id="finish" data-en="Submit both responses" data-ru="Сдать оба ответа">Submit both responses</button>
+</form>
+<section class="panel" id="result" hidden>
+<h2 data-en="Writing practice submitted" data-ru="Writing: ответы отправлены">Writing practice submitted</h2>
+<p id="result-info"></p><p id="save-result" role="status"></p>
+<h3 data-en="First checks and study priorities" data-ru="Первые проверки и учебные приоритеты">First checks and study priorities</h3>
+<ol id="priorities" class="summary-list"></ol>
+<h3 data-en="Four criteria to review with a teacher" data-ru="Четыре критерия для проверки с преподавателем">Four criteria to review with a teacher</h3>
+<ul class="summary-list">
+<li>Task Achievement / Task Response — answer every part and cover the main features</li>
+<li>Coherence and Cohesion — logical structure and clear links between ideas</li>
+<li>Lexical Resource — appropriate word choice, range and accuracy</li>
+<li>Grammatical Range and Accuracy — correct and varied sentence structures</li>
+</ul>
+<p class="muted" data-en="Meta has not graded your writing. Word counts are objective; quality requires qualified human review or clearly labelled experimental feedback." data-ru="Meta не выставлял оценку за качество. Количество слов объективно, а качество требует проверки преподавателем или отдельно помеченного экспериментального анализа.">Meta has not graded your writing. Word counts are objective; quality requires qualified human review or clearly labelled experimental feedback.</p>
+<p><a href="https://ielts.org/take-a-test/test-types/ielts-academic-test/ielts-academic-format-writing" target="_blank" rel="noopener noreferrer">Official IELTS Writing requirements</a></p>
+</section>
+<section id="latest" hidden></section>
+<section id="history" class="panel" hidden><h2 data-en="Previous Writing submissions" data-ru="Предыдущие Writing-попытки">Previous Writing submissions</h2><div id="history-list"></div></section>
+</main>
+<script type="module">import {language} from "./meta-language.js";const lang=language();document.documentElement.lang=lang;document.querySelectorAll("[data-en][data-ru]").forEach(el=>el.textContent=el.getAttribute("data-"+lang));</script>
+<script type="module" src="./writing-mock-app.js?v=1"></script><script type="module" src="./meta-language.js"></script>
+</body></html>
