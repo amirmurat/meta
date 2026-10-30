@@ -38,3 +38,11 @@ Existing IELTS, Flutter and **free** Quran Study remain distinct learning domain
 - Harmonised back-navigation wording for Flutter with IELTS, and English/Russian labels for course summary/module headings where available.
 - Shared `meta-ui.css?v=3` changes only top-level IELTS module spacing/track to align with the Flutter module controls. Nested IELTS skills retain their smaller density; original course/page visual identity is preserved.
 - Checked JS syntax of both course listings and checked that both next-lesson links resolve through the existing lesson route. Full signed-in device/browser visual QA still pending.
+
+## Control geometry pass — 2026-10-30
+
+- Fixed a reported distorted EN/RU language switcher on Profile. Root cause: the floating language control had an explicit 31px height but *did not reset padding*, inheriting large page-level button padding (e.g., Profile `button{padding:12px 18px}`). Changed the shared `meta-language.js` component to fixed 40×34px flat controls with zero padding, centred text, explicit box sizing and safe-area-aware offset. Applies across every page, without changing the classic monochrome visual design or language persistence.
+- Account: tab modes now reserve the same 2px bottom-border space whether active or inactive; no vertical jitter during switching.
+- Quran Study: fixed an erroneous mobile selector (`.nav-top` instead of `nav.top`), allowing the header links to wrap at ≤760px.
+- IELTS skills diagnostic: skill-result rows now wrap rather than squashing long multilingual titles and study links on narrow devices.
+- Verified all 10 HTML pages, both inline and externally loaded JavaScript, static DOM ID references and duplicate IDs by source checks. **Browser-based signed-in pixel/layout QA remains pending.** GitHub Pages caches can delay publication of the common language script; refresh the browser when checking.
