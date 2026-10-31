@@ -24,5 +24,5 @@ There is no inferred unread count, fabricated completion, new analytics identifi
 ## Verification
 
 - `node tests/check.mjs`: passed; 21 HTML routes, 34 JS blocks/modules, internal links, duplicate IDs and completion gates.
-- Isolated Chromium QA: **300 checks, 0 failures** across RU/EN, 375/390/768/1440 px, navigation, Home/Courses separation, custom-course landing, admin visibility and reply, progress, save/completion, and errors. The backend fixture is localhost-only.
+- Isolated Chromium QA: **316 checks, 0 failures** across RU/EN, 375/390/768/1440 px, navigation, Home/Courses separation, custom-course landing, admin visibility and reply, progress, save/completion, and errors. The backend fixture is localhost-only.
 - Visual inspection: admin Messages at 390 px and 375 px; statistics with three assigned courses at desktop and 390 px; mobile landing and its open menu at 390 px; Courses at 390 px. No production messages or course data were changed for this follow-up.
