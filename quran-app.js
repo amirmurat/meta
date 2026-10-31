@@ -1,5 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 import {rememberCoursePosition} from "./meta-resume.js";
 
 "use strict";

@@ -1,5 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 import {MOCK} from "./reading-mock-bank.js";
 import {LISTENING} from "./listening-practice-bank.js";
 import {ASSESSMENT} from "./assessment-bank.js";
@@ -126,7 +126,7 @@ function overview(d){
  const measured=s.filter(x=>Number.isFinite(x.minutes)).length;
  const scores=data.assessments.filter(x=>dateDay(x.submitted_at)>=d.dateFrom).length;
  const written=data.writing.filter(x=>dateDay(x.submitted_at)>=d.dateFrom).length;
- const root=$("summary");root.replaceChildren();
+ const root=$("summary"),extra=$("summary-details");root.replaceChildren();extra.replaceChildren();
  const rows=[
  ["Пройдено единиц всего",[...d.countCourse.values()].reduce((a,b)=>a+b,0),"включая исторические отметки"],
  ["Завершения за период",d.completed,days+(en?" days · exact dates":" дней · реальные даты")],
@@ -142,23 +142,33 @@ function overview(d){
  ["Сохранено заметок",data.notesCount,"личные заметки по курсам"],
  ["Подтверждённых разборов",e.filter(x=>x.type==="Подтверждён разбор").length,"отмечено пользователем"]
  ];
- for(const [label,val,hint]of rows)root.append(metric(label,fmt(val),hint));
+ for(const [index,[label,val,hint]]of rows.entries())(new Set([0,2,5,11]).has(index)?root:extra).append(metric(label,fmt(val),hint));
  $("period-label").textContent=dayText(d.dateFrom)+" — "+dayText(d.now)+(en?" · Almaty":" · Алматы");
 }
 function progress(d){
  const root=$("course-progress");root.replaceChildren();
+ const completed=new Set(data.progress.map(row=>row.lesson_id));
  for(const slug of d.enrolled){
   const course=d.courseLookup.get(slug);if(!course)continue;
   const done=d.countCourse.get(slug)||0,total=Number(course.total_units)||0;
-  const box=node("article","analytics-panel");
+  const box=node("article","analytics-panel");box.dataset.course=slug;
   box.append(node("h3","",en?(course.title_en||course.title):course.title));
   box.append(node("p","analytics-note",fmt(done)+" / "+fmt(total)+" · "+pct(done,total)));
   const track=node("div","analytics-track"),fill=node("div","analytics-fill");
+  track.setAttribute("role","progressbar");track.setAttribute("aria-label",en?(course.title_en||course.title):course.title);
+  track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(total));track.setAttribute("aria-valuenow",String(done));
   fill.style.width=Math.min(100,Math.max(0,total?100*done/total:0))+"%";track.append(fill);box.append(track);
   const relevant=d.periodEvents.filter(e=>e.course===slug);
   box.append(node("p","analytics-note",fmt(relevant.length)+(en?" learning events in ":" учебных событий за ")+days+(en?" days":" дней")));
   const a=node("a","",slug==="quran"?"Открыть Коран →":slug==="ielts"?"Открыть IELTS →":"Открыть Flutter →");
   a.href=slug==="quran"?"./quran.html":slug==="ielts"?"./ielts.html":"./flutter.html";box.append(a);root.append(box);
+  if(slug==="ielts"||slug==="flutter"){
+   const next=[...data.lessons.values()].filter(row=>row.course_slug===slug&&!completed.has(row.id))
+    .sort((a,b)=>String(a.external_id).localeCompare(String(b.external_id),undefined,{numeric:true}))[0];
+   if(next){const direct=node("a","analytics-next",en?"Next unfinished lesson →":"Следующий незавершённый урок →");
+    direct.href=(slug==="ielts"?"./ielts-lesson.html?id=":"./flutter-lesson.html?id=")+encodeURIComponent(next.external_id);
+    box.append(direct)}
+  }
  }
  if(!root.children.length)root.append(node("p","analytics-empty","Нет назначенных программ."));
 }
@@ -177,7 +187,7 @@ function topics(d){
    row.done+=completed.has(l.id)?1:0;row.total++;
    bySection.set(section,row);
   }
-  const box=node("article","analytics-panel"),h=node("h3","",d.courseLookup.get(slug)?.title||slug);
+  const box=node("article","analytics-panel"),h=node("h3","",en?(d.courseLookup.get(slug)?.title_en||d.courseLookup.get(slug)?.title||slug):(d.courseLookup.get(slug)?.title||slug));box.dataset.course=slug;
   box.append(h);
   const entries=[...bySection].sort((a,b)=>slug==="quran"?Number(a[0].split(" ")[1])-Number(b[0].split(" ")[1]):a[0].localeCompare(b[0]));
   for(const [name,s]of entries){
@@ -206,6 +216,8 @@ function groupBars(items){
  return items.map(r=>({label:r.day.slice(5),count:r.count}));
 }
 function activity(d){
+ $("activity-empty").hidden=d.periodEvents.length!==0;
+ $("activity-visuals").hidden=d.periodEvents.length===0;
  const entries=[];
  for(let i=0;i<days;i++){
   const dt=new Date(d.dateFrom+"T12:00:00Z");dt.setUTCDate(dt.getUTCDate()+i);

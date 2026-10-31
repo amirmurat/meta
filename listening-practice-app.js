@@ -1,5 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 import {LISTENING as BANK} from "./listening-practice-bank.js";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
 let user=null,answers={},started=0,played={},speaking=false,active=false,saving=false,timer=null;

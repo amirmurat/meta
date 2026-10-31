@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Управление Meta — курсы и сообщения</title><link rel="stylesheet" href="./meta-ui.css?v=5"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+<title>Управление Meta — доступ и заявки</title><link rel="stylesheet" href="./meta-ui.css?v=7"><link rel="stylesheet" href="./analytics-ui.css?v=1">
 <style>
 body{background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif}
 main{max-width:1150px;margin:auto;padding:28px 20px 90px}
@@ -8,29 +8,21 @@ h1{font-size:30px;margin:32px 0 6px}h2{font-size:21px}h3{font-size:16px}
 .status{color:#666;font-size:13px}
 .panel{padding:20px;border:1px solid #ddd;margin:24px 0}
 .row{display:flex;gap:13px;flex-wrap:wrap;align-items:center}
-.columns{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px}
 button{padding:9px 14px;font:inherit;font-size:14px;color:#111;background:#fff;border:1px solid #777;cursor:pointer}
 button.primary{background:#111;color:#fff;border-color:#111}
 button:disabled{opacity:.5}
 select,input,textarea{background:#fff;color:#111;border:1px solid #999;padding:10px;font:inherit;max-width:100%}
 input[type=search]{min-width:220px}
-.thread{display:block;padding:12px 9px;border:1px solid #ddd;margin:6px 0;background:#fff;text-align:left;width:100%;white-space:normal}
-.thread.selected{border-color:#111;background:#f4f4f4}
-.chat{border:1px solid #ddd;padding:15px;height:360px;overflow:auto;display:flex;flex-direction:column;gap:9px}
-.message{padding:11px;border:1px solid #ddd;max-width:90%;align-self:flex-start;white-space:pre-wrap;overflow-wrap:anywhere}
-.message.admin{background:#f7f7f7;border-color:#111;align-self:flex-end}
-.message small{display:block;color:#777;font-size:11px;margin-bottom:7px}
-textarea{min-height:95px;resize:vertical;width:100%;margin:10px 0}
 .lead{padding:15px 0;border-bottom:1px solid #e5e5e5}
 .lead p{white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0;font-size:14px}
 .lead small{color:#666}details{margin-bottom:12px}
 [hidden]{display:none!important}
-@media(max-width:850px){.columns{grid-template-columns:1fr}.chat{height:300px}.panel{padding:15px}}
+@media(max-width:850px){.panel{padding:15px}}
 </style></head><body class="meta-ui">
 <div class="meta-shell-placeholder" aria-hidden="true"></div><main>
 <nav class="meta-page-nav" aria-label="Навигация администратора"><a href="./admin-statistics.html">← Административная аналитика</a><a href="./">Мои программы</a></nav>
 <h1>Управление Meta</h1>
-<p class="status">Запросы клиентов, личная переписка и управление доступом к курсам. Действия защищены на стороне Supabase.</p>
+<p class="status">Управляй доступом к курсам и заявками с лендинга. Переписки учеников находятся в разделе «Сообщения».</p>
 <p id="status" class="status" role="status">Проверяю доступ администратора…</p>
 <div id="app" hidden>
 <section class="panel" id="course-admin"><h2>Права доступа к программам</h2>
@@ -41,13 +33,7 @@ textarea{min-height:95px;resize:vertical;width:100%;margin:10px 0}
 <div id="course-actions" class="row"></div>
 <p id="course-status" role="status" class="status"></p>
 </section>
-<section class="panel"><div class="row" style="justify-content:space-between"><h2>Сообщения учеников</h2><button type="button" id="refresh-messages">Обновить</button></div>
-<div class="columns"><div><h3>Переписки</h3><div id="threads" aria-label="Список диалогов"></div></div>
-<div><h3 id="thread-title">Выбери переписку</h3><div id="chat" class="chat" role="log"></div>
-<form id="reply-form" hidden><label for="reply">Ответ ученику</label><textarea id="reply" maxlength="3000" required></textarea>
-<div class="row"><button class="primary" id="reply-send" type="submit">Ответить</button><span id="reply-status" role="status" class="status"></span></div></form></div></div>
-<p class="status">Сообщения обновляются при открытой странице каждые 15 секунд. Это не круглосуточный онлайн-чат и не автоматические уведомления.</p>
-</section>
+<section class="panel"><h2>Сообщения учеников</h2><p><a href="./support.html">Открыть входящие в разделе «Сообщения» →</a></p></section>
 <section class="panel"><div class="row" style="justify-content:space-between"><h2>Заявки с лендинга</h2><button type="button" id="refresh-leads">Обновить</button></div>
 <p class="status">Заявки посетителей, включая интерес к арабскому языку. Ответ на email пока отправляется вручную — автоматическая почтовая рассылка здесь не подключена.</p>
 <div id="leads"></div>
@@ -56,7 +42,7 @@ textarea{min-height:95px;resize:vertical;width:100%;margin:10px 0}
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
 const $=id=>document.getElementById(id);
-let admin=null,report=null,courses=[],selectedUser="",selectedThread="",busy=false,threads=[],lastThreadSig="";
+let admin=null,report=null,courses=[],selectedUser="";
 const stamp=v=>new Intl.DateTimeFormat("ru-RU",{timeZone:"Asia/Almaty",dateStyle:"short",timeStyle:"short"}).format(new Date(v));
 const el=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=String(text);return x};
 function status(s){$("status").textContent=s}
@@ -104,38 +90,6 @@ async function changeCourse(u,c,has,button){
   $("course-status").textContent="Изменение подтверждено сервером. Прогресс пользователя не удалён.";
  }catch(err){$("course-status").textContent="Не удалось изменить доступ: "+err.message;button.disabled=false}
 }
-function userLabel(userId){const x=report?.learners?.find(u=>u.id===userId);return x?((x.name||"—")+" · "+x.email):userId}
-async function loadThreads(){
- const {data,error}=await supabase.from("meta_support_threads").select("user_id,updated_at").order("updated_at",{ascending:false}).limit(200);
- if(error)throw error;
- threads=data||[];
- const root=$("threads");root.replaceChildren();
- for(const t of threads){
-  const item=el("button","thread"+(t.user_id===selectedThread?" selected":""),userLabel(t.user_id)+" · "+stamp(t.updated_at));
-  item.onclick=()=>{selectedThread=t.user_id;lastThreadSig="";void loadThreads().then(()=>loadConversation())};
-  root.append(item);
- }
- if(!threads.length)root.append(el("p","status","Переписок пока нет."));
- if(selectedThread&&!threads.some(x=>x.user_id===selectedThread))selectedThread="";
- if(!selectedThread&&threads.length){selectedThread=threads[0].user_id;await loadConversation()}
-}
-async function loadConversation(){
- if(!selectedThread){$("reply-form").hidden=true;return}
- $("thread-title").textContent=userLabel(selectedThread);
- $("reply-form").hidden=false;
- const {data,error}=await supabase.from("meta_support_messages").select("id,user_id,sender_id,body,created_at").eq("user_id",selectedThread).order("created_at",{ascending:true}).limit(300);
- if(error)throw error;
- const sig=(data||[]).map(x=>x.id).join("|");
- if(sig===lastThreadSig)return;
- lastThreadSig=sig;
- const root=$("chat");root.replaceChildren();
- for(const msg of data||[]){
-  const div=el("div","message"+(msg.sender_id===admin.id?" admin":""));
-  div.append(el("small","",((msg.sender_id===admin.id)?"Администратор":"Ученик")+" · "+stamp(msg.created_at)),el("span","",msg.body));
-  root.append(div);
- }
- root.scrollTop=root.scrollHeight;
-}
 async function loadLeads(){
  const {data,error}=await supabase.from("meta_interest_requests").select("id,full_name,email,course_interest,message,status,created_at").order("created_at",{ascending:false}).limit(150);
  if(error)throw error;
@@ -154,12 +108,6 @@ async function loadLeads(){
  }
  if(!data?.length)root.append(el("p","status","Новых заявок нет."));
 }
-async function refreshMessages(){
- if(busy)return;busy=true;
- try{await loadThreads();if(selectedThread)await loadConversation()}
- catch(err){$("reply-status").textContent="Ошибка загрузки сообщений: "+err.message}
- finally{busy=false}
-}
 async function boot(){
  admin=await authenticatedUser();
  if(!admin){location.replace(authPage("./admin-operations.html"));return}
@@ -168,22 +116,9 @@ async function boot(){
  $("app").hidden=false;status("");
  $("member-filter").oninput=renderMemberSelect;
  $("member").onchange=e=>{selectedUser=e.target.value;renderCourses()};
- $("refresh-messages").onclick=()=>void refreshMessages();
  $("refresh-leads").onclick=()=>void loadLeads();
- $("reply-form").onsubmit=async event=>{
-  event.preventDefault();const recipient=selectedThread,body=$("reply").value.trim();if(!recipient||!body)return;
-  $("reply-send").disabled=true;$("reply-status").textContent="Отправляю…";
-  try{
-   const {error}=await supabase.rpc("meta_admin_reply",{p_user:recipient,p_body:body});
-   if(error)throw error;
-   $("reply").value="";lastThreadSig="";await loadConversation();
-   $("reply-status").textContent="Ответ сохранён. Ученик увидит его в «Сообщениях».";
-  }catch(err){$("reply-status").textContent="Ошибка отправки: "+err.message}
-  finally{$("reply-send").disabled=false}
- };
- await Promise.all([reloadReport(),refreshMessages(),loadLeads()]);
- window.setInterval(()=>{if(!document.hidden)void refreshMessages()},15000);
+ await Promise.all([reloadReport(),loadLeads()]);
 }
 void boot().catch(err=>status("Не удалось загрузить управление Meta: "+err.message));
-</script><script type="module" src="./meta-language.js"></script><script type="module" src="./meta-shell.js"></script>
+</script><script type="module" src="./meta-language.js?v=3"></script><script type="module" src="./meta-shell.js?v=3"></script>
 </body></html>

@@ -1,5 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
 const VERSION="1",MAX=60*60*1000;
 const storage=id=>"meta:ielts-writing:"+id+":v"+VERSION;

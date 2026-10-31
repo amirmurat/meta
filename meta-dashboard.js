@@ -1,10 +1,17 @@
 
 import {supabase,authenticatedUser} from "./meta-supabase.js";
 import {icon} from "./meta-icons.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 const $=id=>document.getElementById(id);
 const catalogue=location.pathname.endsWith("courses.html");
-if(catalogue)$("heading").querySelector("h1").textContent=language()==="en"?"Courses":"Курсы";
+if(catalogue){
+ $("heading").querySelector("h1").textContent=language()==="en"?"Courses":"Курсы";
+ $("assigned-courses").querySelector("h2").textContent=language()==="en"?"Available courses":"Доступные программы";
+ $("assigned-courses").querySelector(".courses-intro").textContent=language()==="en"?"Only courses assigned to you appear here. Open one to see its lessons and your progress.":"Здесь только назначенные тебе курсы. Открой программу, чтобы посмотреть уроки и свой прогресс.";
+ $("assigned-courses").querySelector(".course-request").innerHTML=language()==="en"?'Want a course on another topic? <a href="./support.html">Message us →</a>':'Хочешь свой курс по другой теме? <a href="./support.html">Напиши нам в Сообщениях →</a>';
+}else{
+ $("assigned-courses").querySelector(".all-courses-link").textContent=language()==="en"?"All courses →":"Все курсы →";
+}
 const readable=record=>language()==="en"?(record.title_en||record.title):(record.title||record.title_en);
 function lessonLink(course,lesson){
  const code=lesson.external_id;
@@ -113,6 +120,7 @@ async function main(){
     const canOpen=["flutter","ielts","quran"].includes(course.slug);
     const card=document.createElement(canOpen?"a":"div");
     card.className="course";
+    card.dataset.course=course.slug;
     if(course.slug==="flutter")card.href="./flutter.html";
     if(course.slug==="ielts")card.href="./ielts.html";
     if(course.slug==="quran")card.href="./quran.html?s=1&a=1";

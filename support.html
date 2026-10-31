@@ -1,5 +1,5 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Сообщения — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=5">
+<title>Сообщения — Meta</title><link rel="stylesheet" href="./meta-ui.css?v=7">
 <style>*{box-sizing:border-box}body{background:#fff;color:#111;font:15px/1.6 Arial,Helvetica,sans-serif;margin:0}
 main{max-width:780px;margin:0 auto;padding:29px 20px 80px}
 nav{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}nav a{font-size:14px;color:#555;text-decoration:none}
@@ -14,6 +14,15 @@ textarea{width:100%;min-height:105px;resize:vertical;border:1px solid #888;backg
 button{background:#111;color:#fff;border:1px solid #111;font:inherit;font-weight:600;padding:11px 16px;cursor:pointer}
 button:disabled{opacity:.55}
 .actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:11px}
+.inbox-layout{display:grid;grid-template-columns:minmax(190px,260px) minmax(0,1fr);gap:18px;margin-top:20px}
+.inbox-list{border:1px solid #ddd;max-height:65vh;overflow:auto}
+.inbox-thread{display:block;width:100%;text-align:left;background:#fff;color:#111;border:0;border-bottom:1px solid #e5e7eb;padding:12px;font-weight:400;overflow-wrap:anywhere}
+.inbox-thread[aria-current=true]{border-left:3px solid #2563eb;background:#f5f8ff}
+.inbox-thread small{display:block;color:#666;font-size:11px;margin-top:4px}
+.inbox-conversation .chat{margin:0 0 14px;max-height:50vh}
+.inbox-conversation h2{margin:0 0 12px;overflow-wrap:anywhere}
+.inbox-search{width:100%;min-height:44px;padding:10px;border:1px solid #888;font:inherit;margin:10px 0}
+@media(max-width:650px){.inbox-layout{grid-template-columns:1fr}.inbox-list{max-height:230px}.inbox-conversation .chat{max-height:45vh}}
 a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:3px}
 [hidden]{display:none!important}
 </style></head><body class="meta-ui">
@@ -22,6 +31,18 @@ a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #1
 <h1 id="heading">Связь с администратором</h1>
 <p class="muted" id="subtitle">Задай вопрос о программе, доступе, упражнениях или технической проблеме. Сообщения видны тебе и администратору Meta. Ответы появляются здесь; мгновенный ответ не гарантируется.</p>
 <p id="status" class="muted" role="status">Проверка аккаунта…</p>
+<section id="admin-inbox" hidden aria-labelledby="inbox-heading">
+<h2 id="inbox-heading">Входящие учеников</h2>
+<p class="muted" id="inbox-intro">Диалоги отсортированы по последнему сообщению. Отметок «непрочитано» нет; проверь дату и текст переписки.</p>
+<div class="actions"><label for="inbox-search">Поиск по имени или email</label><button type="button" id="inbox-refresh">Обновить</button></div>
+<input id="inbox-search" class="inbox-search" type="search" autocomplete="off">
+<div class="inbox-layout"><div id="inbox-threads" class="inbox-list" aria-label="Диалоги учеников"></div>
+<div class="inbox-conversation"><h2 id="inbox-title">Выбери переписку</h2>
+<div id="inbox-chat" class="chat" role="log" aria-label="Сообщения выбранного ученика"></div>
+<form id="inbox-reply-form" hidden><label for="inbox-reply">Ответ ученику</label><textarea id="inbox-reply" maxlength="3000" required></textarea>
+<div class="actions"><button id="inbox-send" type="submit">Ответить</button><span id="inbox-reply-status" class="muted" role="status"></span></div></form></div></div>
+<p id="inbox-status" class="muted" role="status"></p>
+</section>
 <div id="area" hidden>
 <div id="chat" class="chat" role="log" aria-label="История сообщений" aria-live="polite"></div>
 <form id="send-form"><label for="message">Твоё сообщение</label>
@@ -30,9 +51,9 @@ a:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid #1
 <p id="send-status" class="muted" role="status"></p></div></main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 const en=language()==="en",t=(a,b)=>en?a:b,$=id=>document.getElementById(id);
-let user=null,lastSignature=null,loading=false;
+let user=null,lastSignature=null,loading=false,adminThreads=[],adminLearners=new Map(),selectedThread="",adminLoading=false,threadSignature="";
 const formatTime=s=>new Intl.DateTimeFormat(en?"en-GB":"ru-RU",{dateStyle:"short",timeStyle:"short",timeZone:"Asia/Almaty"}).format(new Date(s));
 async function refresh(){
  if(loading||!user||document.hidden)return;loading=true;
@@ -55,13 +76,88 @@ async function refresh(){
  }catch(err){$("status").textContent=t("Unable to load messages.","Не удалось загрузить сообщения.")+" "+err.message}
  finally{loading=false}
 }
+function threadLabel(id){
+ const learner=adminLearners.get(id);
+ return learner?[(learner.name||""),learner.email].filter(Boolean).join(" · "):t("Learner","Ученик")+" · "+String(id).slice(0,8);
+}
+function renderThreads(){
+ const root=$("inbox-threads"),query=$("inbox-search").value.trim().toLowerCase();root.replaceChildren();
+ const visible=adminThreads.filter(row=>threadLabel(row.user_id).toLowerCase().includes(query));
+ for(const row of visible){
+  const button=document.createElement("button");button.type="button";button.className="inbox-thread";
+  button.setAttribute("aria-current",String(row.user_id===selectedThread));
+  button.textContent=threadLabel(row.user_id);
+  const time=document.createElement("small");time.textContent=t("Last message: ","Последнее сообщение: ")+formatTime(row.updated_at);
+  button.append(time);button.onclick=()=>{selectedThread=row.user_id;threadSignature="";renderThreads();void loadAdminConversation()};
+  root.append(button);
+ }
+ if(!visible.length){const empty=document.createElement("p");empty.className="muted";empty.style.padding="12px";empty.textContent=query?t("No matching conversations.","Диалоги не найдены."):t("No learner conversations yet.","Переписок с учениками пока нет.");root.append(empty)}
+}
+async function loadAdminConversation(){
+ if(!selectedThread){$("inbox-title").textContent=t("Select a conversation","Выбери переписку");$("inbox-chat").replaceChildren();$("inbox-reply-form").hidden=true;return}
+ const recipient=selectedThread;
+ const {data,error}=await supabase.from("meta_support_messages").select("id,user_id,sender_id,body,created_at").eq("user_id",recipient).order("created_at",{ascending:true}).limit(300);
+ if(error)throw error;
+ if(recipient!==selectedThread)return;
+ $("inbox-title").textContent=threadLabel(recipient);
+ $("inbox-reply-form").hidden=false;
+ const signature=(data||[]).map(row=>row.id).join("|");if(signature===threadSignature)return;
+ threadSignature=signature;const root=$("inbox-chat");root.replaceChildren();
+ for(const msg of data||[]){
+  const bubble=document.createElement("div");bubble.className="bubble"+(msg.sender_id===user.id?" self":"");
+  const meta=document.createElement("small");meta.textContent=(msg.sender_id===user.id?t("You","Ты"):t("Learner","Ученик"))+" · "+formatTime(msg.created_at);
+  const content=document.createElement("span");content.textContent=msg.body;bubble.append(meta,content);root.append(bubble);
+ }
+ root.scrollTop=root.scrollHeight;
+}
+async function refreshAdmin(){
+ if(adminLoading||document.hidden)return;adminLoading=true;
+ try{
+  const {data,error}=await supabase.from("meta_support_threads").select("user_id,updated_at").order("updated_at",{ascending:false}).limit(200);
+  if(error)throw error;
+  adminThreads=data||[];
+  if(selectedThread&&!adminThreads.some(row=>row.user_id===selectedThread))selectedThread="";
+  if(!selectedThread&&adminThreads.length)selectedThread=adminThreads[0].user_id;
+  renderThreads();await loadAdminConversation();$("inbox-status").textContent="";
+ }catch(err){$("inbox-status").textContent=t("Could not load conversations. Try again.","Не удалось загрузить переписки. Повтори попытку.")+" "+err.message}
+ finally{adminLoading=false}
+}
+async function bootAdmin(){
+ const report=await supabase.rpc("meta_admin_report",{p_days:30});
+ if(!report.error)adminLearners=new Map((report.data?.learners||[]).map(row=>[row.id,row]));
+ $("heading").textContent=t("Messages from learners","Сообщения учеников");
+ $("subtitle").textContent=t("Read and reply to learner conversations here. They are sorted by the latest message; no unread status is inferred.","Здесь можно читать и отвечать ученикам. Диалоги отсортированы по последнему сообщению; статус «непрочитано» не определяется.");
+ if(en){
+  $("inbox-heading").textContent="Learner inbox";$("inbox-intro").textContent="Conversations are sorted by the latest message. There is no unread indicator; check the date and conversation.";
+  $("inbox-threads").setAttribute("aria-label","Learner conversations");$("inbox-chat").setAttribute("aria-label","Selected learner messages");
+  document.querySelector('label[for="inbox-search"]').textContent="Search by name or email";
+  $("inbox-refresh").textContent="Refresh";$("inbox-title").textContent="Select a conversation";
+  document.querySelector('label[for="inbox-reply"]').textContent="Reply to learner";$("inbox-send").textContent="Reply";
+ }
+ $("admin-inbox").hidden=false;$("inbox-search").oninput=renderThreads;$("inbox-refresh").onclick=()=>void refreshAdmin();
+ $("inbox-reply-form").onsubmit=async event=>{
+  event.preventDefault();const recipient=selectedThread,body=$("inbox-reply").value.trim();if(!recipient||!body)return;
+  $("inbox-send").disabled=true;$("inbox-reply-status").textContent=t("Sending…","Отправляю…");
+  try{
+   const {error}=await supabase.rpc("meta_admin_reply",{p_user:recipient,p_body:body});if(error)throw error;
+   $("inbox-reply").value="";threadSignature="";await refreshAdmin();
+   $("inbox-reply-status").textContent=t("Reply saved. The learner will see it in Messages.","Ответ сохранён. Ученик увидит его в «Сообщениях».");
+  }catch(err){$("inbox-reply-status").textContent=t("Could not send reply.","Не удалось отправить ответ.")+" "+err.message}
+  finally{$("inbox-send").disabled=false}
+ };
+ await refreshAdmin();
+ window.setInterval(()=>void refreshAdmin(),15000);
+ window.addEventListener("focus",()=>void refreshAdmin());
+}
 async function boot(){
  if(en){
-  document.documentElement.lang="en";$("heading").textContent="Contact the administrator";
+  document.documentElement.lang="en";document.title="Messages — Meta";$("heading").textContent="Contact the administrator";
   $("subtitle").textContent="Ask about courses, access or technical problems. Messages are visible only to you and the Meta administrator. Replies appear here; instant responses are not guaranteed.";
   document.querySelector("label[for=message]").textContent="Your message";$("send").textContent="Send";
  }
  user=await authenticatedUser();if(!user){location.replace(authPage("./support.html"));return}
+ const access=await supabase.rpc("meta_admin_access");
+ if(!access.error&&access.data===true){$("status").textContent="";await bootAdmin();return}
  $("area").hidden=false;
  $("send-form").onsubmit=async ev=>{
   ev.preventDefault();const body=$("message").value.trim();if(!body)return;
@@ -79,5 +175,5 @@ async function boot(){
  window.addEventListener("focus",()=>void refresh());
 }
 void boot().catch(err=>{$("status").textContent=err.message});
-</script><script type="module" src="./meta-language.js"></script><script type="module" src="./meta-shell.js"></script>
+</script><script type="module" src="./meta-language.js?v=3"></script><script type="module" src="./meta-shell.js?v=3"></script>
 </body></html>

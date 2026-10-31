@@ -1,5 +1,5 @@
 import {supabase, authenticatedUser, authPage} from './meta-supabase.js';
-import {language} from './meta-language.js';
+import {language} from './meta-language.js?v=3';
 const en = language() === 'en';
 const page = location.pathname.split('/').pop() || 'index.html';
 import {icon} from "./meta-icons.js";
@@ -23,11 +23,16 @@ async function boot() {
  const profile=link('./profile.html',en?'Profile':'Профиль','user');profile.className='meta-profile-link';
  if(page==='profile.html')profile.setAttribute('aria-current','page');
  const menu=document.createElement('details');menu.className='meta-more';
- const summary=document.createElement('summary');summary.textContent=en?'More':'Ещё';menu.append(summary);
- menu.append(link('./about.html',en?'About Meta':'О Meta','info'));
+ const summary=document.createElement('summary');summary.append(icon('menu'));
+ const menuText=document.createElement('span');menuText.className='meta-more-text';menuText.textContent=en?'More':'Ещё';summary.append(menuText);
+ const mobileText=document.createElement('span');mobileText.className='meta-menu-text';mobileText.textContent=en?'Menu':'Меню';summary.append(mobileText);menu.append(summary);
+ const menuPanel=document.createElement('div');menuPanel.className='meta-more-panel';
+ menuPanel.append(link('./about.html',en?'About Meta':'О Meta','info'));
  const logout=document.createElement('button');logout.type='button';logout.textContent=en?'Sign out':'Выйти';
  logout.onclick=async()=>{logout.disabled=true;try{const {error}=await supabase.auth.signOut();if(error)throw error;location.replace('./welcome.html');}catch{logout.disabled=false;status.textContent=en?'Could not sign out. Try again.':'Не удалось выйти. Повтори попытку.';menu.open=true;}};
- const status=document.createElement('p');status.setAttribute('role','status');menu.append(logout,status);
+ const status=document.createElement('p');status.setAttribute('role','status');menuPanel.append(logout,status);menu.append(menuPanel);
+ document.addEventListener('click',event=>{if(menu.open&&!menu.contains(event.target))menu.open=false});
+ menu.addEventListener('keydown',event=>{if(event.key==='Escape'){menu.open=false;summary.focus()}});
  shell.append(brand,nav,profile,menu);const placeholder=document.querySelector('.meta-shell-placeholder');if(placeholder)placeholder.replaceWith(shell);else document.body.prepend(shell);document.body.classList.add('meta-has-shell');
  const main=document.querySelector('main');if(main){main.id ||= 'main-content';main.tabIndex=-1;const skip=document.createElement('a');skip.className='meta-skip';skip.href='#'+main.id;skip.textContent=en?'Skip to content':'К содержимому';document.body.prepend(skip);}
  // Retain contextual course/back links, suppress redundant global links without removing controller IDs.
@@ -37,8 +42,8 @@ async function boot() {
  });
  supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){if(main)main.replaceChildren();location.replace('./welcome.html');}});
  try{const {data,error}=await supabase.rpc('meta_admin_access');if(!error&&data===true){
-  menu.insertBefore(link('./admin-statistics.html',en?'Administration':'Администрирование','chart'),logout);
-  menu.insertBefore(link('./admin-operations.html',en?'Manage access':'Управление доступом','book'),logout);
+  menuPanel.insertBefore(link('./admin-statistics.html',en?'Administration':'Администрирование','chart'),logout);
+  menuPanel.insertBefore(link('./admin-operations.html',en?'Manage access':'Управление доступом','book'),logout);
  }}catch{}
 }
 void boot().catch(()=>{

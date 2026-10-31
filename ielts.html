@@ -55,9 +55,9 @@ p{color:#6b7280;line-height:1.55;margin:0}
 [hidden]{display:none!important}
 @media(max-width:600px){main{padding:26px 16px 60px}.heading{padding-left:4px;padding-right:4px}.subgroups{padding-left:10px}.leaf-list{grid-template-columns:1fr}.track{margin:0 4px}}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=5">
+<link rel="stylesheet" href="./meta-ui.css?v=7">
 </head>
-<body class="meta-ui">
+<body class="meta-ui" data-course="ielts">
 <div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="meta-shell meta-lesson">
 <nav class="top meta-page-nav" aria-label="Навигация IELTS"><a class="back" href="./">← Мои программы</a><a class="back" href="./support.html">Сообщения</a><a class="back" href="./profile.html">Профиль</a></nav>
@@ -84,7 +84,7 @@ p{color:#6b7280;line-height:1.55;margin:0}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 import {loadAttemptedLessons,lessonStatus} from "./meta-course-state.js";
 let attempted=null;
 const $=id=>document.getElementById(id);
@@ -210,7 +210,7 @@ async function start(){
 }
 void start();
 </script>
-<script type="module" src="./meta-language.js"></script>
-<script type="module" src="./meta-shell.js"></script>
+<script type="module" src="./meta-language.js?v=3"></script>
+<script type="module" src="./meta-shell.js?v=3"></script>
 </body>
 </html>
