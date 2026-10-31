@@ -1,7 +1,7 @@
 <!doctype html><html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Статистика — Meta</title>
-<link rel="stylesheet" href="./meta-ui.css?v=7"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+<link rel="stylesheet" href="./meta-ui.css?v=7"><link rel="stylesheet" href="./analytics-ui.css?v=2">
 </head><body class="meta-ui">
 <div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="analytics-shell">
@@ -22,7 +22,7 @@
 <div class="analytics-controls"><span id="period-label" class="analytics-note">Asia/Almaty</span><button id="export" type="button" class="analytics-btn">Экспорт истории CSV</button></div>
 </div>
 <div class="analytics-layout">
-<section class="analytics-section"><h2>Твои программы</h2><div id="course-progress" class="analytics-columns"></div>
+<section class="analytics-section"><h2 data-ru="Завершённые уроки по программам" data-en="Completed lessons by course">Завершённые уроки по программам</h2><p class="analytics-note" data-ru="Доля подтверждённо завершённых уроков за всё время, включая исторические отметки. Для открытия курса перейди в «Курсы»." data-en="Confirmed lesson completion across all time, including historical marks. Open a course from Courses.">Доля подтверждённо завершённых уроков за всё время, включая исторические отметки. Для открытия курса перейди в «Курсы».</p><div id="course-progress" class="analytics-panel analytics-course-chart" role="group" aria-label="Course completion comparison"></div>
 </section>
 <section class="analytics-section"><h2>Ключевые показатели</h2><div id="summary" class="analytics-grid"></div>
 <details class="analytics-disclosure"><summary>Показать остальные показатели</summary><div id="summary-details" class="analytics-grid"></div></details>
@@ -35,6 +35,7 @@
 <div class="analytics-panel"><h3>Календарь 13 недель</h3><p id="calendar-meta" class="analytics-note"></p>
 <div id="heatmap" class="analytics-heatmap" role="img" aria-label="Учебная активность за 13 недель"></div>
 <p class="analytics-note">Заливка показывает число подтверждённых событий в день. Исторические записи без точных дат исключены.</p></div>
+<div class="analytics-panel"><h3 data-ru="Из чего состоит активность" data-en="Activity by type">Из чего состоит активность</h3><p class="analytics-note" data-ru="Подтверждённые события за выбранный период; открытие страницы не учитывается." data-en="Recorded events in the selected period; opening a page does not count.">Подтверждённые события за выбранный период; открытие страницы не учитывается.</p><div id="activity-types" class="analytics-mix-chart" role="group" aria-label="Learning events by type"></div></div>
 </div></section>
 <details class="analytics-disclosure analytics-deep"><summary>Подробная история и состав прогресса</summary><div class="analytics-layout">
 <section class="analytics-section"><h2>Структура освоенных тем</h2>
@@ -60,7 +61,7 @@
 </section>
 </div></details></div></div>
 </main>
-<script type="module" src="./statistics-app.js?v=2"></script>
+<script type="module" src="./statistics-app.js?v=3"></script>
 <script type="module" src="./meta-language.js?v=3"></script>
 <script type="module" src="./meta-shell.js?v=3"></script>
 </body></html>
