@@ -29,7 +29,7 @@ h2{font-size:20px}p.small{color:#777;font-size:13px;line-height:1.5}
 h1{margin-top:18px}
 [hidden]{display:none!important}
 </style>
-<link rel="stylesheet" href="./meta-ui.css?v=5">
+<link rel="stylesheet" href="./meta-ui.css?v=6">
 </head>
 <body class="meta-ui">
 <main class="meta-shell meta-narrow">
@@ -86,7 +86,7 @@ h1{margin-top:18px}
 </main>
 <script type="module">
 import {supabase,authenticatedUser,ensureProfile} from "./meta-supabase.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 const $=id=>document.getElementById(id);
 let mode="login",recovering=false;
 import {safeDestination as safeNext} from "./meta-routing.js";
@@ -217,6 +217,6 @@ supabase.auth.onAuthStateChange((event)=>{
 });
 await current();
 </script>
-<script type="module" src="./meta-language.js"></script>
+<script type="module" src="./meta-language.js?v=3"></script>
 </body>
 </html>

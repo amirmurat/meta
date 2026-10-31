@@ -1,5 +1,5 @@
 import {supabase} from './meta-supabase.js';
-import {language} from './meta-language.js';
+import {language} from './meta-language.js?v=3';
 export async function loadAttemptedLessons(userId) {
  const {data,error}=await supabase.from('lesson_attempts').select('lesson_id').eq('user_id',userId);
  // Unknown is not the same as no activity.

@@ -1,7 +1,7 @@
 <!doctype html><html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Статистика — Meta</title>
-<link rel="stylesheet" href="./meta-ui.css?v=5"><link rel="stylesheet" href="./analytics-ui.css?v=1">
+<link rel="stylesheet" href="./meta-ui.css?v=6"><link rel="stylesheet" href="./analytics-ui.css?v=1">
 </head><body class="meta-ui">
 <div class="meta-shell-placeholder" aria-hidden="true"></div>
 <main class="analytics-shell">
@@ -11,6 +11,7 @@
 <p>Прогресс по программам, реальные учебные события, активность, тесты и подробная история. Каждый пользователь видит только свои данные.</p></header>
 <p id="status" class="analytics-status" role="status" aria-live="polite">Проверяю вход и собираю данные…</p>
 <div id="dashboard" hidden>
+<p id="progress-intro" class="analytics-note">Здесь показаны только сохранённые результаты. Открытие урока не считается завершением.</p>
 <div class="analytics-toolbar">
 <div class="analytics-buttons" aria-label="Период">
 <button class="analytics-btn" type="button" data-days="7">7 дней</button>
@@ -21,22 +22,25 @@
 <div class="analytics-controls"><span id="period-label" class="analytics-note">Asia/Almaty</span><button id="export" type="button" class="analytics-btn">Экспорт истории CSV</button></div>
 </div>
 <div class="analytics-layout">
+<section class="analytics-section"><h2>Твои программы</h2><div id="course-progress" class="analytics-columns"></div>
+</section>
 <section class="analytics-section"><h2>Ключевые показатели</h2><div id="summary" class="analytics-grid"></div>
+<details class="analytics-disclosure"><summary>Показать остальные показатели</summary><div id="summary-details" class="analytics-grid"></div></details>
 <p class="analytics-note">Завершение микроурока, сданное задание и тест — разные события. Неотправленные черновики не считаются сданными.</p>
 </section>
-<section class="analytics-section"><h2>Прогресс по программам</h2><div id="course-progress" class="analytics-columns"></div>
-</section>
-<section class="analytics-section"><h2>Структура освоенных тем</h2>
-<p class="analytics-note">Для IELTS показаны секции, для Flutter — типы записей, для Корана — суры с отмеченными аятами. Счётчики отражают сохранённые отметки, не оценку знания.</p>
-<div id="topic-groups" class="analytics-columns"></div>
-</section>
 <section class="analytics-section"><h2>Активность и регулярность</h2>
-<div class="analytics-columns">
+<p id="activity-empty" class="analytics-note" hidden>Датированных учебных событий пока нет. После подтверждённого завершения или сдачи работы они появятся здесь.</p>
+<div id="activity-visuals" class="analytics-columns">
 <div class="analytics-panel"><h3>Учебные события по дням</h3><div id="activity-chart" class="analytics-bar-chart" role="img" aria-label="События обучения"></div><p id="activity-desc" class="analytics-note"></p></div>
 <div class="analytics-panel"><h3>Календарь 13 недель</h3><p id="calendar-meta" class="analytics-note"></p>
 <div id="heatmap" class="analytics-heatmap" role="img" aria-label="Учебная активность за 13 недель"></div>
 <p class="analytics-note">Заливка показывает число подтверждённых событий в день. Исторические записи без точных дат исключены.</p></div>
 </div></section>
+<details class="analytics-disclosure analytics-deep"><summary>Подробная история и состав прогресса</summary><div class="analytics-layout">
+<section class="analytics-section"><h2>Структура освоенных тем</h2>
+<p class="analytics-note">Для IELTS показаны секции, для Flutter — типы записей, для Корана — суры с отмеченными аятами. Счётчики отражают сохранённые отметки, не оценку знания.</p>
+<div id="topic-groups" class="analytics-columns"></div>
+</section>
 <section class="analytics-section"><h2>Пробные тесты и диагностика</h2>
 <div class="analytics-grid" id="testing-kpis"></div>
 <div class="analytics-table-scroll" role="region" aria-label="История тестов" tabindex="0">
@@ -54,9 +58,9 @@
 <section class="analytics-section"><h2>Качество и полнота данных</h2><div id="integrity" class="analytics-grid"></div>
 <div class="analytics-callout">Мигрированные исторические отметки с датой «не позднее» или неизвестной датой учитываются в общем прогрессе, но не превращаются в события конкретного дня. Минуты отображаются только по фактически зафиксированным сессиям. Открытие страницы не считается учебной сессией.</div>
 </section>
-</div></div>
+</div></details></div></div>
 </main>
-<script type="module" src="./statistics-app.js?v=1"></script>
-<script type="module" src="./meta-language.js"></script>
-<script type="module" src="./meta-shell.js"></script>
+<script type="module" src="./statistics-app.js?v=2"></script>
+<script type="module" src="./meta-language.js?v=3"></script>
+<script type="module" src="./meta-shell.js?v=2"></script>
 </body></html>

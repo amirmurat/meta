@@ -87,6 +87,14 @@ Object.assign(translationsRUtoEN,{
 // Personal progress labels also appear in content rendered after the initial page load.
 Object.assign(translationsRUtoEN,{
  "Статистика — Meta":"Statistics — Meta",
+ "Твои программы":"Your courses",
+ "Управление Meta — доступ и заявки":"Manage Meta — access and enquiries",
+ "Управляй доступом к курсам и заявками с лендинга. Переписки учеников находятся в разделе «Сообщения».":"Manage course access and landing-page enquiries. Learner conversations are in Messages.",
+ "Открыть входящие в разделе «Сообщения» →":"Open learner inbox in Messages →",
+ "Показать остальные показатели":"Show more figures",
+ "Подробная история и состав прогресса":"Detailed history and progress",
+ "Датированных учебных событий пока нет. После подтверждённого завершения или сдачи работы они появятся здесь.":"No dated learning events yet. Confirmed completions and submitted work will appear here.",
+ "Здесь показаны только сохранённые результаты. Открытие урока не считается завершением.":"Only saved results appear here. Opening a lesson does not count as completion.",
  "Моя статистика":"My progress",
  "Прогресс по программам, реальные учебные события, активность, тесты и подробная история. Каждый пользователь видит только свои данные.":"Course progress, recorded learning activity, tests and history. Each learner sees only their own data.",
  "Проверяю вход и собираю данные…":"Checking sign-in and loading progress…",

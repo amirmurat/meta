@@ -1,7 +1,7 @@
 
 import {supabase,authenticatedUser} from "./meta-supabase.js";
 import {icon} from "./meta-icons.js";
-import {language} from "./meta-language.js";
+import {language} from "./meta-language.js?v=3";
 const $=id=>document.getElementById(id);
 const catalogue=location.pathname.endsWith("courses.html");
 if(catalogue)$("heading").querySelector("h1").textContent=language()==="en"?"Courses":"Курсы";
@@ -113,6 +113,7 @@ async function main(){
     const canOpen=["flutter","ielts","quran"].includes(course.slug);
     const card=document.createElement(canOpen?"a":"div");
     card.className="course";
+    card.dataset.course=course.slug;
     if(course.slug==="flutter")card.href="./flutter.html";
     if(course.slug==="ielts")card.href="./ielts.html";
     if(course.slug==="quran")card.href="./quran.html?s=1&a=1";

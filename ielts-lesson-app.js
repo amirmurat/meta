@@ -1,5 +1,5 @@
 import {supabase,authenticatedUser,authPage} from "./meta-supabase.js";
-import {language,localizeRecord,tr} from "./meta-language.js";
+import {language,localizeRecord,tr} from "./meta-language.js?v=3";
 import {icon} from "./meta-icons.js";
 import {completionRequirements} from "./meta-routing.js";
 import {rememberCoursePosition} from "./meta-resume.js";

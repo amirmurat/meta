@@ -28,6 +28,16 @@ a{color:inherit}
 .analytics-kpi small{display:block;font-size:12px;color:#777;margin-top:5px}
 .analytics-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .analytics-panel{border:1px solid #ddd;padding:20px;min-width:0}
+.analytics-panel[data-course]{border-left:3px solid var(--course-color)}
+.analytics-panel[data-course] .analytics-fill{background:var(--course-color)}
+.analytics-panel[data-course] h3{color:var(--course-color)}
+.analytics-next{display:block;margin-top:14px;font-weight:600}
+.analytics-disclosure{border-top:1px solid #ddd;margin-top:22px;padding-top:10px}
+.analytics-disclosure>summary{cursor:pointer;font-weight:600;padding:8px 0}
+.analytics-disclosure[open]>summary{margin-bottom:16px}
+.analytics-deep{margin-top:0}
+.analytics-deep>.analytics-layout{margin-top:8px}
+.analytics-section #summary-details{margin-top:14px}
 .analytics-panel h3{font-size:17px;margin:0 0 12px}
 .analytics-track{height:12px;background:#e5e5e5;margin:8px 0 5px}
 .analytics-fill{height:100%;background:#111}

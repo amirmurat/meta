@@ -15,6 +15,9 @@
  --meta-border:#e5e7eb;
  --meta-control-border:#d1d5db;
  --meta-white:#fff;
+ --course-ielts:#2563EB;
+ --course-flutter:#0F766E;
+ --course-quran:#A16207;
 }
 /* v2: shared application chrome; content widths and square geometry stay page-owned. */
 [hidden]{display:none!important}
@@ -24,13 +27,12 @@
 .meta-appbar .meta-brand{font-size:20px;font-weight:700;margin-right:auto}
 .meta-primary-nav{display:flex;gap:16px}
 .meta-appbar a[aria-current=page]{color:var(--meta-blue);box-shadow:inset 0 -2px var(--meta-blue)}
-.meta-more{position:relative}.meta-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
-.meta-more[open]{background:#fff}.meta-more>a,.meta-more>button,.meta-more>p{display:none}
-.meta-more[open]{position:absolute;right:20px;top:10px;min-width:210px;padding:0 14px 12px;border:1px solid var(--meta-border);z-index:25}
-.meta-more[open]>a,.meta-more[open]>button,.meta-more[open]>p{display:flex;margin:0;width:100%;white-space:normal}
-.meta-more button{background:white;border:0;border-top:1px solid var(--meta-border);font:inherit;padding:12px 0;cursor:pointer}
+.meta-more{position:relative;flex:none}.meta-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
+.meta-more-panel{display:none;position:absolute;right:0;top:100%;min-width:210px;padding:8px 14px 12px;border:1px solid var(--meta-border);background:#fff;box-shadow:0 8px 20px #00000014;z-index:35}
+.meta-more[open] .meta-more-panel{display:block}
+.meta-more-panel>a,.meta-more-panel>button,.meta-more-panel>p{display:flex;margin:0;width:100%;white-space:normal}
+.meta-more button{background:white;color:var(--meta-ink);border:0;border-top:1px solid var(--meta-border);font:inherit;padding:12px 0;cursor:pointer}
 .meta-more p{font-size:12px;color:var(--meta-red)}
-.meta-appbar:has(.meta-more[open]){padding-right:80px}
 .meta-skip{position:fixed;left:16px;top:-100px;background:#fff;padding:14px;z-index:10000}
 .meta-skip:focus{top:10px}
 body.meta-ui :is(a,button,input,textarea,select,summary):focus-visible{outline:2px solid var(--meta-blue);outline-offset:3px}
@@ -46,6 +48,15 @@ body.meta-has-shell main.meta-dashboard{justify-content:flex-start;min-height:0;
 .meta-dashboard .courses-section h2{font-size:17px;padding:0 24px;margin:0 0 8px}
 .meta-dashboard .courses{gap:16px}
 .meta-dashboard .course{padding-bottom:18px;border:1px solid var(--meta-border)}
+.meta-dashboard .course[data-course]{border-left:3px solid var(--course-color)}
+.meta-dashboard .course[data-course] .fill{background:var(--course-color)}
+body.meta-ui[data-course=ielts],body.meta-ui [data-course=ielts]{--course-color:var(--course-ielts)}
+body.meta-ui[data-course=flutter],body.meta-ui [data-course=flutter]{--course-color:var(--course-flutter)}
+body.meta-ui[data-course=quran],body.meta-ui [data-course=quran]{--course-color:var(--course-quran)}
+body.meta-ui[data-course] main h1{color:var(--course-color)}
+body.meta-ui[data-course] :is(.fill,.module-fill,#progress-bar){background:var(--course-color)}
+body.meta-ui[data-course] .next{border-color:var(--course-color)}
+body.meta-ui[data-course] .next a{color:var(--course-color)}
 .meta-dashboard .resume-link{border:1px solid var(--meta-blue);align-items:flex-start;flex-direction:column;gap:14px}
 .meta-dashboard .resume-action{background:var(--meta-blue);color:white;padding:12px 16px;min-height:44px}
 .meta-dashboard .resume-help{font-size:13px}
@@ -58,14 +69,14 @@ body.meta-ui .next a{display:inline-block;min-height:44px;padding:10px 0;color:v
 .meta-info-page li{margin:12px 0}
 .meta-shell-error{padding:16px;color:var(--meta-red)}
 body.meta-ui button,body.meta-ui .tool-link,body.meta-ui summary{min-height:44px}
-body.meta-has-shell .meta-language-picker{position:static;margin:16px 24px 24px auto;display:flex}
+body.meta-has-shell .meta-language-picker{position:fixed;right:12px;bottom:12px;margin:0;display:flex;z-index:40}
 @media(max-width:767px){
  .meta-appbar{padding:8px 16px;gap:18px;min-height:62px}
  .meta-primary-nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:white;border-top:1px solid var(--meta-border);padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px));z-index:30}
  .meta-primary-nav a{flex-direction:column;gap:3px;justify-content:center;min-height:54px;font-size:12px}
  body.meta-has-shell{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))}
  .meta-profile-link{font-size:13px}.meta-appbar .meta-brand{font-size:19px}
- .meta-more[open]{right:12px}
+ body.meta-has-shell .meta-language-picker{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
  .meta-dashboard .courses-section h2{padding:0 12px}
  body.meta-has-shell main.meta-dashboard{padding-top:25px}
  .meta-appbar svg{width:20px;height:20px}
