@@ -201,3 +201,4 @@ PASS ru 1440 about.html shared navigation
 
 31 October 2026 navigation/progress follow-up: 293 checks, 0 failures. Added fixed language control, stable More menu with outside-click close, distinct course accents, prioritized progress, and admin inbox/reply checks. All checks used localhost-only fixtures.
 31 October 2026 custom-course and mobile-menu follow-up: 316 checks, 0 failures. Added Home/Courses separation, custom-course landing, mobile burger behavior, landing overflow and breakpoint checks in RU/EN at 375/390/768/1440 px. All checks used localhost-only fixtures.
+31 October 2026 personal-progress charts: 319 checks, 0 failures. Replaced repeated course cards with confirmed completion comparison; added a breakdown of dated events by type. Verified historical marks count toward lifetime totals without creating daily activity. RU/EN and 375/390/768/1440 px remained covered by localhost-only fixtures.

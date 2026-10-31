@@ -147,30 +147,18 @@ function overview(d){
 }
 function progress(d){
  const root=$("course-progress");root.replaceChildren();
- const completed=new Set(data.progress.map(row=>row.lesson_id));
  for(const slug of d.enrolled){
   const course=d.courseLookup.get(slug);if(!course)continue;
   const done=d.countCourse.get(slug)||0,total=Number(course.total_units)||0;
-  const box=node("article","analytics-panel");box.dataset.course=slug;
-  box.append(node("h3","",en?(course.title_en||course.title):course.title));
-  box.append(node("p","analytics-note",fmt(done)+" / "+fmt(total)+" · "+pct(done,total)));
+  const row=node("div","analytics-compare-row");row.dataset.course=slug;
+  const heading=node("div","analytics-compare-head");
+  heading.append(node("strong","",en?(course.title_en||course.title):course.title),node("span","",fmt(done)+" / "+fmt(total)+" · "+pct(done,total)));
   const track=node("div","analytics-track"),fill=node("div","analytics-fill");
   track.setAttribute("role","progressbar");track.setAttribute("aria-label",en?(course.title_en||course.title):course.title);
   track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(total));track.setAttribute("aria-valuenow",String(done));
-  fill.style.width=Math.min(100,Math.max(0,total?100*done/total:0))+"%";track.append(fill);box.append(track);
-  const relevant=d.periodEvents.filter(e=>e.course===slug);
-  box.append(node("p","analytics-note",fmt(relevant.length)+(en?" learning events in ":" учебных событий за ")+days+(en?" days":" дней")));
-  const a=node("a","",slug==="quran"?"Открыть Коран →":slug==="ielts"?"Открыть IELTS →":"Открыть Flutter →");
-  a.href=slug==="quran"?"./quran.html":slug==="ielts"?"./ielts.html":"./flutter.html";box.append(a);root.append(box);
-  if(slug==="ielts"||slug==="flutter"){
-   const next=[...data.lessons.values()].filter(row=>row.course_slug===slug&&!completed.has(row.id))
-    .sort((a,b)=>String(a.external_id).localeCompare(String(b.external_id),undefined,{numeric:true}))[0];
-   if(next){const direct=node("a","analytics-next",en?"Next unfinished lesson →":"Следующий незавершённый урок →");
-    direct.href=(slug==="ielts"?"./ielts-lesson.html?id=":"./flutter-lesson.html?id=")+encodeURIComponent(next.external_id);
-    box.append(direct)}
-  }
+  fill.style.width=Math.min(100,Math.max(0,total?100*done/total:0))+"%";track.append(fill);row.append(heading,track);root.append(row);
  }
- if(!root.children.length)root.append(node("p","analytics-empty","Нет назначенных программ."));
+ if(!root.children.length)root.append(node("p","analytics-empty",en?"No assigned courses yet.":"Нет назначенных программ."));
 }
 function topics(d){
  const root=$("topic-groups");root.replaceChildren();
@@ -241,6 +229,23 @@ function activity(d){
   cell.title=dayText(iso)+": "+n+" событий";heat.append(cell);
  }
  set("calendar-meta",(en?"91 days · ":"91 день · ")+d.activeDays.filter(day=>day>=new Date(base.getTime()-90*DAY_MS).toISOString().slice(0,10)).length+(en?" learning days.":" учебных дней."));
+ const types=$("activity-types");types.replaceChildren();
+ const groups=[
+  ["Завершён урок",en?"Completed lessons":"Завершённые уроки"],
+  ["Сдано задание",en?"Submitted answers":"Сданные ответы"],
+  ["Сдан тест",en?"Submitted tests":"Сданные тесты"],
+  ["Сдан Writing",en?"Writing submissions":"Сданные Writing"],
+  ["Подтверждён разбор",en?"Confirmed reviews":"Подтверждённые разборы"],
+  ["Сессия обучения",en?"Recorded sessions":"Записанные сессии"]
+ ];
+ const counts=new Map();for(const event of d.periodEvents)counts.set(event.type,(counts.get(event.type)||0)+1);
+ const maximum=Math.max(1,...groups.map(([key])=>counts.get(key)||0));
+ for(const [key,label]of groups){const count=counts.get(key)||0;if(!count)continue;
+  const row=node("div","analytics-mix-row"),track=node("div","analytics-track"),fill=node("div","analytics-fill");
+  row.append(node("strong","",label),node("span","",fmt(count)));
+  track.setAttribute("role","meter");track.setAttribute("aria-label",label);track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(maximum));track.setAttribute("aria-valuenow",String(count));
+  fill.style.width=100*count/maximum+"%";track.append(fill);row.append(track);types.append(row);
+ }
 }
 function testing(d){
  const root=$("testing-kpis");root.replaceChildren();
