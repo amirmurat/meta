@@ -23,7 +23,9 @@ async function boot() {
  const profile=link('./profile.html',en?'Profile':'Профиль','user');profile.className='meta-profile-link';
  if(page==='profile.html')profile.setAttribute('aria-current','page');
  const menu=document.createElement('details');menu.className='meta-more';
- const summary=document.createElement('summary');summary.textContent=en?'More':'Ещё';menu.append(summary);
+ const summary=document.createElement('summary');summary.append(icon('menu'));
+ const menuText=document.createElement('span');menuText.className='meta-more-text';menuText.textContent=en?'More':'Ещё';summary.append(menuText);
+ const mobileText=document.createElement('span');mobileText.className='meta-menu-text';mobileText.textContent=en?'Menu':'Меню';summary.append(mobileText);menu.append(summary);
  const menuPanel=document.createElement('div');menuPanel.className='meta-more-panel';
  menuPanel.append(link('./about.html',en?'About Meta':'О Meta','info'));
  const logout=document.createElement('button');logout.type='button';logout.textContent=en?'Sign out':'Выйти';

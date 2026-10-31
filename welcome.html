@@ -1,14 +1,15 @@
 <!doctype html><html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Meta — личная платформа для самостоятельного обучения. IELTS, изучение Корана, Flutter. Регистрация, прогресс, обратная связь и планы занятий.">
-<title>Meta — Учись по понятному маршруту</title>
+<meta name="description" content="Meta помогает создать собственный учебный курс по рекурсивному подходу: учиться, смотреть реальные результаты и улучшать программу. Оставить заявку пока можно бесплатно.">
+<title>Meta — Создай свой учебный курс</title>
 <style>
 :root{color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:#111;font:16px/1.65 Arial,Helvetica,sans-serif}
 a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid #111;outline-offset:3px}
 main{max-width:1140px;margin:auto;padding:0 24px 96px}
 .top{height:84px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #e8e8e8}
 .brand{font-size:25px;letter-spacing:-1px;font-weight:750;text-decoration:none}
-.top nav{display:flex;gap:23px;align-items:center;flex-wrap:wrap}.top nav a{text-decoration:none;font-size:14px}
+.top nav{display:flex;gap:23px;align-items:center;flex-wrap:wrap}.top nav a{text-decoration:none;font-size:14px}.landing-menu{display:none}
+.landing-menu summary{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px;font-size:14px;font-weight:600;list-style:none}.landing-menu summary::-webkit-details-marker{display:none}.landing-menu svg{width:20px;height:20px}.landing-menu-panel{position:absolute;right:0;top:100%;width:min(280px,calc(100vw - 34px));padding:8px 16px;background:#fff;border:1px solid #ddd;box-shadow:0 8px 20px #00000014;z-index:20}.landing-menu-panel a{display:block;min-height:44px;padding:11px 0;text-decoration:none;border-bottom:1px solid #eee}
 .button{display:inline-flex;justify-content:center;align-items:center;background:#111;border:1px solid #111;color:#fff;padding:12px 18px;min-height:47px;font:600 14px Arial,Helvetica,sans-serif;text-decoration:none;cursor:pointer}
 .button.outline{background:#fff;color:#111}
 .button:hover{background:#333;color:#fff}
@@ -23,6 +24,7 @@ main{max-width:1140px;margin:auto;padding:0 24px 96px}
 section.section{padding:70px 0;border-bottom:1px solid #eaeaea}
 section.section h2{font-size:clamp(26px,3vw,36px);line-height:1.23;letter-spacing:-.8px;margin:0 0 14px}
 .intro{color:#666;max-width:780px;margin:0 0 32px}
+.service-note{border-left:3px solid #EAB308;padding:10px 16px;background:#fffcf0;max-width:780px;margin:24px 0 0;font-size:14px}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
 .card{border:1px solid #ddd;padding:25px;min-width:0}.card h3{font-size:20px;margin:5px 0 12px}.card p{color:#666;font-size:14px;margin:0 0 17px}
 .tag{font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.6px}
@@ -41,32 +43,39 @@ section.section h2{font-size:clamp(26px,3vw,36px);line-height:1.23;letter-spacin
 #request-result{font-size:14px;min-height:22px}
 footer{padding:29px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:#777;font-size:13px}
 [hidden]{display:none!important}
-@media(max-width:850px){.hero{grid-template-columns:1fr;padding:60px 0;gap:20px}.cards{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media(max-width:850px){.top{position:relative}.top nav{display:none}.landing-menu{display:block}.hero{grid-template-columns:1fr;padding:60px 0;gap:20px}.cards{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
 @media(max-width:530px){main{padding:0 17px 70px}.top{height:auto;padding:17px 0;align-items:flex-start;flex-wrap:wrap}.top nav{gap:13px}.hero{padding:50px 0}.hero h1{letter-spacing:-1.4px}.cards,.steps{grid-template-columns:1fr}section.section{padding:50px 0}.hero-aside{padding:20px}}
 </style>
 </head><body><main>
 <header class="top"><a href="./welcome.html" class="brand">Meta.</a><nav>
-<a href="#programs" data-ru="Программы" data-en="Programs">Программы</a>
+<a href="#custom" data-ru="Свой курс" data-en="Your course">Свой курс</a>
+<a href="#programs" data-ru="Примеры" data-en="Examples">Примеры</a>
 <a href="#how" data-ru="Как начать" data-en="How it works">Как начать</a>
 <a href="#faq">FAQ</a>
 <a href="./account.html?mode=login" data-ru="Войти" data-en="Sign in">Войти</a>
-</nav></header>
+</nav><details class="landing-menu" id="landing-menu"><summary><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span data-ru="Меню" data-en="Menu">Меню</span></summary><div class="landing-menu-panel"><a href="#custom" data-ru="Свой курс" data-en="Your course">Свой курс</a><a href="#programs" data-ru="Примеры" data-en="Examples">Примеры</a><a href="#how" data-ru="Как начать" data-en="How to start">Как начать</a><a href="#faq">FAQ</a><a href="./account.html?mode=login" data-ru="Войти" data-en="Sign in">Войти</a></div></details></header>
 <section class="hero"><div>
-<div class="eyebrow" data-ru="Личная образовательная платформа" data-en="Personal learning platform">Личная образовательная платформа</div>
-<h1 data-ru="Учись не хаотично, а шаг за шагом." data-en="Learn with a clear next step.">Учись не хаотично, а шаг за шагом.</h1>
-<p data-ru="Meta — платформа для самостоятельного обучения: уроки, упражнения, отметки прогресса и понятные рекомендации. Ты видишь, где остановился и что делать дальше."
-data-en="Meta helps you learn independently with structured lessons, practice, progress tracking and next-step recommendations. Pick up where you left off.">Meta — платформа для самостоятельного обучения: уроки, упражнения, отметки прогресса и понятные рекомендации. Ты видишь, где остановился и что делать дальше.</p>
+<div class="eyebrow" data-ru="Курс под твою цель" data-en="A course built around your goal">Курс под твою цель</div>
+<h1 data-ru="Твой курс. Твой путь. Постоянное улучшение." data-en="Your course. Your path. Room to improve.">Твой курс. Твой путь. Постоянное улучшение.</h1>
+<p data-ru="Закажи собственный курс на основе рекурсивного подхода: цель разбивается на последовательные шаги, результаты каждого этапа помогают уточнять следующий. Meta даёт интерфейс для обучения, практики и анализа реального прогресса."
+data-en="Request a course built around your goal using a recursive approach: each step builds on what you learned from the previous one. Meta provides a place to learn, practise and review real progress.">Закажи собственный курс на основе рекурсивного подхода: цель разбивается на последовательные шаги, результаты каждого этапа помогают уточнять следующий. Meta даёт интерфейс для обучения, практики и анализа реального прогресса.</p>
 <div class="actions">
-<a class="button" href="./account.html?mode=signup" data-ru="Создать аккаунт" data-en="Create account">Создать аккаунт</a>
-<a class="button outline" href="#how" data-ru="Как это работает" data-en="How it works">Как это работает</a>
+<a class="button" href="#contact" data-ru="Заказать свой курс" data-en="Request your course">Заказать свой курс</a>
+<a class="button outline" href="#custom" data-ru="Как это работает" data-en="How it works">Как это работает</a>
 </div></div>
 <aside class="hero-aside" aria-label="Что есть в Meta">
-<h2 data-ru="Внутри Meta" data-en="Inside Meta">Внутри Meta</h2>
-<div class="fact"><strong data-ru="Структурированные уроки" data-en="Structured lessons">Структурированные уроки</strong><span data-ru="Продолжай с последней темы" data-en="Resume your last topic">Продолжай с последней темы</span></div>
-<div class="fact"><strong data-ru="Практика и пробные тесты" data-en="Practice and mock exercises">Практика и пробные тесты</strong><span data-ru="Результаты и разбор слабых навыков" data-en="Results and weak-skill insights">Результаты и разбор слабых навыков</span></div>
-<div class="fact"><strong data-ru="Связь с администратором" data-en="Contact the administrator">Связь с администратором</strong><span data-ru="Вопросы по доступу и обучению" data-en="Questions about access and study">Вопросы по доступу и обучению</span></div>
+<h2 data-ru="От идеи до развития" data-en="From idea to improvement">От идеи до развития</h2>
+<div class="fact"><strong data-ru="Заявка на свой курс" data-en="Request a custom course">Заявка на свой курс</strong><span data-ru="Опиши цель и аудиторию" data-en="Describe the goal and learners">Опиши цель и аудиторию</span></div>
+<div class="fact"><strong data-ru="Рекурсивный маршрут" data-en="A recursive learning path">Рекурсивный маршрут</strong><span data-ru="Уроки, практика и следующий шаг" data-en="Lessons, practice and the next step">Уроки, практика и следующий шаг</span></div>
+<div class="fact"><strong data-ru="Развитие курса" data-en="Improve the course">Развитие курса</strong><span data-ru="Смотри статистику и улучшай содержание" data-en="Review statistics and refine the content">Смотри статистику и улучшай содержание</span></div>
 </aside></section>
-<section class="section" id="programs"><h2 data-ru="Что можно изучать" data-en="Explore learning paths">Что можно изучать</h2>
+<section class="section" id="custom"><h2 data-ru="Курс не заканчивается публикацией" data-en="A course keeps growing after launch">Курс не заканчивается публикацией</h2>
+<p class="intro" data-ru="Расскажи, чему и кого хочешь учить. Мы обсудим структуру и создадим учебный маршрут в Meta. Затем по реальным ответам и завершённым урокам можно находить сложные места, уточнять содержание и продвигать курс для новых учеников. Создание и продвижение сейчас проходят через команду Meta; отдельного кабинета автора пока нет."
+data-en="Tell us what you want to teach and who it is for. We can discuss the structure and build a learning path in Meta. Real answers and completed lessons can then reveal where to refine the content and help you bring the course to new learners. Creation and promotion are currently coordinated with the Meta team; there is no self-service creator dashboard yet.">Расскажи, чему и кого хочешь учить. Мы обсудим структуру и создадим учебный маршрут в Meta. Затем по реальным ответам и завершённым урокам можно находить сложные места, уточнять содержание и продвигать курс для новых учеников. Создание и продвижение сейчас проходят через команду Meta; отдельного кабинета автора пока нет.</p>
+<div class="actions"><a class="button" href="#contact" data-ru="Оставить заявку на курс" data-en="Request a custom course">Оставить заявку на курс</a></div>
+<p class="service-note" data-ru="Пока бесплатно. Оставь заявку с темой, аудиторией и целью — мы ответим по email. Отправка заявки не означает автоматический запуск курса."
+data-en="Free for now. Send us the topic, learners and goal; we will reply by email. A request does not automatically launch a course.">Пока бесплатно. Оставь заявку с темой, аудиторией и целью — мы ответим по email. Отправка заявки не означает автоматический запуск курса.</p></section>
+<section class="section" id="programs"><h2 data-ru="Примеры курсов в Meta" data-en="Courses already in Meta">Примеры курсов в Meta</h2>
 <p class="intro" data-ru="Обычно доступ к программам назначает администратор. Регистрация не открывает все курсы автоматически."
 data-en="Course access is normally assigned by an administrator. Registration does not unlock all programs automatically.">Обычно доступ к программам назначает администратор. Регистрация не открывает все курсы автоматически.</p>
 <p class="intro" id="ielts-promo" hidden style="border-left:3px solid #111;padding:8px 0 8px 16px;color:#111;font-weight:600"
@@ -87,14 +96,14 @@ data-en="Interested in an Arabic language course? It has not launched yet. Send 
 <div class="steps">
 <div class="step"><h3 data-ru="Создай аккаунт" data-en="Create your account">Создай аккаунт</h3><p data-ru="Нажми «Создать аккаунт» и введи имя, email и надёжный пароль." data-en="Choose Create account, enter your name, email and a strong password.">Нажми «Создать аккаунт» и введи имя, email и надёжный пароль.</p></div>
 <div class="step"><h3 data-ru="Подтверди почту" data-en="Confirm your email">Подтверди почту</h3><p data-ru="Открой письмо и перейди по ссылке. Если письма нет, проверь «Спам»." data-en="Open the email confirmation link. Check spam if needed.">Открой письмо и перейди по ссылке. Если письма нет, проверь «Спам».</p></div>
-<div class="step"><h3 data-ru="Проверь доступ" data-en="Check your course access">Проверь доступ</h3><p data-ru="Открой «Мои программы». Если нужного курса нет, напиши администратору во внутреннем чате." data-en="Open My programs. If the course you need is missing, message the administrator in the in-app chat.">Открой «Мои программы». Если нужного курса нет, напиши администратору во внутреннем чате.</p></div>
-<div class="step"><h3 data-ru="Начни обучение" data-en="Start learning">Начни обучение</h3><p data-ru="Открой «Мои программы», изучай темы и сохраняй прогресс. Потом продолжай с последней открытой темы." data-en="Open My programs, learn at your pace and track progress. Resume from the last opened lesson.">Открой «Мои программы», изучай темы и сохраняй прогресс. Потом продолжай с последней открытой темы.</p></div>
+<div class="step"><h3 data-ru="Проверь доступ" data-en="Check your course access">Проверь доступ</h3><p data-ru="Открой «Курсы». Если нужной программы нет, напиши нам в «Сообщениях»." data-en="Open Courses. If the course you need is missing, message us in Messages.">Открой «Курсы». Если нужной программы нет, напиши нам в «Сообщениях».</p></div>
+<div class="step"><h3 data-ru="Начни обучение" data-en="Start learning">Начни обучение</h3><p data-ru="На «Главной» открой первый или следующий урок. Сохраняй ответы и подтверждай завершение, чтобы видеть реальный прогресс." data-en="On Home, open your first or next lesson. Save answers and confirm completion to see real progress.">На «Главной» открой первый или следующий урок. Сохраняй ответы и подтверждай завершение, чтобы видеть реальный прогресс.</p></div>
 </div><div class="actions"><a class="button" href="./account.html?mode=signup" data-ru="Зарегистрироваться" data-en="Sign up">Зарегистрироваться</a><a class="button outline" href="./account.html?mode=login" data-ru="Уже есть аккаунт" data-en="I have an account">Уже есть аккаунт</a></div>
 </section>
 <section class="section two" id="faq"><div><h2 data-ru="Частые вопросы" data-en="Frequently asked questions">Частые вопросы</h2>
 <div class="questions">
-<details><summary data-ru="Почему после регистрации пусто?" data-en="Why is my account empty after sign-up?">Почему после регистрации пусто?</summary><p data-ru="Сначала подтвердить email, затем войти и запросить нужную программу через чат. Курсы не назначаются автоматически."
-data-en="Confirm your email, sign in, and request a program in the support chat. Course access is not automatic.">Подтверди email и войди. Если курс не появился, запроси его через чат: некоторые программы назначает администратор.</p></details>
+<details><summary data-ru="Почему после регистрации пусто?" data-en="Why is my account empty after sign-up?">Почему после регистрации пусто?</summary><p data-ru="Подтверди email и войди. Если нужного курса нет в разделе «Курсы», запроси доступ через «Сообщения». Во время временной акции IELTS назначается новым аккаунтам автоматически."
+data-en="Confirm your email and sign in. If the course you need is missing from Courses, request access in Messages. During the limited IELTS offer, new accounts receive IELTS automatically.">Подтверди email и войди. Если нужного курса нет в разделе «Курсы», запроси доступ через «Сообщения». Во время временной акции IELTS назначается новым аккаунтам автоматически.</p></details>
 <details><summary data-ru="Как общаться с администратором?" data-en="How can I contact the administrator?">Как общаться с администратором?</summary><p data-ru="До регистрации оставь заявку ниже. После входа открой «Сообщения»: там можно задавать вопросы и читать ответы."
 data-en="Before signing up, use the form below. After signing in, open Messages for your private conversation.">До регистрации оставь заявку ниже. После входа открой «Сообщения»: там можно задавать вопросы и читать ответы.</p></details>
 <details><summary data-ru="Это официальный IELTS и официальный band?" data-en="Is it official IELTS and does it award a certified band?">Это официальный IELTS и официальный band?</summary><p data-ru="Нет. В Meta — самостоятельные авторские тренировки и учебная аналитика, без официальной сертификации IELTS."
@@ -102,14 +111,14 @@ data-en="No. Meta offers original independent learning exercises and provisional
 <details><summary data-ru="Что будет с данными после обновления сайта?" data-en="Will updates delete my learning history?">Что будет с данными после обновления сайта?</summary><p data-ru="Сохранённый прогресс и сообщения находятся в Supabase отдельно от файлов сайта. Обычная публикация нового дизайна их не удаляет. Незавершённые локальные черновики зависят от браузера."
 data-en="Saved progress and messages are stored in Supabase separately from website files. Publishing a redesign does not delete them. Unsubmitted local drafts depend on your browser.">Сохранённый прогресс и сообщения находятся в Supabase отдельно от файлов сайта. Обычная публикация дизайна их не удаляет.</p></details>
 </div></div>
-<div id="contact"><h2 data-ru="Есть вопрос? Напиши нам" data-en="Have a question? Contact us">Есть вопрос? Напиши нам</h2><p class="intro" data-ru="Если ещё не зарегистрировался, оставь контакт и интересующий курс. Ответ будет на указанный email; срок ответа не гарантирован."
-data-en="Not signed up yet? Leave your question and course of interest. We may reply to your email; response times are not guaranteed.">Если ещё не зарегистрировался, оставь контакт и интересующий курс. Ответ будет на указанный email; срок ответа не гарантирован.</p>
+<div id="contact"><h2 data-ru="Расскажи о своём курсе" data-en="Tell us about your course">Расскажи о своём курсе</h2><p class="intro" data-ru="Опиши тему, для кого курс и какого результата хочешь достичь. Можно также спросить о готовой программе. Ответ придёт на указанный email; срок ответа не гарантирован."
+data-en="Describe the topic, intended learners and desired outcome. You can also ask about an existing course. We will reply to your email; response times are not guaranteed.">Опиши тему, для кого курс и какого результата хочешь достичь. Можно также спросить о готовой программе. Ответ придёт на указанный email; срок ответа не гарантирован.</p>
 <form class="form" id="interest-form">
 <label><span data-ru="Имя" data-en="Name">Имя</span><input id="interest-name" autocomplete="name" maxlength="100" minlength="2" required></label>
 <label>Email<input id="interest-email" type="email" autocomplete="email" maxlength="200" required></label>
-<label><span data-ru="Какая программа интересует?" data-en="Which program interests you?">Какая программа интересует?</span>
-<select id="interest-course"><option value="ielts">IELTS Academic</option><option value="arabic" data-ru="Арабский язык (заявка)" data-en="Arabic language (interest only)">Арабский язык (заявка)</option><option value="quran" data-ru="Изучение Корана" data-en="Quran Study">Изучение Корана</option><option value="flutter">Flutter</option><option value="other" data-ru="Другое" data-en="Other">Другое</option></select></label>
-<label><span data-ru="Сообщение" data-en="Message">Сообщение</span><textarea id="interest-message" maxlength="2000" minlength="3" required placeholder="Например: хочу готовиться к IELTS, как получить доступ?"></textarea></label>
+<label><span data-ru="Что тебя интересует?" data-en="What are you interested in?">Что тебя интересует?</span>
+<select id="interest-course"><option value="other" data-ru="Создать свой курс" data-en="Create my own course">Создать свой курс</option><option value="ielts">IELTS Academic</option><option value="arabic" data-ru="Арабский язык (заявка)" data-en="Arabic language (interest only)">Арабский язык (заявка)</option><option value="quran" data-ru="Изучение Корана" data-en="Quran Study">Изучение Корана</option><option value="flutter">Flutter</option></select></label>
+<label><span data-ru="Тема, аудитория и цель" data-en="Topic, learners and goal">Тема, аудитория и цель</span><textarea id="interest-message" maxlength="2000" minlength="3" required placeholder="Например: хочу создать курс по математике для начинающих"></textarea></label>
 <input id="interest-website" tabindex="-1" autocomplete="off" style="position:absolute;left:-10000px" aria-hidden="true">
 <button class="button" type="submit" id="interest-send" data-ru="Отправить запрос" data-en="Send request">Отправить запрос</button>
 <p id="request-result" role="status" aria-live="polite"></p>
@@ -128,6 +137,10 @@ const offerActive=Date.now()>=offerStart&&Date.now()<offerEnd;
 if(offerActive)document.getElementById("ielts-promo").hidden=false;
 document.documentElement.lang=en?"en":"ru";
 document.querySelectorAll("[data-ru][data-en]").forEach(node=>node.textContent=node.getAttribute(en?"data-en":"data-ru"));
+const landingMenu=document.getElementById("landing-menu");
+document.addEventListener("click",event=>{if(landingMenu.open&&!landingMenu.contains(event.target))landingMenu.open=false});
+landingMenu.addEventListener("keydown",event=>{if(event.key==="Escape"){landingMenu.open=false;landingMenu.querySelector("summary").focus()}});
+landingMenu.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>landingMenu.open=false));
 if(offerActive)document.getElementById("ielts-tag").textContent=en?"Automatic for new accounts until November 6":"Автоматически при регистрации до 6 ноября";
 if(offerActive){
  const cta=document.getElementById("ielts-cta");

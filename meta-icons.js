@@ -7,7 +7,8 @@ const icons = {
  arrow:'M4 12h16m-6-6 6 6-6 6',
  check:'m4 12 5 5L20 6',
  info:'M12 11v6m0-10v1M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z',
- warning:'m12 3 10 18H2Zm0 6v5m0 3v1'
+ warning:'m12 3 10 18H2Zm0 6v5m0 3v1',
+ menu:'M4 6h16M4 12h16M4 18h16'
 };
 export function icon(name) {
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');

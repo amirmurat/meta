@@ -27,7 +27,7 @@
 .meta-appbar .meta-brand{font-size:20px;font-weight:700;margin-right:auto}
 .meta-primary-nav{display:flex;gap:16px}
 .meta-appbar a[aria-current=page]{color:var(--meta-blue);box-shadow:inset 0 -2px var(--meta-blue)}
-.meta-more{position:relative;flex:none}.meta-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center}
+.meta-more{position:relative;flex:none}.meta-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:7px}.meta-more summary svg,.meta-menu-text{display:none}
 .meta-more-panel{display:none;position:absolute;right:0;top:100%;min-width:210px;padding:8px 14px 12px;border:1px solid var(--meta-border);background:#fff;box-shadow:0 8px 20px #00000014;z-index:35}
 .meta-more[open] .meta-more-panel{display:block}
 .meta-more-panel>a,.meta-more-panel>button,.meta-more-panel>p{display:flex;margin:0;width:100%;white-space:normal}
@@ -46,6 +46,9 @@ body.meta-ui .error,body.meta-ui .message.error{color:var(--meta-red)}
 body.meta-has-shell main.meta-dashboard{justify-content:flex-start;min-height:0;padding-top:36px;gap:26px}
 .meta-dashboard .courses-section{width:min(100%,640px)}
 .meta-dashboard .courses-section h2{font-size:17px;padding:0 24px;margin:0 0 8px}
+.meta-dashboard .courses-intro,.meta-dashboard .course-request{font-size:14px;line-height:1.6;color:#555;padding:0 24px;margin:0 0 20px}
+.meta-dashboard .course-request{margin:20px 0 0}
+.meta-dashboard .all-courses-link{display:inline-block;margin:16px 24px 0;min-height:44px;color:var(--meta-blue);font-weight:600}
 .meta-dashboard .courses{gap:16px}
 .meta-dashboard .course{padding-bottom:18px;border:1px solid var(--meta-border)}
 .meta-dashboard .course[data-course]{border-left:3px solid var(--course-color)}
@@ -70,6 +73,7 @@ body.meta-ui .next a{display:inline-block;min-height:44px;padding:10px 0;color:v
 .meta-shell-error{padding:16px;color:var(--meta-red)}
 body.meta-ui button,body.meta-ui .tool-link,body.meta-ui summary{min-height:44px}
 body.meta-has-shell .meta-language-picker{position:fixed;right:12px;bottom:12px;margin:0;display:flex;z-index:40}
+@media(max-width:900px){.meta-more summary svg,.meta-menu-text{display:block}.meta-more-text{display:none}}
 @media(max-width:767px){
  .meta-appbar{padding:8px 16px;gap:18px;min-height:62px}
  .meta-primary-nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:white;border-top:1px solid var(--meta-border);padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px));z-index:30}
@@ -77,7 +81,7 @@ body.meta-has-shell .meta-language-picker{position:fixed;right:12px;bottom:12px;
  body.meta-has-shell{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))}
  .meta-profile-link{font-size:13px}.meta-appbar .meta-brand{font-size:19px}
  body.meta-has-shell .meta-language-picker{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
- .meta-dashboard .courses-section h2{padding:0 12px}
+ .meta-dashboard .courses-section h2,.meta-dashboard .courses-intro,.meta-dashboard .course-request{padding-left:12px;padding-right:12px}
  body.meta-has-shell main.meta-dashboard{padding-top:25px}
  .meta-appbar svg{width:20px;height:20px}
 }
