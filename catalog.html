@@ -33,11 +33,18 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 .name{font-weight:600}.count{font-variant-numeric:tabular-nums;white-space:nowrap}
 .track{height:18px;margin:0 24px;background:#e5e7eb}
 .fill{height:100%;background:#111;width:0}
-.course-preview{padding:0 24px 18px;font-size:14px;line-height:1.5}
-.course-preview summary{cursor:pointer;color:#2563eb;min-height:44px;display:list-item;padding-top:12px}
-.course-preview summary:focus-visible,.course-preview a:focus-visible{outline:2px solid #2563eb;outline-offset:3px}
-.course-preview p{color:#555;margin:8px 0}
-.course-preview a{color:#2563eb;font-weight:600}
+.catalog-table-wrap{margin:0 24px;border:1px solid #dedede;min-width:0}
+.catalog-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px;line-height:1.4}
+.catalog-table th{text-align:left;font-size:12px;color:#666;font-weight:600;background:#f7f7f7}
+.catalog-table th,.catalog-table td{padding:9px 12px;border-bottom:1px solid #e5e7eb;vertical-align:middle;overflow-wrap:anywhere}
+.catalog-table tr:last-child td{border-bottom:0}
+.catalog-table th:first-child{width:35%}.catalog-table th:nth-child(2){width:22%}.catalog-table th:nth-child(3){width:24%}.catalog-table th:nth-child(4){width:19%}
+.catalog-row[data-course=ielts]{border-left:3px solid #2563eb}.catalog-row[data-course=flutter]{border-left:3px solid #0f766e}.catalog-row[data-course=quran]{border-left:3px solid #a16207}
+.catalog-row strong{display:block;font-size:14px}
+.catalog-preview summary{color:#2563eb;cursor:pointer;font-size:12px}
+.catalog-preview p{font-size:13px;color:#555;margin:0 0 8px}
+.catalog-table a{color:#2563eb;font-weight:600;text-decoration:none}
+.catalog-table a:hover{text-decoration:underline}
 .catalog-controls{width:min(100%,640px);display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;padding:0 24px}
 .catalog-controls label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;min-width:0}
 .catalog-controls input,.catalog-controls select{width:100%;min-height:44px;border:1px solid #d1d5db;background:#fff;color:#111;padding:9px 10px;font:14px Arial,Helvetica,sans-serif}
@@ -53,7 +60,16 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
  .nav-links{gap:12px}
  .course-top{padding:16px 12px;gap:12px;font-size:16px}
  .track{margin:0 12px}
- .course-preview{padding-left:12px;padding-right:12px}
+ .catalog-table-wrap{margin:0 12px}
+ .catalog-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+ .catalog-table,.catalog-table tbody{display:block}
+ .catalog-table tr{display:grid;grid-template-columns:minmax(0,1fr) auto;padding:5px 10px;border-bottom:1px solid #e5e7eb}
+ .catalog-table tr:last-child{border-bottom:0}
+ .catalog-table td{display:block;border:0!important;padding:2px 4px}
+ .catalog-table td:first-child{grid-column:1;grid-row:1/3}
+ .catalog-table td:nth-child(2){grid-column:2;grid-row:1;text-align:right;color:#555;font-variant-numeric:tabular-nums}
+ .catalog-table td:nth-child(3){grid-column:1;grid-row:3;color:#555;font-size:12px}
+ .catalog-table td:nth-child(4){grid-column:2;grid-row:3;text-align:right}
  .catalog-controls{grid-template-columns:1fr 1fr;padding-left:12px;padding-right:12px}
  .catalog-controls label:first-child{grid-column:1/-1}
  .catalog-feedback{padding-left:12px;padding-right:12px}
@@ -77,14 +93,14 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </div>
 <p class="catalog-feedback" id="catalog-count" role="status" aria-live="polite" hidden></p>
 <p class="catalog-feedback" id="catalog-no-results" hidden>Ничего не найдено. Измени поиск или фильтр.</p>
-<div class="courses" id="courses" hidden></div><p class="course-request">Хочешь курс на другую тему? <a href="./support.html">Напиши нам →</a></p></section>
+<div class="catalog-table-wrap"><table class="catalog-table" aria-label="Каталог курсов"><thead><tr><th scope="col" data-ru="Курс" data-en="Course">Курс</th><th scope="col" data-ru="Объём" data-en="Size">Объём</th><th scope="col" data-ru="Доступ" data-en="Access">Доступ</th><th scope="col" data-ru="Действие" data-en="Action">Действие</th></tr></thead><tbody id="courses" hidden></tbody></table></div><p class="course-request">Хочешь курс на другую тему? <a href="./support.html">Напиши нам →</a></p></section>
 <div class="empty" id="empty" hidden>
 <p>Аккаунт создан, но программа пока не назначена. Напиши администратору, какой курс тебе нужен (например, IELTS). После назначения он появится здесь.</p>
 <a href="./support.html">Запросить доступ к курсу →</a>
 </div>
 <p class="small" id="notice" hidden></p>
 </main>
-<script type="module" src="./meta-dashboard.js?v=8"></script>
+<script type="module" src="./meta-dashboard.js?v=9"></script>
 <script type="module" src="./meta-language.js?v=3"></script>
 <script type="module" src="./meta-shell.js?v=5"></script>
 </body>
