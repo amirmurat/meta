@@ -13,3 +13,9 @@ Curated 1 November 2026. `meta-ielts-videos.js` maps a lesson's section and Engl
 These are supporting explanations, not Meta-authored lessons or official scoring of a learner's work. British Council's series is presented for teachers but also contains preparation advice. Keep the link and publisher visible. No third-party player loads until a learner clicks, avoiding automatic external requests and allowing the source page's own transcript when available.
 
 The next content pass should identify gaps in the 332-title catalog and add only videos whose content directly explains the target skill. This mapping is deliberately incomplete; a misleading match is worse than no video. Review links periodically because publishers can move or remove videos.
+
+## Local visual QA
+
+![Mobile preview of the first IELTS lesson video card](ielts-video-mobile-qa.png)
+
+Captured at a narrow mobile viewport using the isolated local QA fixture. The example learner state and surrounding lesson text are mock data; this is not a production account or deployed page.
