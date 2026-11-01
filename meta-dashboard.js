@@ -30,6 +30,7 @@ function renderDailyGoal(visible,progress,lessonCourse){
   ?(en?`You completed today's ${name} lesson. Come back tomorrow for the next step.`:`Сегодняшний урок ${name} завершён. Завтра будет новый шаг.`)
   :(en?`Complete one ${name} lesson today.`:`Заверши сегодня один урок ${name}.`);
  $("daily-goal-count").textContent=done?"1 / 1 ✓":"0 / 1";
+ $("daily-goal-count").dataset.done=String(done);
  $("daily-goal-link").textContent=done?(en?"See your progress →":"Посмотреть прогресс →"):(en?"Start a lesson →":"Начать урок →");
  $("daily-goal-link").href=done?"./statistics.html":$("resume-links").querySelector("a")?.href||"./"+course.slug+".html";
  $("daily-goal").hidden=false;
