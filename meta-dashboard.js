@@ -158,7 +158,7 @@ async function main(){
   $("loading").hidden=true;$("heading").hidden=false;
   if(!assigned?.length && !catalogue){$("empty").hidden=false;return;}
   const [catalog,progress,positions]=await Promise.all([
-   supabase.from("courses").select("slug,title,title_en,total_units"),
+   supabase.from("courses").select("slug,title,title_en,total_units,unit_type"),
    supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method").eq("user_id",user.id),
    supabase.from("course_resume_positions").select("course_slug,lesson_id,visited_at").eq("user_id",user.id)
   ]);
@@ -181,32 +181,34 @@ async function main(){
   for(const course of visible){
     const canOpen=["flutter","ielts","quran"].includes(course.slug);
     const enrolled=assignedSlugs.has(course.slug);
-    const card=document.createElement(!catalogue&&canOpen?"a":"div");
-    card.className="course";
-    card.dataset.course=course.slug;
     if(catalogue){
-      card.dataset.title=readable(course);
-      card.dataset.units=String(course.total_units);
-      card.dataset.assigned=String(enrolled);
-      card.dataset.search=[course.title,course.title_en,descriptions[course.slug]?.ru,descriptions[course.slug]?.en].filter(Boolean).join(" ").toLocaleLowerCase();
+      const row=document.createElement("tr");row.className="catalog-row";row.dataset.course=course.slug;
+      row.dataset.title=readable(course);row.dataset.units=String(course.total_units);
+      row.dataset.assigned=String(enrolled);
+      row.dataset.search=[course.title,course.title_en,descriptions[course.slug]?.ru,descriptions[course.slug]?.en].filter(Boolean).join(" ").toLocaleLowerCase();
+      const name=document.createElement("td");
+      const title=document.createElement("strong");title.textContent=readable(course);
+      const details=document.createElement("details");details.className="catalog-preview";
+      const summary=document.createElement("summary");summary.textContent=language()==="en"?"Details":"Подробнее";
+      const description=document.createElement("p");description.textContent=descriptions[course.slug]?.[language()]||readable(course);
+      details.append(summary,description);name.append(title,details);
+      const size=document.createElement("td");size.textContent=String(course.total_units)+" "+(course.unit_type==="ayah"?(language()==="en"?"ayahs":"аятов"):(language()==="en"?"lessons":"ур."));
+      const access=document.createElement("td");access.textContent=enrolled?(language()==="en"?"In my courses":"В моих курсах"):(language()==="en"?"By request":"По запросу");
+      const action=document.createElement("td");const link=document.createElement("a");
+      link.href=enrolled&&canOpen?courseHref(course.slug):"./support.html";
+      link.textContent=enrolled&&canOpen?(language()==="en"?"Open →":"Открыть →"):(language()==="en"?"Request →":"Запросить →");
+      action.append(link);row.append(name,size,access,action);root.append(row);
+      continue;
     }
-    if(!catalogue&&canOpen)card.href=courseHref(course.slug);
+    const card=document.createElement(canOpen?"a":"div");
+    card.className="course";card.dataset.course=course.slug;
+    if(canOpen)card.href=courseHref(course.slug);
     const top=document.createElement("div");top.className="course-top";
     const title=document.createElement("span");title.className="name";title.textContent=language()==="en"?(course.title_en||course.title):course.title;
     const amount=document.createElement("span");amount.className="count";
     const done=counts.get(course.slug)||0;
-    amount.textContent=catalogue&&!enrolled?(language()==="en"?"By request":"По запросу"):done+" / "+course.total_units;
+    amount.textContent=done+" / "+course.total_units;
     top.append(title,amount);
-    if(catalogue){
-      const details=document.createElement("details");details.className="course-preview";
-      const summary=document.createElement("summary");summary.textContent=language()==="en"?"Preview programme":"Посмотреть программу";
-      const description=document.createElement("p");description.textContent=descriptions[course.slug]?.[language()]||readable(course);
-      const status=document.createElement("p");status.textContent=enrolled?(language()==="en"?"Added to your courses":"Добавлен в твои курсы"):(language()==="en"?"Access by request":"Доступ по запросу");
-      const action=document.createElement("a");action.href=enrolled&&canOpen?courseHref(course.slug):"./support.html";
-      action.textContent=enrolled&&canOpen?(language()==="en"?"Open course →":"Открыть курс →"):(language()==="en"?"Request access →":"Запросить доступ →");
-      details.append(summary,description,status,action);card.append(top,details);root.append(card);
-      continue;
-    }
     const track=document.createElement("div");track.className="track";
     track.setAttribute("role","progressbar");track.setAttribute("aria-label",language()==="en"?(course.title_en||course.title):course.title);
     track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(course.total_units));
