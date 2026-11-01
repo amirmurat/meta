@@ -6,13 +6,19 @@ const $=id=>document.getElementById(id);
 const catalogue=location.pathname.endsWith("courses.html");
 if(catalogue){
  $("heading").querySelector("h1").textContent=language()==="en"?"Courses":"Курсы";
- $("assigned-courses").querySelector("h2").textContent=language()==="en"?"Available courses":"Доступные программы";
- $("assigned-courses").querySelector(".courses-intro").textContent=language()==="en"?"Only courses assigned to you appear here. Open one to see its lessons and your progress.":"Здесь только назначенные тебе курсы. Открой программу, чтобы посмотреть уроки и свой прогресс.";
+ $("assigned-courses").querySelector("h2").textContent=language()==="en"?"Explore courses":"Каталог курсов";
+ $("assigned-courses").querySelector(".courses-intro").textContent=language()==="en"?"Preview a programme before choosing it. Your assigned courses open directly; request access to other courses.":"Посмотри программу перед выбором. Назначенные курсы можно открыть сразу, к остальным — запросить доступ.";
  $("assigned-courses").querySelector(".course-request").innerHTML=language()==="en"?'Want a course on another topic? <a href="./support.html">Message us →</a>':'Хочешь свой курс по другой теме? <a href="./support.html">Напиши нам в Сообщениях →</a>';
 }else{
  $("assigned-courses").querySelector(".all-courses-link").textContent=language()==="en"?"All courses →":"Все курсы →";
 }
 const readable=record=>language()==="en"?(record.title_en||record.title):(record.title||record.title_en);
+const descriptions={
+ ielts:{ru:"Подготовка к IELTS Academic: аудирование, чтение, письмо и устная речь.",en:"IELTS Academic preparation: listening, reading, writing and speaking."},
+ flutter:{ru:"Разработка приложений на Flutter: от основ Dart до практических задач.",en:"Flutter app development, from Dart fundamentals to practical tasks."},
+ quran:{ru:"Изучение Корана по аятам с сохранением личного прогресса.",en:"Study the Quran by ayah and keep your own progress."}
+};
+function courseHref(slug){return slug==="quran"?"./quran.html?s=1&a=1":"./"+slug+".html";}
 function almatyDay(date){
  return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(date));
 }
@@ -116,7 +122,7 @@ async function main(){
     .select("course_slug").eq("user_id",user.id);
   if(assignedError)throw assignedError;
   $("loading").hidden=true;$("heading").hidden=false;
-  if(!assigned?.length){$("empty").hidden=false;return;}
+  if(!assigned?.length && !catalogue){$("empty").hidden=false;return;}
   const [catalog,progress,positions]=await Promise.all([
    supabase.from("courses").select("slug,title,title_en,total_units"),
    supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method").eq("user_id",user.id),
@@ -125,7 +131,7 @@ async function main(){
   for(const result of [catalog,progress])if(result.error)throw result.error;
   if(positions.error)console.warn("Resume positions unavailable:",positions.error.message);
   const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
-  const visible=(catalog.data||[]).filter(c=>assignedSlugs.has(c.slug));
+  const visible=(catalog.data||[]).filter(c=>catalogue || assignedSlugs.has(c.slug));
   const completedIds=(progress.data||[]).map(x=>x.lesson_id);
   const lookup=completedIds.length
     ?await supabase.from("lessons").select("id,course_slug").in("id",completedIds)
@@ -140,18 +146,27 @@ async function main(){
   const root=$("courses");
   for(const course of visible){
     const canOpen=["flutter","ielts","quran"].includes(course.slug);
-    const card=document.createElement(canOpen?"a":"div");
+    const enrolled=assignedSlugs.has(course.slug);
+    const card=document.createElement(!catalogue&&canOpen?"a":"div");
     card.className="course";
     card.dataset.course=course.slug;
-    if(course.slug==="flutter")card.href="./flutter.html";
-    if(course.slug==="ielts")card.href="./ielts.html";
-    if(course.slug==="quran")card.href="./quran.html?s=1&a=1";
+    if(!catalogue&&canOpen)card.href=courseHref(course.slug);
     const top=document.createElement("div");top.className="course-top";
     const title=document.createElement("span");title.className="name";title.textContent=language()==="en"?(course.title_en||course.title):course.title;
     const amount=document.createElement("span");amount.className="count";
     const done=counts.get(course.slug)||0;
-    amount.textContent=done+" / "+course.total_units;
+    amount.textContent=catalogue&&!enrolled?(language()==="en"?"By request":"По запросу"):done+" / "+course.total_units;
     top.append(title,amount);
+    if(catalogue){
+      const details=document.createElement("details");details.className="course-preview";
+      const summary=document.createElement("summary");summary.textContent=language()==="en"?"Preview programme":"Посмотреть программу";
+      const description=document.createElement("p");description.textContent=descriptions[course.slug]?.[language()]||readable(course);
+      const status=document.createElement("p");status.textContent=enrolled?(language()==="en"?"Added to your courses":"Добавлен в твои курсы"):(language()==="en"?"Access by request":"Доступ по запросу");
+      const action=document.createElement("a");action.href=enrolled&&canOpen?courseHref(course.slug):"./support.html";
+      action.textContent=enrolled&&canOpen?(language()==="en"?"Open course →":"Открыть курс →"):(language()==="en"?"Request access →":"Запросить доступ →");
+      details.append(summary,description,status,action);card.append(top,details);root.append(card);
+      continue;
+    }
     const track=document.createElement("div");track.className="track";
     track.setAttribute("role","progressbar");track.setAttribute("aria-label",language()==="en"?(course.title_en||course.title):course.title);
     track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(course.total_units));
