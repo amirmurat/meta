@@ -28,6 +28,31 @@ const descriptions={
  quran:{ru:"Изучение Корана по аятам с сохранением личного прогресса.",en:"Study the Quran by ayah and keep your own progress."}
 };
 function courseHref(slug){return slug==="quran"?"./quran.html?s=1&a=1":"./"+slug+".html";}
+function initCatalog(root){
+ const cards=[...root.children];
+ const search=$("catalog-search"),filter=$("catalog-filter"),sort=$("catalog-sort");
+ const en=language()==="en";
+ search.placeholder=en?"Name or topic":"Название или тема";
+ search.setAttribute("aria-label",en?"Search courses":"Поиск по курсам");
+ $("catalog-no-results").textContent=en?"No courses found. Change your search or filter.":"Ничего не найдено. Измени поиск или фильтр.";
+ const update=()=>{
+  const query=search.value.trim().toLocaleLowerCase();
+  const ordered=[...cards];
+  if(sort.value==="title")ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title,language()==="en"?"en":"ru"));
+  if(sort.value==="short"||sort.value==="long")ordered.sort((a,b)=>(Number(a.dataset.units)-Number(b.dataset.units))*(sort.value==="short"?1:-1));
+  root.replaceChildren(...ordered);
+  let count=0;
+  for(const card of ordered){
+   const status=filter.value==="all"||card.dataset.assigned===(filter.value==="assigned"?"true":"false");
+   card.hidden=!(status&&card.dataset.search.includes(query));
+   if(!card.hidden)count++;
+  }
+  $("catalog-count").textContent=en?`${count} of ${cards.length} courses`:`Курсов: ${count} из ${cards.length}`;
+  $("catalog-no-results").hidden=count!==0;
+ };
+ search.addEventListener("input",update);filter.addEventListener("change",update);sort.addEventListener("change",update);
+ $("catalog-controls").hidden=false;$("catalog-count").hidden=false;update();
+}
 function almatyDay(date){
  return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(date));
 }
@@ -159,6 +184,12 @@ async function main(){
     const card=document.createElement(!catalogue&&canOpen?"a":"div");
     card.className="course";
     card.dataset.course=course.slug;
+    if(catalogue){
+      card.dataset.title=readable(course);
+      card.dataset.units=String(course.total_units);
+      card.dataset.assigned=String(enrolled);
+      card.dataset.search=[course.title,course.title_en,descriptions[course.slug]?.ru,descriptions[course.slug]?.en].filter(Boolean).join(" ").toLocaleLowerCase();
+    }
     if(!catalogue&&canOpen)card.href=courseHref(course.slug);
     const top=document.createElement("div");top.className="course-top";
     const title=document.createElement("span");title.className="name";title.textContent=language()==="en"?(course.title_en||course.title):course.title;
@@ -186,6 +217,7 @@ async function main(){
   }
   if(!root.children.length){$("empty").hidden=false;return;}
   root.hidden=false;$("assigned-courses").hidden=!(catalogue||coursesPage);
+  if(catalogue)initCatalog(root);
   // Suggestions never prevent the main course list from loading.
   try{if(!catalogue&&!coursesPage)await renderResume(user,visible,completedIds,positions.error?[]:positions.data||[]);}
   catch(error){console.warn("Resume shortcuts:",error.message);}

@@ -2,7 +2,7 @@ import {supabase, authenticatedUser, authPage} from './meta-supabase.js';
 import {language} from './meta-language.js?v=3';
 const en = language() === 'en';
 const page = location.pathname.split('/').pop() || 'index.html';
-import {icon} from "./meta-icons.js";
+import {icon} from "./meta-icons.js?v=2";
 function link(href, text, name) {
  const a=document.createElement('a');a.href=href;a.append(icon(name),document.createTextNode(text));return a;
 }
@@ -13,10 +13,11 @@ async function boot() {
  const shell=document.createElement('div');shell.className='meta-appbar';
  const brand=link('./','Meta.','book');brand.className='meta-brand';
  const nav=document.createElement('nav');nav.className='meta-primary-nav';nav.setAttribute('aria-label',en?'Main navigation':'Основная навигация');
- const coursePage=/ielts|flutter|quran|assessment|mock|practice|courses|catalog/.test(page);
+ const coursePage=/ielts|flutter|quran|assessment|mock|practice|courses/.test(page);
  for(const [href,ru,eng,name,active] of [
   ['./','Главная','Home','home',page==='index.html'],
   ['./courses.html','Курсы','Courses','book',coursePage],
+  ['./catalog.html','Каталог','Catalog','search',page==='catalog.html'],
   ['./statistics.html','Прогресс','Progress','chart',page==='statistics.html'],
   ['./support.html','Сообщения','Messages','message',page==='support.html']
  ]){const a=link(href,en?eng:ru,name);if(active)a.setAttribute('aria-current','page');nav.append(a);}

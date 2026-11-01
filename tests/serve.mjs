@@ -9,4 +9,4 @@ http.createServer((req,res)=>{
  const file=path.resolve(root,'.'+pathname);if(!file.startsWith(root)||!fs.existsSync(file)||!fs.statSync(file).isFile()){res.writeHead(404);res.end();return;}
  res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.json':'application/json'})[path.extname(file)]||'text/plain');
  res.setHeader('Cache-Control','no-store');res.end(fs.readFileSync(file));
-}).listen(4173,'127.0.0.1',()=>console.log('Meta QA: http://127.0.0.1:4173/ — localhost fixtures only'));
+}).listen(Number(process.env.META_QA_PORT)||4173,'127.0.0.1',()=>console.log('Meta QA: localhost fixtures only'));
