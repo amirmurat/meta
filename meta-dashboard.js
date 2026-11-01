@@ -3,12 +3,21 @@ import {supabase,authenticatedUser} from "./meta-supabase.js";
 import {icon} from "./meta-icons.js";
 import {language} from "./meta-language.js?v=3";
 const $=id=>document.getElementById(id);
-const catalogue=location.pathname.endsWith("courses.html");
+const catalogue=location.pathname.endsWith("catalog.html");
+const coursesPage=location.pathname.endsWith("courses.html");
 if(catalogue){
- $("heading").querySelector("h1").textContent=language()==="en"?"Courses":"Курсы";
+ $("heading").querySelector("h1").textContent=language()==="en"?"Catalog":"Каталог";
  $("assigned-courses").querySelector("h2").textContent=language()==="en"?"Explore courses":"Каталог курсов";
  $("assigned-courses").querySelector(".courses-intro").textContent=language()==="en"?"Preview a programme before choosing it. Your assigned courses open directly; request access to other courses.":"Посмотри программу перед выбором. Назначенные курсы можно открыть сразу, к остальным — запросить доступ.";
  $("assigned-courses").querySelector(".course-request").innerHTML=language()==="en"?'Want a course on another topic? <a href="./support.html">Message us →</a>':'Хочешь свой курс по другой теме? <a href="./support.html">Напиши нам в Сообщениях →</a>';
+}else if(coursesPage){
+ $("heading").querySelector("h1").textContent=language()==="en"?"My courses":"Мои курсы";
+ $("assigned-courses").querySelector("h2").textContent=language()==="en"?"Your courses":"Твои курсы";
+ $("assigned-courses").querySelector(".courses-intro").textContent=language()==="en"?"Only programmes assigned to you appear here.":"Здесь только назначенные тебе программы.";
+ $("assigned-courses").querySelector(".course-request").innerHTML=language()==="en"?'Explore more programmes in the <a href="./catalog.html">Catalog →</a>':'Другие программы можно посмотреть в <a href="./catalog.html">Каталоге →</a>';
+ $("empty").querySelector("p").textContent=language()==="en"?"No courses have been assigned yet. Explore the catalog to choose one.":"Пока тебе не назначены курсы. Посмотри каталог и выбери подходящий.";
+ $("empty").querySelector("a").href="./catalog.html";
+ $("empty").querySelector("a").textContent=language()==="en"?"Open catalog →":"Открыть каталог →";
 }else{
  $("assigned-courses").querySelector(".all-courses-link").textContent=language()==="en"?"All courses →":"Все курсы →";
 }
@@ -23,7 +32,7 @@ function almatyDay(date){
  return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(date));
 }
 function renderDailyGoal(visible,progress,lessonCourse){
- if(catalogue)return;
+ if(catalogue||coursesPage)return;
  const course=visible.find(c=>c.slug==="ielts")||visible.find(c=>["flutter","quran"].includes(c.slug));
  if(!course)return;
  const today=almatyDay(Date.now());
@@ -176,9 +185,9 @@ async function main(){
     track.append(fill);card.append(top,track);root.append(card);
   }
   if(!root.children.length){$("empty").hidden=false;return;}
-  root.hidden=false;$("assigned-courses").hidden=!catalogue;
+  root.hidden=false;$("assigned-courses").hidden=!(catalogue||coursesPage);
   // Suggestions never prevent the main course list from loading.
-  try{if(!catalogue)await renderResume(user,visible,completedIds,positions.error?[]:positions.data||[]);}
+  try{if(!catalogue&&!coursesPage)await renderResume(user,visible,completedIds,positions.error?[]:positions.data||[]);}
   catch(error){console.warn("Resume shortcuts:",error.message);}
   renderDailyGoal(visible,progress.data||[],lessonCourse);
  }catch(e){
