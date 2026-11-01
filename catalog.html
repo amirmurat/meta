@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Meta — Каталог</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:transparent;color:#111;font-family:Arial,Helvetica,sans-serif}
+main{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:70px 24px}
+header{width:min(100%,640px);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px}
+h1{margin:0;font-size:24px;letter-spacing:-.4px}
+.nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.profile{font-size:14px;text-decoration:none;color:#555}.profile:hover{text-decoration:underline}
+.resume-section{width:min(100%,640px);padding:0 24px}
+.resume-heading{font-size:17px;letter-spacing:-.2px;margin:0 0 12px}
+.resume-links{display:flex;flex-direction:column;gap:8px}
+.resume-link{display:flex;justify-content:space-between;gap:14px;align-items:center;
+ text-decoration:none;border:1px solid #dedede;padding:14px 16px;min-width:0;color:#111}
+.resume-link:hover{border-color:#777;background:#fafafa}
+.resume-link:focus-visible{outline:2px solid #111;outline-offset:2px}
+.resume-link:first-child[data-last="true"]{border-color:#111}
+.resume-label{font-size:12px;line-height:1.4;color:#666;display:block;margin-bottom:4px}
+.resume-title{font-size:15px;font-weight:600;line-height:1.4;display:block;overflow-wrap:anywhere}
+.resume-action{font-size:14px;white-space:nowrap;flex:none}
+.resume-help{color:#777;font-size:12px;margin:11px 0 0;line-height:1.55}
+.courses{width:min(100%,640px);display:flex;flex-direction:column;gap:24px}
+.course{display:block;text-decoration:none;color:inherit;width:100%;background:transparent}
+.course:not([href]){cursor:default}
+.course[href]:hover .name{text-decoration:underline}
+.course[href]:focus-visible{outline:2px solid #111;outline-offset:4px}
+.course-top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;font-size:18px;line-height:1.4}
+.name{font-weight:600}.count{font-variant-numeric:tabular-nums;white-space:nowrap}
+.track{height:18px;margin:0 24px;background:#e5e7eb}
+.fill{height:100%;background:#111;width:0}
+.course-preview{padding:0 24px 18px;font-size:14px;line-height:1.5}
+.course-preview summary{cursor:pointer;color:#2563eb;min-height:44px;display:list-item;padding-top:12px}
+.course-preview summary:focus-visible,.course-preview a:focus-visible{outline:2px solid #2563eb;outline-offset:3px}
+.course-preview p{color:#555;margin:8px 0}
+.course-preview a{color:#2563eb;font-weight:600}
+.small{width:min(100%,640px);padding:0 24px;font-size:14px;line-height:1.65;color:#777}
+.empty{width:min(100%,640px);padding:22px 24px}
+.empty p{color:#666;font-size:16px;line-height:1.65;margin:0 0 16px}
+.empty a{font-size:15px;color:#111}
+[hidden]{display:none!important}
+@media(max-width:520px){
+ main{padding:48px 16px}
+ header{flex-wrap:wrap;align-items:flex-start;gap:12px;padding:0 12px}
+ .nav-links{gap:12px}
+ .course-top{padding:16px 12px;gap:12px;font-size:16px}
+ .track{margin:0 12px}
+ .course-preview{padding-left:12px;padding-right:12px}
+ .small,.empty,.resume-section{padding-left:12px;padding-right:12px}
+ .resume-link{padding:12px;align-items:flex-start}
+ .resume-action{font-size:12px}
+}
+</style>
+<link rel="stylesheet" href="./meta-ui.css?v=7">
+</head>
+<body class="meta-ui">
+<div class="meta-shell-placeholder" aria-hidden="true"></div>
+<main class="meta-shell meta-dashboard">
+<header id="heading" hidden><h1>Каталог</h1><nav class="nav-links" aria-label="Основные разделы"><a class="profile" href="./statistics.html">Статистика</a><a class="profile" href="./support.html">Сообщения</a><a class="profile" href="./welcome.html">О Meta</a><a class="profile" href="./admin-statistics.html" id="admin-nav" hidden>Админ-панель</a><a class="profile" href="./admin-operations.html" id="admin-ops-nav" hidden>Управление</a><a class="profile" href="./profile.html">Профиль</a></nav></header>
+<p class="small" id="loading">Проверяю вход…</p>
+<section class="courses-section" id="assigned-courses" hidden><h2>Каталог курсов</h2><p class="courses-intro">Посмотри программу перед выбором.</p><div class="courses" id="courses" hidden></div><p class="course-request">Хочешь курс на другую тему? <a href="./support.html">Напиши нам →</a></p></section>
+<div class="empty" id="empty" hidden>
+<p>Аккаунт создан, но программа пока не назначена. Напиши администратору, какой курс тебе нужен (например, IELTS). После назначения он появится здесь.</p>
+<a href="./support.html">Запросить доступ к курсу →</a>
+</div>
+<p class="small" id="notice" hidden></p>
+</main>
+<script type="module" src="./meta-dashboard.js?v=7"></script>
+<script type="module" src="./meta-language.js?v=3"></script>
+<script type="module" src="./meta-shell.js?v=4"></script>
+</body>
+</html>
