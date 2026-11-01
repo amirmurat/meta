@@ -1,0 +1,28 @@
+/* Shared lesson hierarchy for IELTS and Flutter. Keep Meta's square geometry. */
+body.meta-ui .meta-lesson-heading{border-bottom:1px solid #d1d5db;padding-bottom:24px}
+body.meta-ui .meta-lesson-heading h1{color:#111}
+body.meta-ui .meta-lesson #lesson>section{margin-top:22px;padding:22px;border:1px solid #e5e7eb;background:#fff;min-width:0}
+body.meta-ui .meta-lesson #lesson>section h2{margin:0 0 12px}
+body.meta-ui .meta-lesson #lesson>section h3{font-size:15px;line-height:1.4;margin:18px 0 8px}
+body.meta-ui .meta-lesson .meta-step-label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#555;margin:0 0 12px}
+body.meta-ui .meta-lesson #lesson>.meta-learning-help{background:#f8fafc;border-left:3px solid #eab308}
+body.meta-ui .meta-lesson #lesson>.meta-task-block{border-color:#bfdbfe;border-left:4px solid #2563eb}
+body.meta-ui .meta-lesson #lesson>.meta-answer-block{border-left:4px solid #111}
+body.meta-ui .meta-lesson #lesson>.meta-review-block{border-left:4px solid #16a34a}
+body.meta-ui .meta-lesson #lesson>.meta-task-block .task{border:0;padding:0;margin-top:18px}
+body.meta-ui .meta-resource-box{display:grid;gap:10px;padding:16px;border:1px solid #bfdbfe;background:#eff6ff;margin:0 0 20px}
+body.meta-ui .meta-resource-box strong{font-size:14px}
+body.meta-ui .meta-resource-box span{font-size:13px;line-height:1.5;color:#374151}
+body.meta-ui .meta-source-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;width:fit-content;max-width:100%;padding:10px 14px;background:#2563eb;color:#fff!important;font-size:14px;font-weight:700;text-decoration:none;line-height:1.35}
+body.meta-ui .meta-source-link:hover{background:#1d4ed8;text-decoration:underline}
+body.meta-ui .meta-source-link:focus-visible{outline:3px solid #111;outline-offset:3px}
+body.meta-ui .meta-criteria-list{margin:0 0 14px;padding-left:22px;line-height:1.55;font-size:14px}
+body.meta-ui .meta-criteria-list li{margin:0 0 7px}
+body.meta-ui .meta-lesson #lesson>.meta-review-block .toolbar{margin-top:18px}
+body.meta-ui .meta-lesson #lesson>.meta-learning-help .toolbar{margin-bottom:0}
+body.meta-ui .meta-lesson #lesson>.meta-learning-help button{border-color:#d1d5db}
+@media(max-width:540px){
+ body.meta-ui .meta-lesson #lesson>section{padding:16px;margin-top:16px}
+ body.meta-ui .meta-lesson #lesson>.meta-task-block{padding:18px 16px}
+ body.meta-ui .meta-lesson #lesson>.meta-learning-help .toolbar>*{min-height:44px}
+}

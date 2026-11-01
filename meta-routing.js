@@ -12,11 +12,10 @@ export function safeDestination(raw, currentHref) {
   return base.href;
 }
 
-export function completionRequirements({signedIn, answer, criteria, aiReviewed, selfPassed}, en = false) {
+export function completionRequirements({signedIn, answer, aiReviewed, selfPassed}, en = false) {
   const missing = [];
   if (!signedIn) missing.push(en ? 'Sign in' : 'Войди в аккаунт');
   if (!answer.trim()) missing.push(en ? 'Write your answer' : 'Напиши свой ответ');
-  if (!criteria.every(Boolean)) missing.push(en ? 'Open the criteria and check every item' : 'Открой критерии и проверь каждый пункт');
   if (!aiReviewed) missing.push(en ? 'Review with AI and confirm it below' : 'Проверь ответ с ИИ и подтверди это ниже');
   if (!selfPassed) missing.push(en ? 'Confirm that your work meets the criteria' : 'Подтверди соответствие работы критериям');
   return missing;
