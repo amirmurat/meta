@@ -3,6 +3,7 @@ import {language,localizeRecord,tr} from "./meta-language.js?v=3";
 import {icon} from "./meta-icons.js";
 import {completionRequirements} from "./meta-routing.js";
 import {rememberCoursePosition} from "./meta-resume.js";
+import {explanationPrompt} from "./meta-lesson-prompts.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
@@ -54,18 +55,16 @@ function showTaskMode(type) {
     setText("answer-label", type === "practical" ? "Что сделал и какой получил результат" : "Твоё объяснение");
     setText("input-help", type === "practical"
       ? "Опиши реальное выполнение задания и проверку результата. Не утверждай, что код запускался, если это не так."
-      : "Ответь своими словами. После попытки открой критерии, обсуди ответ с ИИ и самостоятельно оцени результат.");
+      : language()==="en"?"Answer in your own words. Then compare your result with the criteria and discuss it with AI.":"Ответь своими словами. Затем сверь результат с критериями и обсуди его с ИИ.");
     $("editor-toolbar").hidden = false;$("dartpad").hidden = true;
   }
 }
 function updateButton() {
-  const missing=completionRequirements({signedIn:!!currentUser,answer:$("answer").value,criteria:[...document.querySelectorAll("#criteria input")].map(x=>x.checked),aiReviewed:$("ai-reviewed").checked,selfPassed:$("self-passed").checked},language()==="en");
+  const missing=completionRequirements({signedIn:!!currentUser,answer:$("answer").value,aiReviewed:$("ai-reviewed").checked,selfPassed:$("self-passed").checked},language()==="en");
   $("completion-help").textContent=missing.length?(language()==="en"?"To finish: ":"Чтобы завершить: ")+missing.join("; ")+".":(language()==="en"?"Ready. Save your confirmed completion below.":"Всё готово. Сохрани подтверждение выполнения ниже.");
   const answer = $("answer").value.trim();
-  $("check-button").disabled = !answer;
-  const allCriteriaChecked = [...document.querySelectorAll("#criteria input[type=checkbox]")].every(x => x.checked);
   $("confirm-completion").disabled =
-    !currentUser || !answer || !allCriteriaChecked ||
+    !currentUser || !answer ||
     !$("ai-reviewed").checked || !$("self-passed").checked;
 }
 async function saveAttemptNow() {
@@ -172,19 +171,10 @@ function scheduleNotes() {
 function initCriteria(criteria) {
   const list = $("criteria");
   for (const criterion of criteria) {
-    const li = document.createElement("li"), label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    const span = document.createElement("span"); span.textContent = criterion;
-    checkbox.addEventListener("change", updateButton);
-    label.append(checkbox, span); li.append(label); list.append(li);
+    const li = document.createElement("li");
+    li.textContent = criterion;
+    list.append(li);
   }
-  $("check-button").addEventListener("click", () => {
-    if (!$("answer").value.trim()) return;
-    $("check-panel").hidden = !$("check-panel").hidden;
-    $("check-button").textContent = $("check-panel").hidden ? "Показать критерии после попытки" : "Скрыть критерии";
-    updateButton();
-  });
 }
 async function loadPersonalState() {
   if (!currentUser) {
@@ -321,6 +311,7 @@ async function load() {
     setText("theory", content.theory);
     setText("example", content.example);
     setText("task", content.task);
+    $("copy-explanation-request").addEventListener("click",()=>copyText(explanationPrompt({course:"Flutter",title:row.title,theory:content.theory,example:content.example,task:content.task,criteria:content.criteria},language()==="en"),$("copy-explanation-request")));
     $("copy-example").addEventListener("click",()=>copyText(content.example, $("copy-example")));
     $("copy-answer").addEventListener("click",()=>copyText($("answer").value, $("copy-answer")));
     $("copy-ai-request").addEventListener("click",()=>{
