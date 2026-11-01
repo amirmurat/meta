@@ -8,6 +8,10 @@ import {explanationPrompt} from "./meta-lesson-prompts.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
+const withLoadTimeout = (promise, ms = 15000) => Promise.race([
+  promise,
+  new Promise((_, reject) => setTimeout(() => reject(new Error("Время ожидания истекло")), ms))
+]);
 const guestPrefix = "meta-ielts-guest-v1-";
 const guestKeys = {
   answer: guestPrefix + "answer-" + lessonId,
@@ -277,19 +281,19 @@ async function load() {
   }
   $("back").href = "./ielts.html#group-" + lessonId.split(".").slice(0,4).join(".");
   try {
-    currentUser=await authenticatedUser();
+    currentUser=await withLoadTimeout(authenticatedUser());
     if(!currentUser){
       location.replace(authPage("ielts-lesson.html?id="+encodeURIComponent(lessonId)));
       return;
     }
-    const [lessonResult,navResult]=await Promise.all([
+    const [lessonResult,navResult]=await withLoadTimeout(Promise.all([
       supabase.from("lessons")
         .select("id,external_id,title,title_en,sort_order,task_type,lesson_content,lesson_content_en")
         .eq("course_slug","ielts").eq("external_id",lessonId).limit(1),
       supabase.from("lessons")
         .select("external_id,sort_order")
         .eq("course_slug","ielts").order("sort_order",{ascending:true})
-    ]);
+    ]));
     if(lessonResult.error)throw lessonResult.error;
     if(navResult.error)throw navResult.error;
     const rows=lessonResult.data||[],nav=navResult.data||[];
@@ -368,13 +372,13 @@ async function load() {
       if (notesTimer) clearTimeout(notesTimer);
       await saveNotesNow();
     });
-    await loadPersonalState();
+    await withLoadTimeout(loadPersonalState());
     $("save-now").prepend(icon("check"));$("confirm-completion").prepend(icon("check"));
     $("lesson").hidden = false;
     rememberCoursePosition(currentUser.id,"ielts",row.id);
   } catch (err) {
     console.error("IELTS lesson:",err);
-    showError("Не удалось загрузить страницу. Проверь интернет и повтори.");
+    showError("Не удалось загрузить урок. Проверь соединение и обнови страницу, чтобы попробовать снова.");
   }
 }
 void load();

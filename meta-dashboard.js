@@ -13,6 +13,27 @@ if(catalogue){
  $("assigned-courses").querySelector(".all-courses-link").textContent=language()==="en"?"All courses →":"Все курсы →";
 }
 const readable=record=>language()==="en"?(record.title_en||record.title):(record.title||record.title_en);
+function almatyDay(date){
+ return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Almaty",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(date));
+}
+function renderDailyGoal(visible,progress,lessonCourse){
+ if(catalogue)return;
+ const course=visible.find(c=>c.slug==="ielts")||visible.find(c=>["flutter","quran"].includes(c.slug));
+ if(!course)return;
+ const today=almatyDay(Date.now());
+ const done=progress.some(p=>lessonCourse.get(p.lesson_id)===course.slug &&
+   (p.date_accuracy==="exact_day"?p.achieved_on===today:
+    p.verification_method!=="historical_import" && p.completed_at && almatyDay(p.completed_at)===today));
+ const en=language()==="en",name=readable(course);
+ $("daily-goal-heading").textContent=en?"Today's minimum":"Минимум на сегодня";
+ $("daily-goal-description").textContent=done
+  ?(en?`You completed today's ${name} lesson. Come back tomorrow for the next step.`:`Сегодняшний урок ${name} завершён. Завтра будет новый шаг.`)
+  :(en?`Complete one ${name} lesson today.`:`Заверши сегодня один урок ${name}.`);
+ $("daily-goal-count").textContent=done?"1 / 1 ✓":"0 / 1";
+ $("daily-goal-link").textContent=done?(en?"See your progress →":"Посмотреть прогресс →"):(en?"Start a lesson →":"Начать урок →");
+ $("daily-goal-link").href=done?"./statistics.html":$("resume-links").querySelector("a")?.href||"./"+course.slug+".html";
+ $("daily-goal").hidden=false;
+}
 function lessonLink(course,lesson){
  const code=lesson.external_id;
  if(course==="flutter")return "./flutter-lesson.html?id="+encodeURIComponent(code);
@@ -97,7 +118,7 @@ async function main(){
   if(!assigned?.length){$("empty").hidden=false;return;}
   const [catalog,progress,positions]=await Promise.all([
    supabase.from("courses").select("slug,title,title_en,total_units"),
-   supabase.from("lesson_progress").select("lesson_id").eq("user_id",user.id),
+   supabase.from("lesson_progress").select("lesson_id,completed_at,achieved_on,date_accuracy,verification_method").eq("user_id",user.id),
    supabase.from("course_resume_positions").select("course_slug,lesson_id,visited_at").eq("user_id",user.id)
   ]);
   for(const result of [catalog,progress])if(result.error)throw result.error;
@@ -139,10 +160,11 @@ async function main(){
     track.append(fill);card.append(top,track);root.append(card);
   }
   if(!root.children.length){$("empty").hidden=false;return;}
-  root.hidden=false;$("assigned-courses").hidden=false;
+  root.hidden=false;$("assigned-courses").hidden=!catalogue;
   // Suggestions never prevent the main course list from loading.
   try{if(!catalogue)await renderResume(user,visible,completedIds,positions.error?[]:positions.data||[]);}
   catch(error){console.warn("Resume shortcuts:",error.message);}
+  renderDailyGoal(visible,progress.data||[],lessonCourse);
  }catch(e){
   console.error("Meta dashboard:",e);
   $("loading").hidden=false;$("loading").setAttribute("role","alert");
