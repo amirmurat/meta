@@ -74,10 +74,10 @@ body.meta-ui .next a{display:inline-block;min-height:44px;padding:10px 0;color:v
 body.meta-ui button,body.meta-ui .tool-link,body.meta-ui summary{min-height:44px}
 body.meta-has-shell .meta-language-picker{position:fixed;right:12px;bottom:12px;margin:0;display:flex;z-index:40}
 @media(max-width:900px){.meta-more summary svg,.meta-menu-text{display:block}.meta-more-text{display:none}}
-@media(max-width:767px){
+@media(max-width:900px){
  .meta-appbar{padding:8px 16px;gap:18px;min-height:62px}
- .meta-primary-nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:white;border-top:1px solid var(--meta-border);padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px));z-index:30}
- .meta-primary-nav a{flex-direction:column;gap:3px;justify-content:center;min-height:54px;font-size:12px}
+ .meta-primary-nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;background:white;border-top:1px solid var(--meta-border);padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px));z-index:30}
+ .meta-primary-nav a{flex-direction:column;gap:3px;justify-content:center;min-width:0;min-height:54px;font-size:11px}
  body.meta-has-shell{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))}
  .meta-profile-link{font-size:13px}.meta-appbar .meta-brand{font-size:19px}
  body.meta-has-shell .meta-language-picker{bottom:calc(82px + env(safe-area-inset-bottom,0px))}

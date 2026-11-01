@@ -4,6 +4,7 @@ const icons = {
  chart:'M4 3v18h18M8 17v-5m5 5V8m5 9V4',
  message:'M3 3h18v14H9l-6 4Z',
  user:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 22v-3a8 8 0 0 1 16 0v3',
+ search:'M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm6 14 4 4',
  arrow:'M4 12h16m-6-6 6 6-6 6',
  check:'m4 12 5 5L20 6',
  info:'M12 11v6m0-10v1M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z',
