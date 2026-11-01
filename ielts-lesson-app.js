@@ -3,6 +3,7 @@ import {language,localizeRecord,tr} from "./meta-language.js?v=3";
 import {icon} from "./meta-icons.js";
 import {completionRequirements} from "./meta-routing.js";
 import {rememberCoursePosition} from "./meta-resume.js";
+import {selectIeltsVideos,renderIeltsVideos} from "./meta-ielts-videos.js";
 
 const lessonId = new URLSearchParams(location.search).get("id") || "";
 const $ = id => document.getElementById(id);
@@ -315,6 +316,7 @@ async function load() {
     setText("title", row.title);
     setText("prerequisites", content.prerequisites ? "Предпосылки: " + content.prerequisites : "");
     setText("theory", content.theory);
+    renderIeltsVideos($("topic-videos"),selectIeltsVideos(row),language());
     setText("example", content.example);
     setText("task", content.task);
     const official=$("official-source");
