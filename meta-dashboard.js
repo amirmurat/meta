@@ -32,6 +32,7 @@ function initCatalog(root){
  const cards=[...root.children];
  const search=$("catalog-search"),filter=$("catalog-filter"),sort=$("catalog-sort");
  const en=language()==="en";
+ document.querySelector(".catalog-table").setAttribute("aria-label",en?"Course catalog":"Каталог курсов");
  search.placeholder=en?"Name or topic":"Название или тема";
  search.setAttribute("aria-label",en?"Search courses":"Поиск по курсам");
  $("catalog-no-results").textContent=en?"No courses found. Change your search or filter.":"Ничего не найдено. Измени поиск или фильтр.";
