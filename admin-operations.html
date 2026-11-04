@@ -73,9 +73,9 @@ async function reloadReport(){
  const {data,error}=await supabase.rpc("meta_admin_report",{p_days:30});
  if(error)throw error;
  report=data;
- const c=await supabase.from("courses").select("slug,title").order("slug",{ascending:true});
- if(c.error)throw c.error;
- courses=c.data||[];
+ // Course RLS returns only the current admin's own enrollments. The audited
+ // admin report already contains the complete course list for assignment.
+ courses=(report.courses||[]).map(c=>({slug:c.slug,title:c.title}));
  renderMemberSelect();
 }
 async function changeCourse(u,c,has,button){
