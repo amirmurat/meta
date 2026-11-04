@@ -7,7 +7,7 @@ export const arabicLessons = [
    note:{ru:'В литературном арабском обращение к женщине меняет конец вопроса: كَيْفَ حَالُكِ؟. Пока используй одну форму осознанно.',en:'When addressing a woman, the ending changes: كَيْفَ حَالُكِ؟. Choose the form intentionally.'},
    example:['مَرْحَبًا! كَيْفَ حَالُكَ؟','بِخَيْرٍ، شُكْرًا. وَأَنْتَ؟'],
    task:{ru:'Представь, что собеседник сказал «مَرْحَبًا! كَيْفَ حَالُكَ؟». Произнеси ответ вслух, затем запиши по-арабски приветствие и ответ о себе.',en:'Imagine your partner says “مَرْحَبًا! كَيْفَ حَالُكَ؟”. Say your reply aloud, then write a greeting and your answer in Arabic.'},
-   check:{ru:'Есть приветствие и ответ на вопрос о самочувствии. Ты произнёс фразу вслух; сайт не проверяет произношение.',en:'Your reply includes a greeting and an answer about how you are. You said it aloud; the site does not assess pronunciation.'}},
+   check:{ru:'В ответе нужны приветствие и ответ на вопрос о самочувствии. Произношение сайт не проверяет.',en:'Include a greeting and an answer about how you are. The site does not assess pronunciation.'}},
   {id:'AR.01.02',ru:'Назвать имя и спросить имя',en:'Give and ask a name',
    goal:{ru:'Обменяться именами, а не просто повторить готовую реплику.',en:'Exchange names instead of only repeating a model line.'},
    words:[['مَا اسْمُكَ؟','Как тебя зовут? (к мужчине)','What is your name? (to a man)'],['مَا اسْمُكِ؟','Как тебя зовут? (к женщине)','What is your name? (to a woman)'],['اسْمِي','Меня зовут…','My name is…']],
