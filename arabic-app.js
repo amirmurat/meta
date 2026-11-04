@@ -1,7 +1,7 @@
 import {supabase,authenticatedUser,authPage} from './meta-supabase.js';
 import {language} from './meta-language.js?v=3';
 import {arabicLessons,arabicContexts} from './arabic-lessons.js';
-import {rememberCoursePosition} from './meta-resume.js';
+import {rememberCoursePosition} from './meta-resume.js?v=2';
 const $=id=>document.getElementById(id), en=language()==='en';
 const say=(ru,eng)=>en?eng:ru;
 function text(id,value){$(id).textContent=value;}
