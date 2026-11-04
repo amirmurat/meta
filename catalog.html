@@ -39,7 +39,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 .catalog-table th,.catalog-table td{padding:9px 12px;border-bottom:1px solid #e5e7eb;vertical-align:middle;overflow-wrap:anywhere}
 .catalog-table tr:last-child td{border-bottom:0}
 .catalog-table th:first-child{width:35%}.catalog-table th:nth-child(2){width:22%}.catalog-table th:nth-child(3){width:24%}.catalog-table th:nth-child(4){width:19%}
-.catalog-row[data-course=ielts]{border-left:3px solid #2563eb}.catalog-row[data-course=flutter]{border-left:3px solid #0f766e}.catalog-row[data-course=quran]{border-left:3px solid #a16207}
+.catalog-row[data-course=ielts]{border-left:3px solid #2563eb}.catalog-row[data-course=flutter]{border-left:3px solid #0f766e}.catalog-row[data-course=quran]{border-left:3px solid #a16207}.catalog-row[data-course=arabic]{border-left:3px solid #6d28d9}
 .catalog-row strong{display:block;font-size:14px}
 .catalog-preview summary{color:#2563eb;cursor:pointer;font-size:12px}
 .catalog-preview p{font-size:13px;color:#555;margin:0 0 8px}
@@ -88,7 +88,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 <section class="courses-section" id="assigned-courses" hidden><h2>Каталог курсов</h2><p class="courses-intro">Посмотри программу перед выбором.</p>
 <div class="catalog-controls" id="catalog-controls" hidden>
   <label><span data-ru="Поиск" data-en="Search">Поиск</span><input id="catalog-search" type="search" autocomplete="off" placeholder="Название или тема" aria-label="Поиск по курсам"></label>
-  <label><span data-ru="Доступ" data-en="Access">Доступ</span><select id="catalog-filter"><option value="all" data-ru="Все" data-en="All">Все</option><option value="assigned" data-ru="Мои" data-en="Mine">Мои</option><option value="request" data-ru="По запросу" data-en="By request">По запросу</option></select></label>
+  <label><span data-ru="Доступ" data-en="Access">Доступ</span><select id="catalog-filter"><option value="all" data-ru="Все" data-en="All">Все</option><option value="assigned" data-ru="Мои" data-en="Mine">Мои</option><option value="request" data-ru="По запросу" data-en="By request">По запросу</option><option value="upcoming" data-ru="Готовим" data-en="In preparation">Готовим</option></select></label>
   <label><span data-ru="Сортировка" data-en="Sort">Сортировка</span><select id="catalog-sort"><option value="default" data-ru="По умолчанию" data-en="Default">По умолчанию</option><option value="title" data-ru="По названию" data-en="By name">По названию</option><option value="short" data-ru="Меньше уроков" data-en="Fewer lessons">Меньше уроков</option><option value="long" data-ru="Больше уроков" data-en="More lessons">Больше уроков</option></select></label>
 </div>
 <p class="catalog-feedback" id="catalog-count" role="status" aria-live="polite" hidden></p>
@@ -100,7 +100,7 @@ h1{margin:0;font-size:24px;letter-spacing:-.4px}
 </div>
 <p class="small" id="notice" hidden></p>
 </main>
-<script type="module" src="./meta-dashboard.js?v=10"></script>
+<script type="module" src="./meta-dashboard.js?v=11"></script>
 <script type="module" src="./meta-language.js?v=3"></script>
 <script type="module" src="./meta-shell.js?v=5"></script>
 </body>
