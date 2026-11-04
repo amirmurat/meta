@@ -88,6 +88,7 @@ function derive(){
    events.push(eventRecord(day,lesson.course_slug,"Завершён урок",title,exact?"Точная дата": "Отметка Meta",p.completed_at,
     lesson.course_slug==="ielts"?"./ielts-lesson.html?id="+encodeURIComponent(lesson.external_id):
     lesson.course_slug==="flutter"?"./flutter-lesson.html?id="+encodeURIComponent(lesson.external_id):
+    lesson.course_slug==="arabic"?"./arabic-lesson.html?id="+encodeURIComponent(lesson.external_id):
     "./quran.html?s="+encodeURIComponent(lesson.external_id.split(":")[0])+"&a="+encodeURIComponent(lesson.external_id.split(":")[1])));
   }else if(p.date_accuracy==="on_or_before_day"&&p.achieved_on){quality.bounded++;bounded.push(p)}
   else {quality.unknown++;unknown.push(p)}
@@ -346,7 +347,7 @@ async function boot(){
  const details=await mapLessons([...p.map(x=>x.lesson_id),...a.map(x=>x.lesson_id)]);
  // IELTS (332) and Flutter (56): load full course catalogues for accurate section denominators.
  const assigned=new Set(e.map(x=>x.course_slug));
- for(const slug of ["ielts","flutter"]){
+ for(const slug of ["ielts","flutter","arabic"]){
   if(!assigned.has(slug))continue;
   const {data:allLessons,error:lessonError}=await supabase.from("lessons")
    .select("id,course_slug,external_id,title,title_en,task_type").eq("course_slug",slug).order("sort_order",{ascending:true}).range(0,999);

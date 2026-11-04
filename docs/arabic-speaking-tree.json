@@ -1,0 +1,24 @@
+{
+  "title": "Arabic MSA conversational dependency tree",
+  "status": "curriculum blueprint; not published lessons",
+  "root": "Hold useful short conversations with a new MSA speaker",
+  "leaf_rule": "Each beat branches into L (understand a changed audio prompt), P (produce a relevant reply aloud), I (choose and ask a relevant follow-up), and R (recover when a key word is unclear). These are separate observable actions, never automatic completions of one another.",
+  "contexts": [
+    {"id":"01","title":"First contact","prerequisites":[],"beats":["recognize and return a greeting","give and ask a name","say where one is from","say one is learning Arabic","close the exchange politely"]},
+    {"id":"02","title":"Languages and comprehension","prerequisites":["01"],"beats":["say which languages one speaks","ask which language the partner speaks","say one understands a little","request slower speech","request repetition and answer after it"]},
+    {"id":"03","title":"People and relationships","prerequisites":["01"],"beats":["identify a person by name","ask who a person is","describe a family relationship","say who is present or absent","introduce two people to each other"]},
+    {"id":"04","title":"Study and work","prerequisites":["01","02"],"beats":["say what one studies","ask what the partner studies","say where one works or studies","describe a simple work or study task","explain a current learning goal"]},
+    {"id":"05","title":"Daily routine","prerequisites":["01"],"beats":["say what one does in the morning","ask about a usual activity","say what one is doing now","contrast today with a usual day","describe a short sequence of activities"]},
+    {"id":"06","title":"Time and appointments","prerequisites":["05"],"beats":["ask the time","state a simple time","ask when an activity starts","confirm a day and time","correct a misunderstood appointment time"]},
+    {"id":"07","title":"Places nearby","prerequisites":["01"],"beats":["name a nearby place","ask where a place is","say where one is now","recognize left right and straight ahead","confirm that the destination was understood"]},
+    {"id":"08","title":"Getting around","prerequisites":["06","07"],"beats":["say where one wants to go","ask which transport to use","understand a departure point","ask when transport leaves","check that one has the correct route"]},
+    {"id":"09","title":"Food and drink","prerequisites":["01"],"beats":["say what one would like to drink","ask what food is available","state a simple food preference","ask about an ingredient","confirm the chosen item"]},
+    {"id":"10","title":"At a café","prerequisites":["06","09"],"beats":["request a table or seat","order one item","change part of an order","ask for the price or bill","check an order when it is repeated"]},
+    {"id":"11","title":"Shopping","prerequisites":["06","07"],"beats":["ask whether an item is available","ask how much it costs","specify a size or quantity","compare two simple options","confirm the item and total before paying"]},
+    {"id":"12","title":"Home and accommodation","prerequisites":["07"],"beats":["say where one lives","ask about a room or place to stay","describe a simple room feature","report a missing basic item","confirm an address or room number"]},
+    {"id":"13","title":"Weather and clothing","prerequisites":["05","06"],"beats":["describe today's weather","ask about expected weather","say what one will wear","give a simple reason for clothing","revise a plan after a weather update"]},
+    {"id":"14","title":"Health and needs","prerequisites":["02","07"],"beats":["say one feels unwell","name a simple symptom","ask where to get help","state an immediate need","repeat or clarify an important symptom"]},
+    {"id":"15","title":"Invitations and plans","prerequisites":["06","07"],"beats":["invite someone to a simple activity","accept an invitation","decline politely with a short reason","suggest a different time or place","confirm the agreed plan"]},
+    {"id":"16","title":"Opinions and choices","prerequisites":["02","09","15"],"beats":["state a simple preference","ask what the partner prefers","give one short reason","compare two options","reach and confirm a shared choice"]}
+  ]
+}

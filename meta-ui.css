@@ -18,6 +18,7 @@
  --course-ielts:#2563EB;
  --course-flutter:#0F766E;
  --course-quran:#A16207;
+ --course-arabic:#7C3AED;
 }
 /* v2: shared application chrome; content widths and square geometry stay page-owned. */
 [hidden]{display:none!important}
@@ -56,6 +57,7 @@ body.meta-has-shell main.meta-dashboard{justify-content:flex-start;min-height:0;
 body.meta-ui[data-course=ielts],body.meta-ui [data-course=ielts]{--course-color:var(--course-ielts)}
 body.meta-ui[data-course=flutter],body.meta-ui [data-course=flutter]{--course-color:var(--course-flutter)}
 body.meta-ui[data-course=quran],body.meta-ui [data-course=quran]{--course-color:var(--course-quran)}
+body.meta-ui[data-course=arabic],body.meta-ui [data-course=arabic]{--course-color:var(--course-arabic)}
 body.meta-ui[data-course] main h1{color:var(--course-color)}
 body.meta-ui[data-course] :is(.fill,.module-fill,#progress-bar){background:var(--course-color)}
 body.meta-ui[data-course] .next{border-color:var(--course-color)}
