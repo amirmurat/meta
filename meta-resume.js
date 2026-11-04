@@ -5,7 +5,7 @@ import {supabase} from "./meta-supabase.js";
 const pendingByCourse = new Map();
 
 export function rememberCoursePosition(userId, courseSlug, lessonId) {
-  if (!userId || !lessonId || !["flutter","ielts","quran"].includes(courseSlug)) return;
+  if (!userId || !lessonId || !["flutter","ielts","quran","arabic"].includes(courseSlug)) return;
   const previous = pendingByCourse.get(courseSlug) || Promise.resolve();
   const pending = previous.catch(() => {}).then(async () => {
     const {error} = await supabase.from("course_resume_positions").upsert({

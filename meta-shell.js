@@ -13,7 +13,7 @@ async function boot() {
  const shell=document.createElement('div');shell.className='meta-appbar';
  const brand=link('./','Meta.','book');brand.className='meta-brand';
  const nav=document.createElement('nav');nav.className='meta-primary-nav';nav.setAttribute('aria-label',en?'Main navigation':'Основная навигация');
- const coursePage=/ielts|flutter|quran|assessment|mock|practice|courses/.test(page);
+ const coursePage=/ielts|flutter|quran|arabic|assessment|mock|practice|courses/.test(page);
  for(const [href,ru,eng,name,active] of [
   ['./','Главная','Home','home',page==='index.html'],
   ['./courses.html','Курсы','Courses','book',coursePage],

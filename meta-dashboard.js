@@ -26,7 +26,7 @@ const descriptions={
  ielts:{ru:"Подготовка к IELTS Academic: аудирование, чтение, письмо и устная речь.",en:"IELTS Academic preparation: listening, reading, writing and speaking."},
  flutter:{ru:"Разработка приложений на Flutter: от основ Dart до практических задач.",en:"Flutter app development, from Dart fundamentals to practical tasks."},
  quran:{ru:"Изучение Корана по аятам с сохранением личного прогресса.",en:"Study the Quran by ayah and keep your own progress."},
- arabic:{ru:"Начни разговаривать на литературном арабском: приветствия, вопросы и повседневные ситуации. Уроки готовятся.",en:"Start speaking Modern Standard Arabic through greetings, questions and everyday situations. Lessons are in preparation."}
+ arabic:{ru:"Начни разговаривать на литературном арабском: первый маршрут знакомства и дальнейшие ветви тем.",en:"Start speaking Modern Standard Arabic with a first introductions path and further topic branches."}
 };
 function courseHref(slug){return slug==="quran"?"./quran.html?s=1&a=1":"./"+slug+".html";}
 function initCatalog(root){
@@ -63,7 +63,7 @@ function almatyDay(date){
 }
 function renderDailyGoal(visible,progress,lessonCourse){
  if(catalogue||coursesPage)return;
- const course=visible.find(c=>c.slug==="ielts")||visible.find(c=>["flutter","quran"].includes(c.slug));
+ const course=visible.find(c=>c.slug==="ielts")||visible.find(c=>["flutter","quran","arabic"].includes(c.slug));
  if(!course)return;
  const today=almatyDay(Date.now());
  const done=progress.some(p=>lessonCourse.get(p.lesson_id)===course.slug &&
@@ -84,6 +84,7 @@ function lessonLink(course,lesson){
  const code=lesson.external_id;
  if(course==="flutter")return "./flutter-lesson.html?id="+encodeURIComponent(code);
  if(course==="ielts")return "./ielts-lesson.html?id="+encodeURIComponent(code);
+ if(course==="arabic")return "./arabic-lesson.html?id="+encodeURIComponent(code);
  if(course==="quran"){
   const match=/^(\d+):(\d+)$/.exec(code);
   if(match)return "./quran.html?s="+Number(match[1])+"&a="+Number(match[2]);
@@ -91,7 +92,7 @@ function lessonLink(course,lesson){
  return null;
 }
 async function renderResume(user,visible,completedIds,positions){
- const available=visible.filter(c=>["flutter","ielts","quran"].includes(c.slug));
+ const available=visible.filter(c=>["flutter","ielts","quran","arabic"].includes(c.slug));
  if(!available.length)return;
  const known=new Map();
  const keys=(positions||[]).filter(p=>available.some(c=>c.slug===p.course_slug)).map(p=>p.lesson_id);
@@ -185,10 +186,10 @@ async function main(){
   }
   const root=$("courses");
   for(const course of visible){
-    const canOpen=["flutter","ielts","quran"].includes(course.slug);
+ const canOpen=["flutter","ielts","quran","arabic"].includes(course.slug)&&course.total_units!=null;
     const enrolled=assignedSlugs.has(course.slug);
     if(catalogue){
-      const upcoming=course.slug==="arabic";
+      const upcoming=course.slug==="arabic"&&course.total_units==null;
       const row=document.createElement("tr");row.className="catalog-row";row.dataset.course=course.slug;
       row.dataset.title=readable(course);row.dataset.units=course.total_units==null?"":String(course.total_units);
       row.dataset.assigned=String(enrolled);
