@@ -1,6 +1,6 @@
 import {supabase,authenticatedUser,authPage} from './meta-supabase.js';
 import {language} from './meta-language.js?v=3';
-import {arabicLessons,arabicContexts} from './arabic-lessons.js';
+import {arabicLessons,arabicContexts} from './arabic-lessons.js?v=2';
 import {rememberCoursePosition} from './meta-resume.js?v=2';
 const $=id=>document.getElementById(id), en=language()==='en';
 const say=(ru,eng)=>en?eng:ru;
@@ -32,7 +32,7 @@ async function course(){
  const finished=new Set((done||[]).map(x=>x.lesson_id)), started=new Set((attempts||[]).map(x=>x.lesson_id));
  const next=arabicLessons.find(x=>!finished.has(byCode.get(x.id).id))||arabicLessons.at(-1);
  $('start').href='./arabic-lesson.html?id='+next.id;
- text('start',finished.size?say('Продолжить →','Continue →'):say('Начать первый урок →','Start first lesson →'));
+ text('start',arabicLessons.some(x=>finished.has(byCode.get(x.id).id))?say('Продолжить →','Continue →'):say('Начать первый урок →','Start first lesson →'));
  text('intro',say(`Завершено ${arabicLessons.filter(x=>finished.has(byCode.get(x.id).id)).length} из ${arabicLessons.length} занятий первого маршрута.`,`Completed ${arabicLessons.filter(x=>finished.has(byCode.get(x.id).id)).length} of ${arabicLessons.length} first-path lessons.`));
  const list=$('lesson-list');
  arabicLessons.forEach((lesson,index)=>{
