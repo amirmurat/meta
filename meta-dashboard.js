@@ -172,7 +172,9 @@ async function main(){
   if(positions.error)console.warn("Resume positions unavailable:",positions.error.message);
   const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
   const visible=(catalog.data||[]).filter(c=>catalogue || assignedSlugs.has(c.slug));
-  if(catalogue&&!visible.some(c=>c.slug==="arabic"))visible.push({slug:"arabic",title:"Арабский язык (MSA)",title_en:"Arabic (MSA)",total_units:null,unit_type:"task"});
+  // Course RLS reveals rows only to enrolled learners. The catalog still needs
+  // safe, non-private metadata so anyone signed in can request this course.
+  if(catalogue&&!visible.some(c=>c.slug==="arabic"))visible.push({slug:"arabic",title:"Арабский язык (MSA)",title_en:"Arabic (MSA)",total_units:5,unit_type:"task"});
   const completedIds=(progress.data||[]).map(x=>x.lesson_id);
   const lookup=completedIds.length
     ?await supabase.from("lessons").select("id,course_slug").in("id",completedIds)
