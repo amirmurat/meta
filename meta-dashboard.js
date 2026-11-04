@@ -25,7 +25,8 @@ const readable=record=>language()==="en"?(record.title_en||record.title):(record
 const descriptions={
  ielts:{ru:"Подготовка к IELTS Academic: аудирование, чтение, письмо и устная речь.",en:"IELTS Academic preparation: listening, reading, writing and speaking."},
  flutter:{ru:"Разработка приложений на Flutter: от основ Dart до практических задач.",en:"Flutter app development, from Dart fundamentals to practical tasks."},
- quran:{ru:"Изучение Корана по аятам с сохранением личного прогресса.",en:"Study the Quran by ayah and keep your own progress."}
+ quran:{ru:"Изучение Корана по аятам с сохранением личного прогресса.",en:"Study the Quran by ayah and keep your own progress."},
+ arabic:{ru:"Начни разговаривать на литературном арабском: приветствия, вопросы и повседневные ситуации. Уроки готовятся.",en:"Start speaking Modern Standard Arabic through greetings, questions and everyday situations. Lessons are in preparation."}
 };
 function courseHref(slug){return slug==="quran"?"./quran.html?s=1&a=1":"./"+slug+".html";}
 function initCatalog(root){
@@ -40,11 +41,14 @@ function initCatalog(root){
   const query=search.value.trim().toLocaleLowerCase();
   const ordered=[...cards];
   if(sort.value==="title")ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title,language()==="en"?"en":"ru"));
-  if(sort.value==="short"||sort.value==="long")ordered.sort((a,b)=>(Number(a.dataset.units)-Number(b.dataset.units))*(sort.value==="short"?1:-1));
+  if(sort.value==="short"||sort.value==="long")ordered.sort((a,b)=>{
+   if(!a.dataset.units||!b.dataset.units)return a.dataset.units? -1:b.dataset.units?1:0;
+   return (Number(a.dataset.units)-Number(b.dataset.units))*(sort.value==="short"?1:-1);
+  });
   root.replaceChildren(...ordered);
   let count=0;
   for(const card of ordered){
-   const status=filter.value==="all"||card.dataset.assigned===(filter.value==="assigned"?"true":"false");
+   const status=filter.value==="all"||card.dataset.access===filter.value;
    card.hidden=!(status&&card.dataset.search.includes(query));
    if(!card.hidden)count++;
   }
@@ -167,6 +171,7 @@ async function main(){
   if(positions.error)console.warn("Resume positions unavailable:",positions.error.message);
   const assignedSlugs=new Set(assigned.map(x=>x.course_slug));
   const visible=(catalog.data||[]).filter(c=>catalogue || assignedSlugs.has(c.slug));
+  if(catalogue&&!visible.some(c=>c.slug==="arabic"))visible.push({slug:"arabic",title:"Арабский язык (MSA)",title_en:"Arabic (MSA)",total_units:null,unit_type:"task"});
   const completedIds=(progress.data||[]).map(x=>x.lesson_id);
   const lookup=completedIds.length
     ?await supabase.from("lessons").select("id,course_slug").in("id",completedIds)
@@ -183,21 +188,23 @@ async function main(){
     const canOpen=["flutter","ielts","quran"].includes(course.slug);
     const enrolled=assignedSlugs.has(course.slug);
     if(catalogue){
+      const upcoming=course.slug==="arabic";
       const row=document.createElement("tr");row.className="catalog-row";row.dataset.course=course.slug;
-      row.dataset.title=readable(course);row.dataset.units=String(course.total_units);
+      row.dataset.title=readable(course);row.dataset.units=course.total_units==null?"":String(course.total_units);
       row.dataset.assigned=String(enrolled);
-      row.dataset.search=[course.title,course.title_en,descriptions[course.slug]?.ru,descriptions[course.slug]?.en].filter(Boolean).join(" ").toLocaleLowerCase();
+      row.dataset.access=upcoming?"upcoming":enrolled?"assigned":"request";
+      row.dataset.search=[course.title,course.title_en,descriptions[course.slug]?.ru,descriptions[course.slug]?.en,course.slug==="arabic"?"العربية العربية الفصحى":""].filter(Boolean).join(" ").toLocaleLowerCase();
       const name=document.createElement("td");
       const title=document.createElement("strong");title.textContent=readable(course);
       const details=document.createElement("details");details.className="catalog-preview";
       const summary=document.createElement("summary");summary.textContent=language()==="en"?"Details":"Подробнее";
       const description=document.createElement("p");description.textContent=descriptions[course.slug]?.[language()]||readable(course);
       details.append(summary,description);name.append(title,details);
-      const size=document.createElement("td");size.textContent=String(course.total_units)+" "+(course.unit_type==="ayah"?(language()==="en"?"ayahs":"аятов"):(language()==="en"?"lessons":"ур."));
-      const access=document.createElement("td");access.textContent=enrolled?(language()==="en"?"In my courses":"В моих курсах"):(language()==="en"?"By request":"По запросу");
+      const size=document.createElement("td");size.textContent=upcoming?"—":String(course.total_units)+" "+(course.unit_type==="ayah"?(language()==="en"?"ayahs":"аятов"):(language()==="en"?"lessons":"ур."));
+      const access=document.createElement("td");access.textContent=upcoming?(language()==="en"?"In preparation":"Готовим"):enrolled?(language()==="en"?"In my courses":"В моих курсах"):(language()==="en"?"By request":"По запросу");
       const action=document.createElement("td");const link=document.createElement("a");
       link.href=enrolled&&canOpen?courseHref(course.slug):"./support.html";
-      link.textContent=enrolled&&canOpen?(language()==="en"?"Open →":"Открыть →"):(language()==="en"?"Request →":"Запросить →");
+      link.textContent=upcoming?(language()==="en"?"Message →":"Написать →"):enrolled&&canOpen?(language()==="en"?"Open →":"Открыть →"):(language()==="en"?"Request →":"Запросить →");
       action.append(link);row.append(name,size,access,action);root.append(row);
       continue;
     }
